@@ -68,33 +68,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // LANGUAGE SWITCHING (for multi-page site)
-  const langBtns = document.querySelectorAll('.lang-switch button.lang-btn');
-  if (langBtns.length) {
-    const savedLang = localStorage.getItem('fth-lang') || 'en';
-    if (savedLang === 'ua') {
-      document.body.classList.add('lang-ua');
-    }
-    langBtns.forEach(btn => {
-      if ((savedLang === 'ua' && btn.dataset.lang === 'ua') || (savedLang !== 'ua' && btn.dataset.lang === 'en')) {
-        btn.classList.add('active');
-      } else {
-        btn.classList.remove('active');
-      }
-      btn.addEventListener('click', () => {
-        const lang = btn.dataset.lang;
-        if (lang === 'ua') {
-          document.body.classList.add('lang-ua');
-        } else {
-          document.body.classList.remove('lang-ua');
-        }
-        localStorage.setItem('fth-lang', lang);
-        langBtns.forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-      });
-    });
-  }
-
   // SCROLL REVEAL -- trigger when 12% visible, offset from bottom for natural feel
   const revealEls = document.querySelectorAll('.reveal, .reveal-left, .reveal-right, .reveal-scale');
   if (revealEls.length) {
@@ -168,18 +141,25 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  // PARALLAX
+  // PARALLAX -- rAF-throttled
   const parallaxEls = document.querySelectorAll('[data-parallax]');
   if (parallaxEls.length && window.innerWidth > 768) {
+    let parallaxTicking = false;
     window.addEventListener('scroll', () => {
-      parallaxEls.forEach(el => {
-        const speed = parseFloat(el.dataset.parallax) || 0.1;
-        const rect = el.getBoundingClientRect();
-        const center = rect.top + rect.height / 2;
-        const viewCenter = window.innerHeight / 2;
-        const offset = (center - viewCenter) * speed;
-        el.style.transform = `translateY(${offset}px)`;
-      });
+      if (!parallaxTicking) {
+        requestAnimationFrame(() => {
+          parallaxEls.forEach(el => {
+            const speed = parseFloat(el.dataset.parallax) || 0.1;
+            const rect = el.getBoundingClientRect();
+            const center = rect.top + rect.height / 2;
+            const viewCenter = window.innerHeight / 2;
+            const offset = (center - viewCenter) * speed;
+            el.style.transform = `translateY(${offset}px)`;
+          });
+          parallaxTicking = false;
+        });
+        parallaxTicking = true;
+      }
     }, { passive: true });
   }
 
@@ -212,11 +192,29 @@ document.addEventListener('DOMContentLoaded', () => {
       const originalHTML = btn.innerHTML;
       const isUkrainian = document.documentElement.lang === 'uk';
 
+      // Collect form data
+      const formData = new FormData(form);
+      const data = Object.fromEntries(formData.entries());
+
       btn.innerHTML = isUkrainian
         ? '<span style="display:inline-flex;align-items:center;gap:.5rem"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" style="animation:spin 1s linear infinite"><circle cx="8" cy="8" r="6" stroke="currentColor" stroke-width="2" stroke-dasharray="28" stroke-dashoffset="8" stroke-linecap="round"/></svg>Надсилаємо...</span>'
         : '<span style="display:inline-flex;align-items:center;gap:.5rem"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" style="animation:spin 1s linear infinite"><circle cx="8" cy="8" r="6" stroke="currentColor" stroke-width="2" stroke-dasharray="28" stroke-dashoffset="8" stroke-linecap="round"/></svg>Sending...</span>';
       btn.disabled = true;
       btn.style.opacity = '.7';
+
+      // Build mailto link with form data
+      const subject = encodeURIComponent('FTH Contact: ' + (data.name || 'New inquiry'));
+      const body = encodeURIComponent(
+        'Name: ' + (data.name || '') + '\n' +
+        'Company: ' + (data.company || '') + '\n' +
+        'Email: ' + (data.email || '') + '\n' +
+        'Phone: ' + (data.phone || '') + '\n' +
+        'Service: ' + (data.service || '') + '\n\n' +
+        'Message:\n' + (data.message || '')
+      );
+
+      // Open mailto
+      window.location.href = 'mailto:info@fth-advisory.com?subject=' + subject + '&body=' + body;
 
       setTimeout(() => {
         btn.innerHTML = isUkrainian
@@ -232,25 +230,32 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // NAV ACTIVE LINK TRACKING
+  // NAV ACTIVE LINK TRACKING -- rAF-throttled
   const sections = document.querySelectorAll('section[id]');
   if (sections.length && navbar) {
     const navLinks = navbar.querySelectorAll('.nav-menu a');
+    let navTrackTicking = false;
     window.addEventListener('scroll', () => {
-      const scrollY = window.scrollY + 200;
-      sections.forEach(section => {
-        const top = section.offsetTop;
-        const height = section.offsetHeight;
-        const id = section.getAttribute('id');
-        if (scrollY >= top && scrollY < top + height) {
-          navLinks.forEach(link => {
-            link.style.color = '';
-            if (link.getAttribute('href') === '#' + id) {
-              link.style.color = 'var(--green)';
+      if (!navTrackTicking) {
+        requestAnimationFrame(() => {
+          const scrollY = window.scrollY + 200;
+          sections.forEach(section => {
+            const top = section.offsetTop;
+            const height = section.offsetHeight;
+            const id = section.getAttribute('id');
+            if (scrollY >= top && scrollY < top + height) {
+              navLinks.forEach(link => {
+                link.style.color = '';
+                if (link.getAttribute('href') === '#' + id) {
+                  link.style.color = 'var(--green)';
+                }
+              });
             }
           });
-        }
-      });
+          navTrackTicking = false;
+        });
+        navTrackTicking = true;
+      }
     }, { passive: true });
   }
 

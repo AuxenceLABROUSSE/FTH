@@ -15,6 +15,7 @@
   --g900: #18181b;
   --g800: #27272a;
   --g700: #3f3f46;
+  --g600: #52525b;
   --g500: #71717a;
   --g400: #a1a1aa;
   --g300: #d4d4d8;
@@ -628,7 +629,7 @@ section {
 }
 
 .navbar:not(.scrolled) .nav-logo-sub {
-  color: rgba(255, 255, 255, .78);
+  color: var(--g500);
 }
 
 /* Nav Menu */
@@ -899,7 +900,7 @@ section {
 .hero .mesh-orb:nth-child(2) {
   width: 400px;
   height: 400px;
-  background: #1e5f3a;
+  background: var(--green-deep);
   bottom: -15%;
   left: -10%;
   animation-delay: -5s;
@@ -1761,7 +1762,7 @@ section {
 .cta-bg .orb:nth-child(2) {
   width: 300px;
   height: 300px;
-  background: #1e5f3a;
+  background: var(--green-deep);
   bottom: -30%;
   left: -5%;
   animation-delay: -7s;
@@ -2078,7 +2079,7 @@ section {
 .page-header .orb-blue {
   width: 350px;
   height: 350px;
-  background: #1e5f3a;
+  background: var(--green-deep);
   bottom: -20%;
   left: -5%;
   animation-delay: -8s;
@@ -2960,58 +2961,7 @@ section {
 
 /* --- Navbar: subtle border when scrolled (shadow already handles this) --- */
 
-/* --- Form inputs (direct, outside .form-group): focus states --- */
-.contact-form input,
-.contact-form textarea {
-  width: 100%;
-  padding: .85rem 1.1rem;
-  border: 1px solid var(--g200);
-  border-radius: 10px;
-  background: var(--g50);
-  color: var(--g900);
-  outline: none;
-  font-size: .92rem;
-  transition: border-color .3s var(--ease), box-shadow .3s var(--ease), background .3s var(--ease);
-}
 
-.contact-form input::placeholder,
-.contact-form textarea::placeholder {
-  color: var(--g500);
-  transition: color .3s var(--ease);
-}
-
-.contact-form input:focus,
-.contact-form textarea:focus {
-  border-color: var(--green);
-  box-shadow: 0 0 0 3px rgba(22, 101, 52, .08);
-  background: var(--white);
-}
-
-.contact-form input:focus::placeholder,
-.contact-form textarea:focus::placeholder {
-  color: var(--g300);
-}
-
-.contact-form textarea {
-  resize: vertical;
-  min-height: 140px;
-}
-
-/* --- System cards: hover state --- */
-.sys-card {
-  transition: transform .3s var(--ease), box-shadow .3s var(--ease), border-color .3s var(--ease);
-}
-
-.sys-card:hover {
-  transform: translateY(-3px);
-  box-shadow: var(--shadow);
-  border-color: rgba(22, 101, 52, .2);
-}
-
-.sys-card:hover .sys-num {
-  color: var(--green-deep);
-  transition: color .3s var(--ease);
-}
 
 /* --- Deliverable cards: number badge pulse on hover --- */
 .dlv-num {
@@ -3070,12 +3020,12 @@ section {
 }
 
 /* --- Footer link hover: slide underline --- */
-.footer-links a {
+.footer-bottom-links a {
   position: relative;
   display: inline-block;
 }
 
-.footer-links a::after {
+.footer-bottom-links a::after {
   content: '';
   position: absolute;
   bottom: -2px;
@@ -3086,7 +3036,7 @@ section {
   transition: width .3s var(--ease);
 }
 
-.footer-links a:hover::after {
+.footer-bottom-links a:hover::after {
   width: 100%;
 }
 
@@ -3217,6 +3167,16 @@ section {
   border-radius: 4px;
 }
 
+.nav-menu a:focus-visible,
+.lang-btn:focus-visible,
+.faq-question:focus-visible,
+.blog-card-link:focus-visible,
+.article-back:focus-visible {
+  outline: 2px solid var(--green);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
 /* --- Section overline: line grows in --- */
 .section-overline::before {
   transition: width .5s var(--ease);
@@ -3229,23 +3189,6 @@ section {
 }
 
 
-/* ============================================================
-   PAGE HEADER - Legal Pages Override
-   ============================================================ */
-.page-header {
-  background: var(--white);
-  padding: 8rem 0 3rem;
-  text-align: center;
-  border-bottom: 1px solid var(--g200);
-}
-
-.page-header .section-overline {
-  color: var(--green);
-}
-
-.page-header .section-overline::before {
-  background: var(--green);
-}
 
 .page-header-title {
   font-family: var(--font-serif);
@@ -3560,4 +3503,23 @@ section {
   .blog-grid {
     grid-template-columns: 1fr;
   }
+}
+
+/* --- Submit button full-width --- */
+.contact-form .btn[type="submit"] {
+  width: 100%;
+  justify-content: center;
+}
+
+/* --- Print styles --- */
+@media print {
+  .page-loader, .cursor-glow, .navbar, .footer, .nav-cta, .mobile-toggle, .article-cta { display: none !important; }
+  body { background: white; color: black; font-size: 12pt; }
+  .container { max-width: 100%; padding: 0; }
+  .hero { min-height: auto; padding: 2rem 0; }
+  .hero-bg, .mesh-orb { display: none; }
+  a { color: black; text-decoration: underline; }
+  a[href]::after { content: " (" attr(href) ")"; font-size: 0.8em; color: #666; }
+  .section-dark { background: white !important; color: black !important; }
+  .btn { border: 1px solid #333; background: white !important; color: black !important; }
 }

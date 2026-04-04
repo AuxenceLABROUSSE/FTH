@@ -49,7 +49,7 @@
     }
   }
   </script>
-  <link rel="stylesheet" href="css/style.css?v=15">
+  <link rel="stylesheet" href="css/style.css?v=16">
   <link rel="icon" type="image/png" href="img/logo-transparent.png">
 </head>
 <body>
@@ -292,15 +292,15 @@
       </div>
       <form id="contactForm" class="contact-form reveal-right">
         <div class="form-row">
-          <input type="text" required placeholder="Ім'я" aria-label="Ім'я">
-          <input type="text" required placeholder="Компанія" aria-label="Компанія">
+          <input type="text" name="name" required placeholder="Ім'я" aria-label="Ім'я">
+          <input type="text" name="company" required placeholder="Компанія" aria-label="Компанія">
         </div>
         <div class="form-row">
-          <input type="email" required placeholder="Email" aria-label="Email">
-          <input type="tel" placeholder="Телефон" aria-label="Телефон">
+          <input type="email" name="email" required placeholder="Email" aria-label="Email">
+          <input type="tel" name="phone" placeholder="Телефон" aria-label="Телефон">
         </div>
-        <textarea required placeholder="Опишіть ваш запит коротко..." aria-label="Опишіть ваш запит"></textarea>
-        <button type="submit" class="btn btn-green" style="width:100%;justify-content:center;">
+        <textarea name="message" required placeholder="Опишіть ваш запит коротко..." aria-label="Опишіть ваш запит"></textarea>
+        <button type="submit" class="btn btn-green">
           Надіслати
           <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </button>
@@ -355,6 +355,6 @@
   </div>
 </footer>
 
-<script src="js/main.js?v=6"></script>
+<script src="js/main.js?v=7"></script>
 </body>
 </html>
