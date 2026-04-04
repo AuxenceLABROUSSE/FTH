@@ -3063,3 +3063,166 @@ section {
 .reveal.visible .section-overline::before {
   width: 24px;
 }
+
+
+/* ============================================================
+   PAGE HEADER - Legal Pages Override
+   ============================================================ */
+.page-header {
+  background: var(--green);
+  padding: 8rem 0 3rem;
+  text-align: center;
+}
+
+.page-header .section-overline {
+  color: rgba(255, 255, 255, .7);
+}
+
+.page-header .section-overline::before {
+  background: rgba(255, 255, 255, .5);
+}
+
+.page-header-title {
+  font-family: var(--font-serif);
+  font-size: clamp(2rem, 4vw, 2.75rem);
+  font-weight: 400;
+  color: var(--white);
+  letter-spacing: -.02em;
+  line-height: 1.2;
+}
+
+
+/* ============================================================
+   LEGAL CONTENT
+   ============================================================ */
+.legal-content {
+  padding: 4rem 0 6rem;
+}
+
+.legal-body {
+  max-width: 720px;
+  margin: 0 auto;
+}
+
+.legal-body h2 {
+  font-family: var(--font-serif);
+  font-size: 1.5rem;
+  font-weight: 500;
+  color: var(--g900);
+  margin: 2.5rem 0 1rem;
+  letter-spacing: -.01em;
+}
+
+.legal-body h2:first-child {
+  margin-top: 0;
+}
+
+.legal-body h3 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--g800);
+  margin: 1.5rem 0 .75rem;
+}
+
+.legal-body p {
+  color: var(--g600, #52525b);
+  line-height: 1.8;
+  margin-bottom: 1rem;
+}
+
+.legal-body ul {
+  list-style: none;
+  padding: 0;
+  margin-bottom: 1.25rem;
+}
+
+.legal-body ul li {
+  position: relative;
+  padding-left: 1.25rem;
+  color: var(--g600, #52525b);
+  line-height: 1.8;
+  margin-bottom: .35rem;
+}
+
+.legal-body ul li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: .75em;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--green);
+}
+
+.legal-body a {
+  color: var(--green);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.legal-body a:hover {
+  color: var(--green-deep);
+}
+
+.legal-date {
+  font-size: .85rem;
+  color: var(--g400);
+  margin-bottom: 2rem;
+}
+
+
+/* ============================================================
+   404 ERROR PAGE
+   ============================================================ */
+.error-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 6rem 2rem;
+}
+
+.error-content {
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+.error-code {
+  font-family: var(--font-serif);
+  font-size: clamp(6rem, 15vw, 10rem);
+  font-weight: 400;
+  color: var(--g200);
+  line-height: 1;
+  display: block;
+  margin-bottom: 1rem;
+}
+
+.error-page h1 {
+  font-family: var(--font-serif);
+  font-size: clamp(1.5rem, 3vw, 2rem);
+  font-weight: 400;
+  color: var(--g900);
+  margin-bottom: .75rem;
+}
+
+.error-page p {
+  color: var(--g500);
+  font-size: 1rem;
+  line-height: 1.7;
+  margin-bottom: .5rem;
+}
+
+.error-ua {
+  font-size: .9rem !important;
+  color: var(--g400) !important;
+  margin-bottom: 2rem !important;
+}
+
+.error-actions {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
