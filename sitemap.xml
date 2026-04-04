@@ -13,28 +13,88 @@
     <priority>1.0</priority>
   </url>
   <url>
-    <loc>https://fth.jcsm.cloud/about</loc>
-    <lastmod>2026-04-04</lastmod>
+    <loc>https://fth.jcsm.cloud/blog</loc>
+    <lastmod>2026-03-15</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://fth.jcsm.cloud/blog-ua</loc>
+    <lastmod>2026-03-15</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://fth.jcsm.cloud/blog/xbrl-eu-integration-future</loc>
+    <lastmod>2026-03-15</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://fth.jcsm.cloud/services</loc>
-    <lastmod>2026-04-04</lastmod>
+    <loc>https://fth.jcsm.cloud/blog/xbrl-eu-integration-future-ua</loc>
+    <lastmod>2026-03-15</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://fth.jcsm.cloud/locations</loc>
-    <lastmod>2026-04-04</lastmod>
+    <loc>https://fth.jcsm.cloud/blog/ifrs-2-stock-options</loc>
+    <lastmod>2026-01-20</lastmod>
     <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
+    <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://fth.jcsm.cloud/contact</loc>
-    <lastmod>2026-04-04</lastmod>
+    <loc>https://fth.jcsm.cloud/blog/ifrs-2-stock-options-ua</loc>
+    <lastmod>2026-01-20</lastmod>
     <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://fth.jcsm.cloud/blog/first-ifrs-audit-guide</loc>
+    <lastmod>2025-12-05</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://fth.jcsm.cloud/blog/first-ifrs-audit-guide-ua</loc>
+    <lastmod>2025-12-05</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://fth.jcsm.cloud/blog/ifrs-15-revenue-recognition</loc>
+    <lastmod>2025-10-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://fth.jcsm.cloud/blog/ifrs-15-revenue-recognition-ua</loc>
+    <lastmod>2025-10-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://fth.jcsm.cloud/blog/psbo-vs-ifrs-differences</loc>
+    <lastmod>2025-09-12</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://fth.jcsm.cloud/blog/psbo-vs-ifrs-differences-ua</loc>
+    <lastmod>2025-09-12</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://fth.jcsm.cloud/blog/ifrs-for-ukrainian-it</loc>
+    <lastmod>2025-08-18</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://fth.jcsm.cloud/blog/ifrs-for-ukrainian-it-ua</loc>
+    <lastmod>2025-08-18</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
   </url>
   <url>
     <loc>https://fth.jcsm.cloud/privacy</loc>

@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Stock Options and IFRS 2: What Ukrainian IT Startups Must Know - FTH Blog</title>
+  <meta name="description" content="A detailed guide to IFRS 2 share-based payment accounting for Ukrainian IT startups, covering equity-settled plans, Black-Scholes valuation, phantom shares, and P&L impact.">
+  <link rel="canonical" href="https://fth.jcsm.cloud/blog/ifrs-2-stock-options">
+  <link rel="alternate" hreflang="en" href="https://fth.jcsm.cloud/blog/ifrs-2-stock-options">
+  <link rel="alternate" hreflang="uk" href="https://fth.jcsm.cloud/blog/ifrs-2-stock-options-ua">
+  <meta property="og:title" content="Stock Options and IFRS 2: What Ukrainian IT Startups Must Know">
+  <meta property="og:description" content="A detailed guide to IFRS 2 share-based payment accounting for Ukrainian IT startups, covering equity-settled plans, Black-Scholes valuation, phantom shares, and P&L impact.">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://fth.jcsm.cloud/blog/ifrs-2-stock-options">
+  <meta property="og:image" content="https://fth.jcsm.cloud/img/logo-transparent.png">
+  <meta property="og:site_name" content="Financial Transformation Hub">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Stock Options and IFRS 2: What Ukrainian IT Startups Must Know">
+  <meta name="twitter:description" content="A guide to IFRS 2 share-based payment accounting for Ukrainian IT startups.">
+  <meta name="twitter:image" content="https://fth.jcsm.cloud/img/logo-transparent.png">
+  <link rel="stylesheet" href="../css/style.css?v=12">
+  <link rel="icon" type="image/png" href="../img/logo-transparent.png">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "Stock Options and IFRS 2: What Ukrainian IT Startups Must Know",
+    "datePublished": "2026-01-20",
+    "dateModified": "2026-01-20",
+    "author": {
+      "@type": "Organization",
+      "name": "Financial Transformation Hub",
+      "url": "https://fth.jcsm.cloud"
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "Financial Transformation Hub",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://fth.jcsm.cloud/img/logo-transparent.png"
+      }
+    },
+    "mainEntityOfPage": {
+      "@type": "WebPage",
+      "@id": "https://fth.jcsm.cloud/blog/ifrs-2-stock-options"
+    },
+    "image": "https://fth.jcsm.cloud/img/logo-transparent.png",
+    "description": "A detailed guide to IFRS 2 share-based payment accounting for Ukrainian IT startups, covering equity-settled plans, Black-Scholes valuation, phantom shares, and P&L impact."
+  }
+  </script>
+</head>
+<body>
+
+<!-- Page loader -->
+<div class="page-loader"><div class="loader-bar"></div></div>
+
+<!-- Cursor glow -->
+<div class="cursor-glow"></div>
+
+<!-- NAV -->
+<nav class="navbar" id="navbar">
+  <div class="container">
+    <a href="/en" class="nav-logo"><img src="../img/logo-transparent.png" alt="FTH" class="nav-logo-img"></a>
+    <ul class="nav-menu" id="navMenu">
+      <li><a href="/en#services">Services</a></li>
+      <li><a href="/en#system">Methodology</a></li>
+      <li><a href="/en#deliverables">Deliverables</a></li>
+      <li><a href="/en#process">Process</a></li>
+      <li><a href="/blog">Blog</a></li>
+      <li><a href="/en#contact">Contact</a></li>
+    </ul>
+    <div class="nav-right">
+      <div class="lang-switch">
+        <a href="/blog/ifrs-2-stock-options-ua" class="lang-btn">UA</a>
+        <a href="/blog/ifrs-2-stock-options" class="lang-btn active">EN</a>
+      </div>
+      <a href="/en#contact" class="nav-cta">Get in Touch</a>
+    </div>
+    <button class="mobile-toggle" id="mobileToggle" aria-label="Menu"><span></span><span></span><span></span></button>
+  </div>
+</nav>
+
+<!-- ARTICLE HEADER -->
+<section class="article-header">
+  <div class="container">
+    <a href="/blog" class="article-back"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M13 8H3M7 4L3 8l4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg> Back to blog</a>
+    <div class="article-meta">
+      <span class="blog-card-tag">Standards</span>
+      <span class="blog-card-date">January 20, 2026</span>
+      <span class="article-read-time">8 min read</span>
+    </div>
+    <h1>Stock Options and IFRS 2: What Ukrainian IT Startups Must Know</h1>
+  </div>
+</section>
+
+<!-- ARTICLE CONTENT -->
+<section class="article-content">
+  <div class="container">
+    <div class="article-body legal-body">
+
+      <p>In a country with approximately 300,000 IT professionals competing for talent, employee stock option plans have become one of the most powerful tools Ukrainian tech companies use to attract and retain top developers, designers, and managers. But what seems like a straightforward HR initiative -- give employees a stake in the company's upside -- creates significant accounting complexity under IFRS 2 "Share-based Payment."</p>
+
+      <p>Many Ukrainian startups discover IFRS 2 for the first time during investor due diligence or when preparing for their first IFRS audit. By then, years of grants may need to be retroactively valued and expensed. Understanding IFRS 2 from the outset saves time, money, and difficult conversations with auditors.</p>
+
+      <h2>IFRS 2 basics</h2>
+
+      <p>IFRS 2 requires entities to recognize the cost of share-based payment transactions in their financial statements. The core principle is straightforward: when an entity receives goods or services in exchange for equity instruments (or cash amounts based on equity values), it must recognize an expense for the goods or services received.</p>
+
+      <p>For employee stock options, this means the company must recognize a compensation expense over the period in which employees earn the right to exercise their options (the vesting period). The expense is measured at the fair value of the options at the grant date -- and once set, this fair value is not subsequently adjusted for equity-settled awards, regardless of whether the options end up being exercised or expiring worthless.</p>
+
+      <p>This is a paradigm shift for many Ukrainian companies. Under P(S)BO, stock options are often not recognized at all because no cash changes hands until exercise. Under IFRS 2, the economic cost of diluting existing shareholders is captured in the income statement from the moment the options are granted.</p>
+
+      <h2>Equity-settled vs cash-settled</h2>
+
+      <p>IFRS 2 distinguishes between two fundamental types of share-based payment arrangements, and the accounting treatment differs significantly.</p>
+
+      <p><strong>Equity-settled transactions</strong> are arrangements where the entity issues equity instruments (shares or options) to employees. The expense is measured at the fair value of the equity instruments at the grant date and is not remeasured subsequently. The credit goes to equity (typically an "ESOP reserve" or "share-based payment reserve"), not to a liability.</p>
+
+      <p><strong>Cash-settled transactions</strong> are arrangements where the entity pays cash to employees based on the value of its equity instruments. The liability is remeasured at fair value at each reporting date until settlement, with changes recognized in profit or loss. This means the expense fluctuates with the company's valuation -- creating earnings volatility that equity-settled arrangements avoid.</p>
+
+      <p>Many Ukrainian IT companies, particularly those structured as LLCs (TOV) rather than joint-stock companies, cannot easily issue equity instruments under Ukrainian corporate law. This has led to the widespread adoption of phantom share plans and stock appreciation rights, which are economically similar to stock options but settle in cash. Under IFRS 2, these are classified as cash-settled and require remeasurement at each reporting date -- a detail that catches many companies off guard.</p>
+
+      <h2>Fair value at grant date</h2>
+
+      <p>For equity-settled options, the fair value at the grant date is the single most critical number. It determines the total expense that will be recognized over the vesting period, and it cannot be changed afterwards (except for forfeitures due to failure to meet service or non-market performance conditions).</p>
+
+      <p>Determining fair value for a private company is inherently challenging. There is no observable market price for the shares, so the entity must use a valuation model that considers all factors a knowledgeable, willing market participant would consider.</p>
+
+      <h3>The Black-Scholes model</h3>
+
+      <p>The Black-Scholes-Merton model is the most commonly used option pricing model for IFRS 2 purposes. It requires the following inputs:</p>
+
+      <ul>
+        <li><strong>Share price at grant date.</strong> For private companies, this typically comes from the most recent funding round valuation, a 409A-style independent valuation, or a discounted cash flow analysis. This is often the most debated input.</li>
+        <li><strong>Exercise price.</strong> The price at which employees can purchase shares. Many Ukrainian plans set this at the share price at grant date (at-the-money options).</li>
+        <li><strong>Expected term.</strong> The period over which employees are expected to hold the options before exercising. This is typically shorter than the contractual term because employees tend to exercise before expiration. For private company options, expected terms of 5-7 years are common.</li>
+        <li><strong>Expected volatility.</strong> Since private companies have no traded share price history, volatility must be estimated using comparable public companies. For Ukrainian IT companies, the peer group might include publicly traded software companies of similar size and business model.</li>
+        <li><strong>Risk-free interest rate.</strong> The rate on government bonds with a maturity matching the expected term. In Ukraine, this is typically based on Ukrainian government bond yields denominated in the functional currency.</li>
+        <li><strong>Expected dividends.</strong> Most Ukrainian IT startups do not pay dividends, so this is typically zero.</li>
+      </ul>
+
+      <p>A typical calculation: a Ukrainian software company grants 10,000 options with an exercise price of $10 (equal to the current share price based on the last funding round). Using a 40% expected volatility (based on comparable public SaaS companies), a 5-year expected term, a 4% risk-free rate, and zero dividends, the Black-Scholes model might produce a fair value of $4.50 per option. The total expense to be recognized is $45,000, spread over the vesting period.</p>
+
+      <h2>Vesting conditions</h2>
+
+      <p>Most stock option plans include vesting conditions -- requirements that employees must satisfy before they can exercise their options. IFRS 2 classifies vesting conditions into three categories, each with different accounting treatment:</p>
+
+      <p><strong>Service conditions</strong> require the employee to remain employed for a specified period (typically 3-4 years with a one-year cliff). The expense is recognized over the vesting period. If an employee leaves before vesting, the previously recognized expense is reversed -- treated as if the options were never granted.</p>
+
+      <p><strong>Performance conditions</strong> are subdivided into market conditions and non-market conditions. Market conditions (such as achieving a target share price or outperforming a market index) are factored into the fair value at grant date using a Monte Carlo simulation or similar technique, and the expense is never reversed even if the condition is not met. Non-market conditions (such as achieving a revenue target or completing a product launch) affect the number of options expected to vest -- the company adjusts its estimate of forfeitures at each reporting date, with a true-up when the vesting outcome is known.</p>
+
+      <p><strong>Non-vesting conditions</strong> (such as requiring employees to save a minimum amount) are factored into the grant date fair value.</p>
+
+      <h2>P&L impact for a mid-sized IT company</h2>
+
+      <p>To illustrate the financial statement impact, consider a Ukrainian IT company with 500 developers. The company grants options to 200 key employees, with each receiving 1,000 options at a fair value of $5 per option. The options vest over four years.</p>
+
+      <p>Total share-based payment expense: 200 employees x 1,000 options x $5 = $1,000,000. Annual expense: $250,000 per year for four years. For a company generating $20 million in revenue with a 20% operating margin ($4 million EBITDA), this represents a 6.25% reduction in operating profit. It is a non-cash charge -- no money leaves the company -- but it affects reported profitability, earnings per share, and any financial metrics tied to the income statement.</p>
+
+      <p>For companies with more generous option pools (10-20% of equity is common in venture-backed startups), the expense can be much larger. A company that has made multiple rounds of grants over several years may have overlapping vesting periods that compound the annual charge.</p>
+
+      <h2>Phantom shares and SARs</h2>
+
+      <p>As noted earlier, many Ukrainian IT companies use phantom share plans or stock appreciation rights (SARs) instead of actual equity options. Under a phantom share plan, employees receive units that track the company's equity value and are settled in cash upon a triggering event (typically a liquidity event or after a specified period).</p>
+
+      <p>Under IFRS 2, phantom shares are cash-settled share-based payments. The critical difference from equity-settled plans is that the liability must be remeasured at fair value at each reporting date. If the company's valuation increases between reporting dates, the expense increases. If it decreases, the expense reverses (but only to the extent of cumulative expense previously recognized).</p>
+
+      <p>This creates significant P&L volatility for fast-growing companies. A startup whose valuation doubles between funding rounds may see its share-based payment expense spike dramatically at the next reporting date. Management should understand this volatility and communicate it clearly to stakeholders -- especially investors who might be alarmed by sudden increases in operating costs that have no operational cause.</p>
+
+      <h2>Modification accounting</h2>
+
+      <p>Companies frequently modify the terms of existing option plans -- repricing options after a down round, extending vesting periods, or changing performance conditions. IFRS 2 has specific rules for modifications that can catch companies off guard.</p>
+
+      <p>The fundamental principle: the minimum expense recognized is the original fair value at grant date. If a modification increases the fair value of the options (for example, by reducing the exercise price), the incremental fair value must be recognized as additional expense. If a modification decreases the fair value, no adjustment is made -- the original expense continues to be recognized.</p>
+
+      <p>This means that repricing underwater options after a down round (a common scenario for Ukrainian startups navigating the impacts of recent years) creates additional expense even though the intent is to retain employees during a difficult period. The incremental fair value -- the difference between the fair value of the modified option and the fair value of the original option at the modification date -- is spread over the remaining vesting period.</p>
+
+      <p>Cancellations are treated as accelerated vesting: the remaining unrecognized expense is immediately recognized in full. If new options are granted as replacement, the replacement grant is accounted for as a modification of the original grant.</p>
+
+      <h2>Practical recommendations</h2>
+
+      <p>For Ukrainian IT companies implementing or expanding their stock option programs, several practical steps will make IFRS 2 compliance significantly easier:</p>
+
+      <ul>
+        <li><strong>Maintain a grant-level register.</strong> Track every grant with its date, number of options, exercise price, vesting conditions, and the identity of each participant. This register is the foundation of all IFRS 2 calculations.</li>
+        <li><strong>Obtain valuations at each grant date.</strong> Do not wait until the audit to determine fair values retroactively. Document the share price at each grant date using contemporaneous evidence.</li>
+        <li><strong>Choose your plan structure deliberately.</strong> Understand the accounting consequences of equity-settled versus cash-settled plans before designing the program. The HR benefits may be identical, but the financial statement impact can be very different.</li>
+        <li><strong>Budget for the expense.</strong> Include projected IFRS 2 charges in your financial forecasts. Investors expect this, and surprises undermine credibility.</li>
+        <li><strong>Engage valuation specialists early.</strong> The Black-Scholes inputs for private companies involve significant judgment. Having a defensible, well-documented valuation from the start avoids painful retroactive adjustments.</li>
+      </ul>
+
+      <p>Share-based payments are not going away. With the Ukrainian Fund of Funds deploying $300 million and international venture capital increasingly active in the Ukrainian tech ecosystem, the number of companies with stock option plans will only grow. Getting IFRS 2 right from day one is an investment in your company's financial credibility that pays off every time you face investors, auditors, or potential acquirers.</p>
+
+    </div>
+
+    <!-- CTA -->
+    <div class="article-cta">
+      <h3>Ready to start your IFRS transformation?</h3>
+      <p>Tell us about your company and we will prepare a preliminary assessment -- free of charge.</p>
+      <a href="/en#contact" class="btn btn-green">Get in Touch <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+    </div>
+
+    <!-- Related articles -->
+    <div style="max-width:720px;margin:3rem auto 0;">
+      <h3 style="font-family:var(--font-serif);font-size:1.2rem;font-weight:500;color:var(--g900);margin-bottom:1.5rem;">Related articles</h3>
+      <div class="blog-grid" style="grid-template-columns:1fr 1fr;">
+        <div class="blog-card">
+          <div class="blog-card-meta">
+            <span class="blog-card-date">December 5, 2025</span>
+            <span class="blog-card-tag">Audit</span>
+          </div>
+          <h3>Preparing for Your First IFRS Audit: A Step-by-Step Guide</h3>
+          <p>Your first IFRS audit does not have to be overwhelming. Learn the preparation process and common pitfalls.</p>
+          <a href="/blog/first-ifrs-audit-guide" class="blog-card-link">Read more <svg viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+        </div>
+        <div class="blog-card">
+          <div class="blog-card-meta">
+            <span class="blog-card-date">March 15, 2026</span>
+            <span class="blog-card-tag">Insights</span>
+          </div>
+          <h3>XBRL, EU Integration, and the Future of Financial Reporting in Ukraine</h3>
+          <p>How XBRL mandates and EU alignment are reshaping financial reporting requirements for Ukrainian companies.</p>
+          <a href="/blog/xbrl-eu-integration-future" class="blog-card-link">Read more <svg viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="container">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <a href="/en" class="nav-logo"><img src="../img/logo-transparent.png" alt="FTH" class="footer-logo-img"></a>
+        <p class="footer-tagline">Financial reporting transformation from local GAAP to IFRS for Ukrainian IT companies. A systematic approach built on 47 standards.</p>
+        <div class="footer-certs"><span>ACCA</span><span>DipIFR</span><span>CPA</span></div>
+      </div>
+      <div class="footer-col">
+        <h4>Services</h4>
+        <ul>
+          <li><a href="/en#services">Local GAAP &rarr; IFRS Transformation</a></li>
+          <li><a href="/en#services">IFRS Financial Statements</a></li>
+          <li><a href="/en#services">Audit & Due Diligence Support</a></li>
+          <li><a href="/en#services">Investor-Ready Structuring</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Company</h4>
+        <ul>
+          <li><a href="/en#system">Methodology</a></li>
+          <li><a href="/en#process">Process</a></li>
+          <li><a href="/en#deliverables">Deliverables</a></li>
+          <li><a href="/blog">Blog</a></li>
+          <li><a href="/en#contact">Contact</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Contact</h4>
+        <ul>
+          <li><a href="mailto:info@fth-advisory.com">info@fth-advisory.com</a></li>
+          <li><a href="tel:+380445910800">+380 44 591 0800</a></li>
+          <li><span class="footer-info">Mon -- Fri, 9:00 -- 18:00</span></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>&copy; 2026 Financial Transformation Hub. All rights reserved.</span>
+      <div class="footer-bottom-links">
+        <a href="/privacy">Privacy Policy</a>
+        <a href="/terms">Terms of Service</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script src="../js/main.js?v=6"></script>
+</body>
+</html>
