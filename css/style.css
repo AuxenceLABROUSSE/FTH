@@ -364,11 +364,13 @@ button {
   position: fixed;
   inset: 0;
   z-index: 10000;
-  background: var(--green);
+  background: var(--white);
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
-  transition: opacity .5s var(--ease), visibility .5s var(--ease);
+  gap: 2rem;
+  transition: opacity .6s var(--ease-out), visibility .6s var(--ease-out);
 }
 
 .page-loader.loaded {
@@ -377,13 +379,22 @@ button {
   pointer-events: none;
 }
 
+.loader-logo {
+  width: 48px;
+  height: 48px;
+  opacity: 0;
+  animation: loaderLogoIn .6s var(--ease-out) .1s both;
+}
+
 .loader-bar {
-  width: 120px;
-  height: 3px;
-  background: rgba(255, 255, 255, .2);
+  width: 160px;
+  height: 2px;
+  background: var(--g200);
   border-radius: 2px;
   overflow: hidden;
   position: relative;
+  opacity: 0;
+  animation: loaderLogoIn .4s var(--ease-out) .3s both;
 }
 
 .loader-bar::after {
@@ -391,11 +402,16 @@ button {
   position: absolute;
   top: 0;
   left: 0;
-  width: 30%;
+  width: 40%;
   height: 100%;
-  background: var(--green-accent);
+  background: linear-gradient(90deg, var(--green), var(--green-accent));
   border-radius: 2px;
-  animation: loaderSlide 1s ease-in-out infinite;
+  animation: loaderSlide 1.2s cubic-bezier(.4, 0, .2, 1) infinite;
+}
+
+@keyframes loaderLogoIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 
