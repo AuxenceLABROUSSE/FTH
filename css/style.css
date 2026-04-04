@@ -1290,9 +1290,14 @@ section {
    DELIVERABLES
    ============================================================ */
 .deliverables-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
   gap: 1.25rem;
+}
+
+.deliverables-grid .dlv {
+  flex: 0 1 calc(33.333% - 1rem);
 }
 
 .dlv {
@@ -2579,8 +2584,8 @@ section {
     gap: 2.5rem;
   }
 
-  .deliverables-grid {
-    grid-template-columns: repeat(2, 1fr);
+  .deliverables-grid .dlv {
+    flex: 0 1 calc(50% - 1rem);
   }
 
   .process-steps {
@@ -2689,8 +2694,8 @@ section {
     grid-template-columns: 1fr;
   }
 
-  .deliverables-grid {
-    grid-template-columns: repeat(2, 1fr);
+  .deliverables-grid .dlv {
+    flex: 0 1 calc(50% - 1rem);
   }
 
   .process-steps,
@@ -2842,8 +2847,8 @@ section {
     width: 100%;
   }
 
-  .deliverables-grid {
-    grid-template-columns: 1fr;
+  .deliverables-grid .dlv {
+    flex: 0 1 100%;
   }
 
   .process-steps,
