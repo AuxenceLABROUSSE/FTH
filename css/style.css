@@ -380,8 +380,8 @@ button {
 }
 
 .loader-logo {
-  width: 48px;
-  height: 48px;
+  width: 120px;
+  height: auto;
   opacity: 0;
   animation: loaderLogoIn .6s var(--ease-out) .1s both;
 }
