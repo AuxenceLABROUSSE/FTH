@@ -55,13 +55,15 @@ document.addEventListener('DOMContentLoaded', () => {
   const menu = document.getElementById('navMenu');
   if (toggle && menu) {
     toggle.addEventListener('click', () => {
-      menu.classList.toggle('active');
+      const isOpen = menu.classList.toggle('active');
       toggle.classList.toggle('active');
+      document.body.style.overflow = isOpen ? 'hidden' : '';
     });
     menu.querySelectorAll('a').forEach(a => {
       a.addEventListener('click', () => {
         menu.classList.remove('active');
         toggle.classList.remove('active');
+        document.body.style.overflow = '';
       });
     });
   }
@@ -257,22 +259,26 @@ document.addEventListener('DOMContentLoaded', () => {
     }, { passive: true });
   }
 
-  // SERVICES SCROLL HINT (mobile)
+  // SERVICES SCROLL HINT (mobile) -- gentle nudge after load
   const servicesTrack = document.querySelector('.services-track');
   if (servicesTrack && window.innerWidth <= 768) {
-    setTimeout(() => {
-      servicesTrack.scrollTo({ left: 60, behavior: 'smooth' });
-      setTimeout(() => servicesTrack.scrollTo({ left: 0, behavior: 'smooth' }), 600);
-    }, 2000);
+    const hintObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          servicesTrack.scrollTo({ left: 40, behavior: 'smooth' });
+          setTimeout(() => servicesTrack.scrollTo({ left: 0, behavior: 'smooth' }), 500);
+          hintObserver.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.3 });
+    hintObserver.observe(servicesTrack);
   }
 
-  // SPIN KEYFRAME
-  const style = document.createElement('style');
-  style.textContent = '@keyframes spin{to{transform:rotate(360deg)}}';
-  document.head.appendChild(style);
+  // SPIN KEYFRAME -- defined in style.css
 
-  // MAGNETIC BUTTONS -- buttons subtly follow cursor on hover
-  document.querySelectorAll('.btn-green, .nav-cta').forEach(btn => {
+  // MAGNETIC BUTTONS -- only on devices with fine pointer (no touch)
+  const hasFinePointer = window.matchMedia('(pointer: fine)').matches;
+  if (hasFinePointer) document.querySelectorAll('.btn-green, .nav-cta').forEach(btn => {
     btn.addEventListener('mousemove', (e) => {
       const rect = btn.getBoundingClientRect();
       const x = e.clientX - rect.left - rect.width / 2;
@@ -286,8 +292,8 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  // TILT ON SERVICE CARDS -- subtle 3D perspective on hover
-  document.querySelectorAll('.service-card, .sys-card').forEach(card => {
+  // TILT ON SERVICE CARDS -- only on devices with fine pointer (no touch)
+  if (hasFinePointer) document.querySelectorAll('.service-card, .sys-card').forEach(card => {
     card.addEventListener('mousemove', (e) => {
       const rect = card.getBoundingClientRect();
       const x = (e.clientX - rect.left) / rect.width - .5;
@@ -301,13 +307,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
   // SMOOTH SCROLL PROGRESS BAR
-  const progressBar = document.createElement('div');
-  progressBar.style.cssText = 'position:fixed;top:0;left:0;height:2px;background:linear-gradient(90deg,var(--green),var(--green-accent));z-index:10001;transition:width .1s linear;width:0;pointer-events:none;';
-  document.body.appendChild(progressBar);
-  window.addEventListener('scroll', () => {
-    const scrolled = window.scrollY / (document.documentElement.scrollHeight - window.innerHeight);
-    progressBar.style.width = (scrolled * 100) + '%';
-  }, { passive: true });
+  const progressBar = document.getElementById('scrollProgress');
+  if (progressBar) {
+    window.addEventListener('scroll', () => {
+      const scrolled = window.scrollY / (document.documentElement.scrollHeight - window.innerHeight);
+      progressBar.style.width = (scrolled * 100) + '%';
+    }, { passive: true });
+  }
 
   // PIPELINE TAGS ENTRANCE -- handled by CSS animations in style.css
 

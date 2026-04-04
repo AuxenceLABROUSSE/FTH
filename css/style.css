@@ -55,8 +55,11 @@
 }
 
 html {
-  scroll-behavior: smooth;
   -webkit-text-size-adjust: 100%;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  html { scroll-behavior: smooth; }
 }
 
 body {
@@ -115,6 +118,22 @@ button {
   max-width: var(--container);
   margin: 0 auto;
   padding: 0 2rem;
+}
+
+
+/* ============================================================
+   SCROLL PROGRESS BAR
+   ============================================================ */
+.scroll-progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 2px;
+  width: 0;
+  background: linear-gradient(90deg, var(--green), var(--green-accent));
+  z-index: 10001;
+  pointer-events: none;
+  transition: width .1s linear;
 }
 
 
@@ -228,6 +247,10 @@ button {
 @keyframes heroScale {
   from { opacity: 0; transform: scale(.9) translateY(20px); }
   to { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
 }
 
 @keyframes shimmer {
@@ -440,6 +463,25 @@ body.lang-ua [data-i="ua"] {
 /* ============================================================
    ACCESSIBILITY
    ============================================================ */
+.skip-link {
+  position: absolute;
+  top: -100%;
+  left: 1rem;
+  z-index: 10002;
+  padding: .75rem 1.5rem;
+  background: var(--green);
+  color: var(--white);
+  font-weight: 600;
+  font-size: .9rem;
+  border-radius: var(--radius-pill);
+  text-decoration: none;
+  transition: top .3s var(--ease);
+}
+
+.skip-link:focus {
+  top: 1rem;
+}
+
 .sr-only {
   position: absolute;
   width: 1px;
@@ -3367,6 +3409,26 @@ section {
 @media (max-width: 480px) {
   .trust-items { gap: 1.5rem; }
   .trust-item { flex: 0 0 calc(50% - 1rem); }
+}
+
+/* --- Reduced motion --- */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  .reveal, .reveal-left, .reveal-right, .reveal-scale {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+  .hero h1, .hero-desc, .hero-actions, .hero-pipeline {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+  .cursor-glow, .hero::after { display: none; }
 }
 
 /* --- Print styles --- */
