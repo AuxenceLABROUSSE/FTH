@@ -14,9 +14,14 @@ document.addEventListener('DOMContentLoaded', () => {
   if (cursorGlow && window.innerWidth > 768) {
     let mouseX = 0, mouseY = 0;
     let glowX = 0, glowY = 0;
+    let mouseActive = false;
     document.addEventListener('mousemove', (e) => {
       mouseX = e.clientX;
       mouseY = e.clientY;
+      if (!mouseActive) {
+        mouseActive = true;
+        cursorGlow.style.opacity = '1';
+      }
     });
     function animateGlow() {
       glowX += (mouseX - glowX) * 0.08;
@@ -26,13 +31,6 @@ document.addEventListener('DOMContentLoaded', () => {
       requestAnimationFrame(animateGlow);
     }
     animateGlow();
-    const darkSections = document.querySelectorAll('.section-dark, .section-cta');
-    const observerGlow = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        cursorGlow.style.opacity = entry.isIntersecting ? '0' : '1';
-      });
-    }, { threshold: 0.3 });
-    darkSections.forEach(s => observerGlow.observe(s));
   }
 
   // NAVBAR SCROLL -- rAF-throttled for smooth performance
@@ -301,25 +299,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  // TYPED EFFECT ON HERO -- subtle cursor blink after h1 loads
-  const heroH1 = document.querySelector('.hero h1');
-  if (heroH1) {
-    setTimeout(() => {
-      heroH1.style.borderRight = '2px solid var(--green)';
-      heroH1.style.paddingRight = '4px';
-      heroH1.style.animation = 'none';
-      let blinkCount = 0;
-      const blink = setInterval(() => {
-        heroH1.style.borderRightColor = heroH1.style.borderRightColor === 'transparent' ? 'var(--green)' : 'transparent';
-        blinkCount++;
-        if (blinkCount > 6) {
-          clearInterval(blink);
-          heroH1.style.borderRight = 'none';
-          heroH1.style.paddingRight = '';
-        }
-      }, 500);
-    }, 1800);
-  }
 
   // SMOOTH SCROLL PROGRESS BAR
   const progressBar = document.createElement('div');
@@ -330,20 +309,6 @@ document.addEventListener('DOMContentLoaded', () => {
     progressBar.style.width = (scrolled * 100) + '%';
   }, { passive: true });
 
-  // PIPELINE TAGS ENTRANCE -- stagger each tag
-  const pipelineTags = document.querySelectorAll('.hero-pipeline .hp-tags span');
-  if (pipelineTags.length) {
-    pipelineTags.forEach((tag, i) => {
-      tag.style.opacity = '0';
-      tag.style.transform = 'translateY(8px) scale(.9)';
-      tag.style.transition = `all .4s cubic-bezier(.22,1,.36,1) ${1.2 + i * .08}s`;
-    });
-    setTimeout(() => {
-      pipelineTags.forEach(tag => {
-        tag.style.opacity = '1';
-        tag.style.transform = 'translateY(0) scale(1)';
-      });
-    }, 100);
-  }
+  // PIPELINE TAGS ENTRANCE -- handled by CSS animations in style.css
 
 });
