@@ -445,6 +445,22 @@ body.lang-ua [data-i="ua"] {
 
 
 /* ============================================================
+   ACCESSIBILITY
+   ============================================================ */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+
+/* ============================================================
    TYPOGRAPHY UTILITIES
    ============================================================ */
 .serif {
@@ -930,7 +946,7 @@ section {
   font-size: clamp(2.2rem, 4.5vw, 3.4rem);
   font-weight: 400;
   color: var(--g900);
-  line-height: 1.15;
+  line-height: 1.22;
   margin-bottom: 1.25rem;
   letter-spacing: -.025em;
 }
@@ -946,7 +962,7 @@ section {
 .hero-desc {
   font-size: 1rem;
   color: var(--g500);
-  max-width: 580px;
+  max-width: clamp(300px, 50vw, 600px);
   margin: 0 auto 1.75rem;
   line-height: 1.7;
 }
@@ -2890,6 +2906,8 @@ section {
   .hero-pipeline {
     padding: 1rem;
   }
+
+  .hp-arrow svg { width: 16px; height: 16px; }
 }
 
 
@@ -2962,6 +2980,20 @@ section {
 /* --- Navbar: subtle border when scrolled (shadow already handles this) --- */
 
 
+
+/* --- Deliverable cards: subtitle and icon --- */
+.dlv-sub {
+  display: block;
+  font-size: .75rem;
+  color: var(--g400);
+  margin-top: .35rem;
+  font-weight: 400;
+}
+.dlv-icon {
+  display: block;
+  margin: .5rem auto;
+  color: var(--green);
+}
 
 /* --- Deliverable cards: number badge pulse on hover --- */
 .dlv-num {
@@ -3509,6 +3541,44 @@ section {
 .contact-form .btn[type="submit"] {
   width: 100%;
   justify-content: center;
+}
+
+/* TRUST BAR */
+.trust-bar {
+  padding: 3rem 0;
+  border-bottom: 1px solid var(--g200);
+}
+.trust-items {
+  display: flex;
+  justify-content: center;
+  gap: 4rem;
+  flex-wrap: wrap;
+}
+.trust-item {
+  text-align: center;
+}
+.trust-item strong {
+  display: block;
+  font-family: var(--font-serif);
+  font-size: 1.8rem;
+  font-weight: 600;
+  color: var(--green);
+  letter-spacing: -.02em;
+  line-height: 1;
+  margin-bottom: .35rem;
+}
+.trust-item span {
+  font-size: .8rem;
+  color: var(--g500);
+  letter-spacing: .02em;
+}
+@media (max-width: 768px) {
+  .trust-items { gap: 2.5rem; }
+  .trust-item strong { font-size: 1.5rem; }
+}
+@media (max-width: 480px) {
+  .trust-items { gap: 1.5rem; }
+  .trust-item { flex: 0 0 calc(50% - 1rem); }
 }
 
 /* --- Print styles --- */
