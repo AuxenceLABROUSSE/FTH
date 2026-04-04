@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://fth.jcsm.cloud/sitemap.xml

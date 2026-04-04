@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Contact — FTH Advisory</title>
+  <meta name="description" content="Get in touch with FTH Advisory. Schedule a consultation, request a proposal, or visit one of our offices in Kyiv, Warsaw or London.">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%230b1120'/><text x='50' y='62' text-anchor='middle' font-size='42' font-family='serif' font-weight='bold' fill='%23c8a96e'>FT</text></svg>">
+</head>
+<body>
+
+<!-- ═══ NAVBAR ═══ -->
+<nav class="navbar" id="navbar">
+  <div class="container">
+    <a href="index.html" class="nav-logo">
+      <div class="nav-logo-mark">FT</div>
+      <div><div class="nav-logo-text">FTH</div><div class="nav-logo-sub">Advisory</div></div>
+    </a>
+    <ul class="nav-menu" id="navMenu">
+      <li><a href="index.html" data-lang="en">Home</a><a href="index.html" data-lang="ua">Головна</a></li>
+      <li><a href="about.html" data-lang="en">About & Team</a><a href="about.html" data-lang="ua">Про нас</a></li>
+      <li><a href="services.html" data-lang="en">Services</a><a href="services.html" data-lang="ua">Послуги</a></li>
+      <li><a href="locations.html" data-lang="en">Locations</a><a href="locations.html" data-lang="ua">Офіси</a></li>
+      <li><a href="contact.html" class="active" data-lang="en">Contact</a><a href="contact.html" class="active" data-lang="ua">Контакти</a></li>
+    </ul>
+    <div class="nav-right">
+      <div class="lang-switch"><button class="lang-btn active" data-lang="en">EN</button><button class="lang-btn" data-lang="ua">UA</button></div>
+      <a href="contact.html" class="nav-cta" data-lang="en">Get in Touch</a><a href="contact.html" class="nav-cta" data-lang="ua">Зв'язатися</a>
+    </div>
+    <button class="mobile-toggle" id="mobileToggle" aria-label="Menu"><span></span><span></span><span></span></button>
+  </div>
+</nav>
+
+<!-- ═══ PAGE HEADER ═══ -->
+<div class="page-header">
+  <div class="hero-bg"><div class="gradient-orb orb-gold"></div><div class="gradient-orb orb-blue"></div><div class="hero-pattern"></div></div>
+  <div class="container">
+    <div class="breadcrumb">
+      <a href="index.html">Home</a><span class="sep">/</span>
+      <span data-i="en">Contact</span><span data-i="ua">Контакти</span>
+    </div>
+    <h1 data-lang="en">Let's Start a <span class="gold serif">Conversation</span></h1>
+    <h1 data-lang="ua">Давайте почнемо <span class="gold serif">розмову</span></h1>
+    <p data-lang="en">Whether you have a specific challenge or just want to explore possibilities — we're here to listen. Every great partnership starts with a conversation.</p>
+    <p data-lang="ua">Чи у вас є конкретний виклик, чи ви просто хочете дослідити можливості — ми тут, щоб вислухати. Кожне чудове партнерство починається з розмови.</p>
+  </div>
+</div>
+
+<!-- ═══ CONTACT FORM ═══ -->
+<section>
+  <div class="container">
+    <div class="contact-grid">
+      <div class="reveal">
+        <div class="section-overline" data-lang="en">Send us a message</div>
+        <div class="section-overline" data-lang="ua">Надішліть нам повідомлення</div>
+        <h2 class="section-title" style="font-size:1.8rem;" data-lang="en">Request a Consultation</h2>
+        <h2 class="section-title" style="font-size:1.8rem;" data-lang="ua">Запит на консультацію</h2>
+        <p class="section-desc" style="margin-bottom:2rem;" data-lang="en">Fill out the form below and a senior advisor will respond within 24 hours.</p>
+        <p class="section-desc" style="margin-bottom:2rem;" data-lang="ua">Заповніть форму нижче, і старший консультант відповість протягом 24 годин.</p>
+
+        <form id="contactForm">
+          <div class="form-row">
+            <div class="form-group">
+              <label data-lang="en">First Name *</label>
+              <label data-lang="ua">Ім'я *</label>
+              <input type="text" required placeholder="John">
+            </div>
+            <div class="form-group">
+              <label data-lang="en">Last Name *</label>
+              <label data-lang="ua">Прізвище *</label>
+              <input type="text" required placeholder="Smith">
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label data-lang="en">Work Email *</label>
+              <label data-lang="ua">Робоча електронна пошта *</label>
+              <input type="email" required placeholder="john@company.com">
+            </div>
+            <div class="form-group">
+              <label data-lang="en">Phone</label>
+              <label data-lang="ua">Телефон</label>
+              <input type="tel" placeholder="+380 ...">
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label data-lang="en">Company *</label>
+              <label data-lang="ua">Компанія *</label>
+              <input type="text" required placeholder="Your company name">
+            </div>
+            <div class="form-group">
+              <label data-lang="en">Your Role</label>
+              <label data-lang="ua">Ваша посада</label>
+              <input type="text" placeholder="CEO, CFO, VP...">
+            </div>
+          </div>
+          <div class="form-group" style="margin-bottom:.7rem;">
+            <label data-lang="en">What service are you interested in?</label>
+            <label data-lang="ua">Яка послуга вас цікавить?</label>
+            <select>
+              <option value="" data-lang="en">Select a service...</option>
+              <option value="strategy">Corporate Strategy</option>
+              <option value="ma">M&A Advisory</option>
+              <option value="digital">Digital Transformation</option>
+              <option value="market-entry">International Market Entry</option>
+              <option value="financial">Financial Advisory</option>
+              <option value="org">Organizational Performance</option>
+              <option value="other">Other / Not Sure</option>
+            </select>
+          </div>
+          <div class="form-group" style="margin-bottom:.7rem;">
+            <label data-lang="en">Tell us about your challenge *</label>
+            <label data-lang="ua">Розкажіть про ваш виклик *</label>
+            <textarea required placeholder="Briefly describe what you're looking to achieve..."></textarea>
+          </div>
+          <div class="form-group" style="display:flex;align-items:flex-start;gap:0.75rem;margin-bottom:1.2rem;">
+            <input type="checkbox" id="gdpr" required style="width:auto;margin-top:0.3rem;">
+            <label for="gdpr" style="font-size:0.8rem;color:var(--g500);cursor:pointer;line-height:1.5;text-transform:none;letter-spacing:0;" data-lang="en">I consent to Financial Transformation Hub processing my data in accordance with the <a href="#" style="color:var(--accent);">Privacy Policy</a>. I understand I can withdraw this consent at any time.</label>
+            <label for="gdpr" style="font-size:0.8rem;color:var(--g500);cursor:pointer;line-height:1.5;text-transform:none;letter-spacing:0;" data-lang="ua">Я даю згоду на обробку моїх даних Financial Transformation Hub відповідно до <a href="#" style="color:var(--accent);">Політики конфіденційності</a>. Я розумію, що можу відкликати цю згоду в будь-який час.</label>
+          </div>
+          <button type="submit" class="btn btn-gold" style="width:100%;justify-content:center;">
+            <span data-i="en">Send Message</span>
+            <span data-i="ua">Надіслати повідомлення</span>
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+        </form>
+      </div>
+
+      <div class="reveal-right">
+        <div class="contact-info-cards">
+          <!-- General Inquiries -->
+          <div class="ci-card">
+            <div class="ci-icon">&#9993;</div>
+            <div>
+              <h4 data-lang="en">General Inquiries</h4>
+              <h4 data-lang="ua">Загальні запити</h4>
+              <p><a href="mailto:info@fth-advisory.com">info@fth-advisory.com</a></p>
+            </div>
+          </div>
+
+          <!-- Phone -->
+          <div class="ci-card">
+            <div class="ci-icon">&#128222;</div>
+            <div>
+              <h4 data-lang="en">Call Us</h4>
+              <h4 data-lang="ua">Зателефонуйте нам</h4>
+              <p>Kyiv: +380 44 591 0800<br>Warsaw: +48 22 318 4500<br>London: +44 20 7946 0958</p>
+            </div>
+          </div>
+
+          <!-- Kyiv HQ -->
+          <div class="ci-card">
+            <div class="ci-icon">&#127963;&#65039;</div>
+            <div>
+              <h4 data-lang="en">Kyiv Headquarters</h4>
+              <h4 data-lang="ua">Штаб-квартира в Києві</h4>
+              <p>Gulliver Business Centre, 14th Floor<br>1A Sportyvna Square<br>Kyiv 01601, Ukraine</p>
+            </div>
+          </div>
+
+          <!-- Business Hours -->
+          <div class="ci-card">
+            <div class="ci-icon">&#128337;</div>
+            <div>
+              <h4 data-lang="en">Business Hours</h4>
+              <h4 data-lang="ua">Робочі години</h4>
+              <p data-lang="en">Monday — Friday: 9:00 — 19:00 (local time)<br>Saturday — Sunday: Closed<br><em style="color:var(--accent);font-size:0.8rem;">Emergency line available 24/7 for active clients</em></p>
+              <p data-lang="ua">Понеділок — П'ятниця: 9:00 — 19:00 (місцевий час)<br>Субота — Неділя: Зачинено<br><em style="color:var(--accent);font-size:0.8rem;">Екстрена лінія доступна 24/7 для активних клієнтів</em></p>
+            </div>
+          </div>
+
+          <!-- NDA -->
+          <div class="ci-card">
+            <div class="ci-icon">&#128274;</div>
+            <div>
+              <h4 data-lang="en">Confidentiality</h4>
+              <h4 data-lang="ua">Конфіденційність</h4>
+              <p data-lang="en">All consultations are strictly confidential. We sign NDAs before any substantive discussion at your request.</p>
+              <p data-lang="ua">Усі консультації є суворо конфіденційними. Ми підписуємо NDA перед будь-яким змістовним обговоренням на ваш запит.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ FAQ ═══ -->
+<section class="bg-surface">
+  <div class="container">
+    <div class="section-header center reveal">
+      <div class="section-overline" data-lang="en">FAQ</div>
+      <div class="section-overline" data-lang="ua">Часті питання</div>
+      <h2 class="section-title" data-lang="en">Common Questions</h2>
+      <h2 class="section-title" data-lang="ua">Поширені запитання</h2>
+    </div>
+    <div style="max-width:800px;margin:0 auto;">
+      <div class="faq-item reveal">
+        <button class="faq-question" onclick="toggleFaq(this)">
+          <span data-i="en">How quickly can we start an engagement?</span>
+          <span data-i="ua">Як швидко ми можемо розпочати проєкт?</span>
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-answer">
+          <p data-lang="en">For urgent matters, we can mobilize a team within 48 hours. Standard engagements typically kick off within 1-2 weeks of signing the letter of engagement, depending on scope and team availability.</p>
+          <p data-lang="ua">Для термінових питань ми можемо мобілізувати команду протягом 48 годин. Стандартні проєкти зазвичай починаються протягом 1-2 тижнів після підписання листа про залучення, залежно від обсягу та доступності команди.</p>
+        </div>
+      </div>
+      <div class="faq-item reveal">
+        <button class="faq-question" onclick="toggleFaq(this)">
+          <span data-i="en">What are your typical engagement fees?</span>
+          <span data-i="ua">Які ваші типові гонорари?</span>
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-answer">
+          <p data-lang="en">Fees depend on scope, duration, and team composition. We offer project-based, retainer, and success-fee models. Our rates are typically 30-50% below Big 4 and MBB firms for comparable senior talent. Initial consultations are always complimentary.</p>
+          <p data-lang="ua">Гонорари залежать від обсягу, тривалості та складу команди. Ми пропонуємо проєктні, ретейнерні та моделі винагороди за успіх. Наші ставки зазвичай на 30-50% нижчі за Big 4 та MBB фірми за порівнянних старших фахівців. Початкові консультації завжди безкоштовні.</p>
+        </div>
+      </div>
+      <div class="faq-item reveal">
+        <button class="faq-question" onclick="toggleFaq(this)">
+          <span data-i="en">Do you work with companies outside of your listed countries?</span>
+          <span data-i="ua">Чи працюєте ви з компаніями поза зазначеними країнами?</span>
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-answer">
+          <p data-lang="en">Absolutely. While we have deep expertise in CEE and Europe, we serve clients globally through our partner network and remote engagement capabilities. We've completed projects in 18+ countries and are happy to discuss engagements anywhere.</p>
+          <p data-lang="ua">Абсолютно. Хоча ми маємо глибоку експертизу в ЦСЄ та Європі, ми обслуговуємо клієнтів по всьому світу через нашу партнерську мережу та можливості віддаленої роботи. Ми завершили проєкти в 18+ країнах.</p>
+        </div>
+      </div>
+      <div class="faq-item reveal">
+        <button class="faq-question" onclick="toggleFaq(this)">
+          <span data-i="en">In what languages do you operate?</span>
+          <span data-i="ua">Якими мовами ви працюєте?</span>
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-answer">
+          <p data-lang="en">Our team is fluent in Ukrainian, English, Polish, Russian, and German. All deliverables can be produced in your preferred language. Our working language for internal operations and most client engagements is English.</p>
+          <p data-lang="ua">Наша команда вільно володіє українською, англійською, польською, російською та німецькою мовами. Усі матеріали можуть бути підготовлені вашою бажаною мовою. Нашою робочою мовою для внутрішніх операцій та більшості клієнтських проєктів є англійська.</p>
+        </div>
+      </div>
+      <div class="faq-item reveal">
+        <button class="faq-question" onclick="toggleFaq(this)">
+          <span data-i="en">How do you handle data security and confidentiality?</span>
+          <span data-i="ua">Як ви обробляєте безпеку даних та конфіденційність?</span>
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-answer">
+          <p data-lang="en">We are ISO 27001 and SOC 2 Type II certified. All client data is encrypted in transit and at rest. We sign NDAs at the start of every engagement and maintain strict Chinese wall protocols for clients in the same industry. GDPR compliant across all offices.</p>
+          <p data-lang="ua">Ми сертифіковані за ISO 27001 та SOC 2 Type II. Усі дані клієнтів зашифровані при передачі та зберіганні. Ми підписуємо NDA на початку кожного проєкту та дотримуємося суворих протоколів «китайської стіни» для клієнтів однієї галузі. Відповідність GDPR у всіх офісах.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ FOOTER ═══ -->
+<footer class="footer">
+  <div class="container">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <a href="index.html" class="nav-logo"><div class="nav-logo-mark">FT</div><div><div class="nav-logo-text">FTH</div><div class="nav-logo-sub">Advisory</div></div></a>
+        <p data-lang="en">Premier strategic advisory firm. Headquartered in Kyiv, Ukraine. Delivering transformative results since 2016.</p>
+        <p data-lang="ua">Провідна стратегічна консалтингова фірма. Штаб-квартира в Києві. Трансформаційні результати з 2016 року.</p>
+        <div class="footer-socials"><a href="#">in</a><a href="#">X</a></div>
+      </div>
+      <div class="footer-col"><h4>Services</h4><ul><li><a href="services.html">Corporate Strategy</a></li><li><a href="services.html">M&A Advisory</a></li><li><a href="services.html">Digital Transformation</a></li><li><a href="services.html">Market Entry</a></li></ul></div>
+      <div class="footer-col"><h4>Company</h4><ul><li><a href="about.html">About Us</a></li><li><a href="about.html#team">Our Team</a></li><li><a href="locations.html">Offices</a></li><li><a href="contact.html">Contact</a></li></ul></div>
+      <div class="footer-col footer-newsletter">
+        <h4>Stay Informed</h4>
+        <p>Subscribe to our quarterly insights.</p>
+        <div class="footer-form"><input type="email" placeholder="your@email.com"><button type="button">&#8594;</button></div>
+        <div class="footer-certs" style="margin-top:1.5rem;"><span class="footer-cert">ISO 27001</span><span class="footer-cert">SOC 2</span><span class="footer-cert">GDPR</span></div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span class="footer-bottom-text">&copy; 2016 &ndash; 2026 Financial Transformation Hub. All rights reserved.</span>
+      <div class="footer-bottom-links"><a href="#">Privacy Policy</a><a href="#">Terms of Service</a></div>
+    </div>
+  </div>
+</footer>
+<script src="js/main.js"></script>
+<script>
+// FAQ toggle
+function toggleFaq(btn) {
+  const item = btn.closest('.faq-item');
+  const wasOpen = item.classList.contains('open');
+  document.querySelectorAll('.faq-item.open').forEach(i => i.classList.remove('open'));
+  if (!wasOpen) item.classList.add('open');
+}
+
+// Language toggle
+document.querySelectorAll('.lang-btn').forEach(btn => {
+  btn.addEventListener('click', function() {
+    const lang = this.dataset.lang;
+    document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
+    this.classList.add('active');
+    document.querySelectorAll('[data-lang]').forEach(el => {
+      el.style.display = el.dataset.lang === lang ? '' : 'none';
+    });
+    document.querySelectorAll('[data-i]').forEach(el => {
+      el.style.display = el.dataset.i === lang ? '' : 'none';
+    });
+  });
+});
+// Init: hide UA
+document.querySelectorAll('[data-lang="ua"]').forEach(el => el.style.display = 'none');
+document.querySelectorAll('[data-i="ua"]').forEach(el => el.style.display = 'none');
+</script>
+</body>
+</html>
