@@ -3029,10 +3029,11 @@ section {
   font-weight: 400;
   line-height: 1.25;
   margin-bottom: .75rem;
+  color: var(--white);
 }
 
 .cta-inner p {
-  color: var(--g500);
+  color: rgba(255, 255, 255, .7);
   margin-bottom: 2rem;
   font-size: 1.05rem;
 }
