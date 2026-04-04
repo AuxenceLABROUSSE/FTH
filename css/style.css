@@ -2029,10 +2029,11 @@ section {
    ============================================================ */
 .page-header {
   position: relative;
-  background: var(--green);
+  background: var(--white);
   padding: 10rem 0 5rem;
   overflow: hidden;
   text-align: center;
+  border-bottom: 1px solid var(--g200);
 }
 
 .page-header .hero-bg {
@@ -2091,14 +2092,14 @@ section {
 
 .page-header p {
   font-size: 1.1rem;
-  color: rgba(255, 255, 255, .78);
+  color: var(--g500);
   max-width: 600px;
   margin: 0 auto;
   line-height: 1.7;
 }
 
 .page-header .section-desc {
-  color: rgba(255, 255, 255, .78);
+  color: var(--g500);
   margin: 0 auto;
   max-width: 600px;
 }
@@ -3216,24 +3217,25 @@ section {
    PAGE HEADER - Legal Pages Override
    ============================================================ */
 .page-header {
-  background: var(--green);
+  background: var(--white);
   padding: 8rem 0 3rem;
   text-align: center;
+  border-bottom: 1px solid var(--g200);
 }
 
 .page-header .section-overline {
-  color: rgba(255, 255, 255, .7);
+  color: var(--green);
 }
 
 .page-header .section-overline::before {
-  background: rgba(255, 255, 255, .5);
+  background: var(--green);
 }
 
 .page-header-title {
   font-family: var(--font-serif);
   font-size: clamp(2rem, 4vw, 2.75rem);
   font-weight: 400;
-  color: var(--white);
+  color: var(--g900);
   letter-spacing: -.02em;
   line-height: 1.2;
 }
