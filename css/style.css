@@ -316,18 +316,18 @@ body.lang-ua [data-i="ua"] {
   align-items: center;
   gap: .6rem;
   font-size: .72rem;
-  font-weight: 700;
+  font-weight: 600;
   letter-spacing: .18em;
   text-transform: uppercase;
-  color: var(--green);
+  color: var(--g400);
   margin-bottom: 1.25rem;
 }
 
 .section-overline::before {
   content: '';
-  width: 24px;
-  height: 2px;
-  background: var(--green-accent);
+  width: 20px;
+  height: 1.5px;
+  background: var(--green);
   border-radius: 1px;
 }
 
@@ -374,7 +374,7 @@ section {
 }
 
 .section-light {
-  background: #f8faf8;
+  background: #f9fafb;
   padding: var(--section-pad) 0;
 }
 
@@ -713,7 +713,7 @@ section {
   align-items: center;
   justify-content: center;
   text-align: center;
-  background: var(--green);
+  background: linear-gradient(160deg, #0f4d28 0%, var(--green) 40%, #1a7a40 100%);
   overflow: hidden;
   padding: 10rem 2rem 7rem;
 }
@@ -728,8 +728,8 @@ section {
 .hero .mesh-orb {
   position: absolute;
   border-radius: 50%;
-  filter: blur(80px);
-  opacity: .3;
+  filter: blur(100px);
+  opacity: .4;
   animation: meshFloat 15s ease-in-out infinite;
 }
 
@@ -771,12 +771,13 @@ section {
 }
 
 .hero h1 {
-  font-size: clamp(2.5rem, 5.5vw, 4rem);
+  font-size: clamp(2.8rem, 6vw, 4.5rem);
   font-weight: 700;
   color: var(--white);
-  line-height: 1.15;
+  line-height: 1.1;
   margin-bottom: 2rem;
-  letter-spacing: -.025em;
+  letter-spacing: -.03em;
+  text-shadow: 0 2px 40px rgba(0,0,0,.15);
 }
 
 .hero h1 em {
@@ -824,7 +825,7 @@ section {
   gap: 2.5rem;
   margin-top: 4.5rem;
   padding: 2rem 3rem;
-  background: rgba(255, 255, 255, .07);
+  background: rgba(255, 255, 255, .1);
   backdrop-filter: blur(24px);
   -webkit-backdrop-filter: blur(24px);
   border: 1px solid rgba(255, 255, 255, .12);
@@ -928,12 +929,13 @@ section {
   display: block;
   background: var(--white);
   border: 1px solid var(--g200);
-  border-radius: var(--r);
+  border-radius: 20px;
   padding: 2.75rem 2.5rem;
   text-decoration: none;
-  transition: all .3s var(--ease);
+  transition: all .4s var(--ease);
   position: relative;
   overflow: hidden;
+  box-shadow: 0 2px 12px rgba(0,0,0,.04);
 }
 
 .service-card::after {
@@ -955,14 +957,14 @@ section {
 
 .service-card:hover {
   border-color: var(--green);
-  transform: translateY(-6px);
-  box-shadow: 0 16px 48px rgba(22, 101, 52, .1);
+  transform: translateY(-8px);
+  box-shadow: 0 20px 60px rgba(22, 101, 52, .12);
 }
 
 .service-card .card-icon {
   width: 52px;
   height: 52px;
-  background: rgba(22, 101, 52, .08);
+  background: rgba(22, 101, 52, .06);
   border-radius: 12px;
   display: flex;
   align-items: center;
@@ -1087,10 +1089,10 @@ section {
 .sys-card {
   background: var(--white);
   border: 1px solid var(--g200);
-  border-radius: var(--r);
+  border-radius: 20px;
   padding: 2rem;
-  box-shadow: var(--shadow-sm);
-  transition: all .3s var(--ease);
+  box-shadow: 0 4px 16px rgba(0,0,0,.04);
+  transition: all .4s var(--ease);
 }
 
 .sys-card:hover {
@@ -1114,11 +1116,12 @@ section {
 }
 
 .sys-num {
-  font-size: 2.2rem;
+  font-size: 2.5rem;
   font-weight: 700;
   color: var(--green);
   margin-bottom: .75rem;
   line-height: 1;
+  font-family: var(--font-serif);
 }
 
 
@@ -1134,13 +1137,15 @@ section {
 .dlv {
   background: var(--white);
   border: 1px solid var(--g200);
-  border-radius: var(--r);
-  padding: 2rem 1.75rem;
+  border-radius: 16px;
+  padding: 2.25rem 1.75rem;
   text-align: center;
-  font-size: .9rem;
+  font-size: .92rem;
+  font-weight: 500;
   line-height: 1.5;
-  color: var(--g800);
-  transition: all .3s var(--ease);
+  color: var(--g900);
+  transition: all .4s var(--ease);
+  box-shadow: 0 2px 12px rgba(0,0,0,.03);
 }
 
 .dlv:hover {
@@ -1150,11 +1155,11 @@ section {
 }
 
 .dlv-num {
-  width: 36px;
-  height: 36px;
+  width: 40px;
+  height: 40px;
   background: var(--green);
   color: var(--white);
-  border-radius: 8px;
+  border-radius: 10px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1198,11 +1203,11 @@ section {
 }
 
 .pcard-num {
-  width: 56px;
-  height: 56px;
+  width: 60px;
+  height: 60px;
   border-radius: 50%;
-  border: 2px solid var(--green);
-  background: var(--g50);
+  border: 2.5px solid var(--green);
+  background: var(--white);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1216,6 +1221,8 @@ section {
 .pcard:hover .pcard-num {
   background: var(--green);
   color: var(--white);
+  border-color: var(--green);
+  box-shadow: 0 4px 16px rgba(22, 101, 52, .2);
 }
 
 .pcard h3 {
@@ -1480,24 +1487,18 @@ section {
    CTA SECTION (Original Green BG)
    ============================================================ */
 .section-cta {
-  background: var(--green);
+  background: var(--white);
   padding: 7rem 0;
   text-align: center;
   border: none;
+  border-top: 1px solid var(--g200);
+  border-bottom: 1px solid var(--g200);
   position: relative;
   overflow: hidden;
 }
 
 .section-cta::before {
-  content: "";
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 800px;
-  height: 800px;
-  background: radial-gradient(circle, rgba(34, 197, 94, .15) 0%, transparent 70%);
-  pointer-events: none;
+  display: none;
 }
 
 .section-cta h2 {
@@ -1506,12 +1507,12 @@ section {
   font-weight: 500;
   line-height: 1.2;
   letter-spacing: -.015em;
-  color: var(--white);
+  color: var(--g900);
   margin-bottom: 1rem;
 }
 
 .section-cta p {
-  color: rgba(255, 255, 255, .7);
+  color: var(--g500);
   font-size: 1.1rem;
   line-height: 1.8;
   margin-bottom: 2.5rem;
@@ -1524,25 +1525,14 @@ section {
 }
 
 .section-cta .btn-green {
-  background: var(--white);
-  color: var(--green);
-  border-color: var(--white);
-}
-
-.section-cta .btn-green:hover {
-  background: var(--green-accent);
-  color: var(--green-deep);
-  border-color: var(--green-accent);
+  background: var(--green);
+  color: var(--white);
+  border-color: var(--green);
 }
 
 .section-cta .btn-outline {
-  color: var(--white);
-  border-color: rgba(255, 255, 255, .7);
-}
-
-.section-cta .btn-outline:hover {
-  border-color: var(--white);
-  color: var(--white);
+  color: var(--g700);
+  border-color: var(--g300);
 }
 
 .cta-actions {
@@ -1667,8 +1657,9 @@ section {
 .contact-form {
   background: var(--white);
   border: 1px solid var(--g200);
-  border-radius: var(--r);
+  border-radius: 24px;
   padding: 2.5rem;
+  box-shadow: 0 8px 40px rgba(0,0,0,.06);
   box-shadow: var(--shadow);
 }
 
@@ -2290,8 +2281,8 @@ section {
    FOOTER
    ============================================================ */
 .footer {
-  background: var(--green);
-  color: rgba(255, 255, 255, .75);
+  background: linear-gradient(180deg, var(--green-deep) 0%, #0d3d1f 100%);
+  color: rgba(255, 255, 255, .8);
   padding: 5rem 0 0;
 }
 
