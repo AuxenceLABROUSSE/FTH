@@ -82,20 +82,6 @@ document.addEventListener('DOMContentLoaded', () => {
     revealEls.forEach(el => revealObserver.observe(el));
   }
 
-  // HERO PIPELINE -- add visible class for tag entrance animation
-  const pipeline = document.querySelector('.hero-pipeline');
-  if (pipeline) {
-    const pipelineObserver = new IntersectionObserver((entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('visible');
-          pipelineObserver.unobserve(entry.target);
-        }
-      });
-    }, { threshold: 0.3 });
-    pipelineObserver.observe(pipeline);
-  }
-
   // COUNTER ANIMATION
   const counters = document.querySelectorAll('[data-count]');
   if (counters.length) {
@@ -314,7 +300,5 @@ document.addEventListener('DOMContentLoaded', () => {
       progressBar.style.width = (scrolled * 100) + '%';
     }, { passive: true });
   }
-
-  // PIPELINE TAGS ENTRANCE -- handled by CSS animations in style.css
 
 });
