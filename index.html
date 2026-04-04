@@ -3,8 +3,18 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>FTH -- МСФЗ-звітність для IT-компаній</title>
-  <meta name="description" content="Financial Transformation Hub -- трансформація фінансової звітності з П(С)БО до МСФЗ для українських IT-компаній. Система, побудована на 47 стандартах та 300+ кейсах.">
+  <title>FTH - МСФЗ-звітність для IT-компаній</title>
+  <meta name="description" content="Financial Transformation Hub - трансформація фінансової звітності з П(С)БО до МСФЗ для українських IT-компаній. Система, побудована на 47 стандартах та 300+ кейсах.">
+  <link rel="canonical" href="https://fth.jcsm.cloud/">
+  <meta property="og:title" content="FTH - МСФЗ-звітність для IT-компаній">
+  <meta property="og:description" content="Financial Transformation Hub - трансформація фінансової звітності з П(С)БО до МСФЗ для українських IT-компаній.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://fth.jcsm.cloud/">
+  <meta property="og:image" content="https://fth.jcsm.cloud/img/logo-transparent.png">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="FTH - МСФЗ-звітність для IT-компаній">
+  <meta name="twitter:description" content="Financial Transformation Hub - трансформація фінансової звітності з П(С)БО до МСФЗ для українських IT-компаній.">
+  <meta name="twitter:image" content="https://fth.jcsm.cloud/img/logo-transparent.png">
   <link rel="stylesheet" href="css/style.css?v=12">
   <link rel="icon" type="image/png" href="img/logo-transparent.png">
 </head>
@@ -19,12 +29,13 @@
 <!-- NAV -->
 <nav class="navbar" id="navbar">
   <div class="container">
-    <a href="#" class="nav-logo"><img src="img/logo-transparent.png" alt="FTH" class="nav-logo-img"></a>
+    <a href="/" class="nav-logo"><img src="img/logo-transparent.png" alt="FTH" class="nav-logo-img"></a>
     <ul class="nav-menu" id="navMenu">
       <li><a href="#services">Послуги</a></li>
       <li><a href="#system">Методологія</a></li>
       <li><a href="#deliverables">Результат</a></li>
       <li><a href="#process">Процес</a></li>
+      <li><a href="/blog-ua">Блог</a></li>
       <li><a href="#contact">Контакти</a></li>
     </ul>
     <div class="nav-right">
@@ -144,7 +155,7 @@
       <div class="system-text reveal-left">
         <p class="section-overline">Наша перевага</p>
         <h2 class="section-title">Ми побудували систему,<br>а не просто команду</h2>
-        <p class="section-desc">Ми проаналізували всі 47 стандартів МСФЗ, українське законодавство, сотні кейсів та аудиторські практики Big 4 -- і створили методологію, яка враховує кожне правило та виняток.</p>
+        <p class="section-desc">Ми проаналізували всі 47 стандартів МСФЗ, українське законодавство, сотні кейсів та аудиторські практики Big 4 - і створили методологію, яка враховує кожне правило та виняток.</p>
       </div>
       <div class="system-cards stagger-children">
         <div class="sys-card reveal">
@@ -222,7 +233,7 @@
   <div class="container">
     <div class="cta-inner reveal">
       <h2>Готові обговорити вашу звітність за МСФЗ?</h2>
-      <p>Безкоштовна консультація -- розкажіть про ваш проєкт, і ми підготуємо попередню оцінку.</p>
+      <p>Безкоштовна консультація - розкажіть про ваш проєкт, і ми підготуємо попередню оцінку.</p>
       <div class="cta-actions">
         <a href="#contact" class="btn btn-green">Замовити дзвінок</a>
         <a href="mailto:info@fth-advisory.com" class="btn btn-outline">info@fth-advisory.com</a>
@@ -238,23 +249,23 @@
       <div class="contact-text reveal-left">
         <p class="section-overline">Контакти</p>
         <h2 class="section-title">Обговоримо<br>ваш проєкт</h2>
-        <p class="section-desc">Залиште заявку або напишіть нам -- ми відповімо протягом робочого дня.</p>
+        <p class="section-desc">Залиште заявку або напишіть нам - ми відповімо протягом робочого дня.</p>
         <div class="contact-details">
           <div class="cd"><strong>Email</strong><span>info@fth-advisory.com</span></div>
           <div class="cd"><strong>Телефон</strong><span>+380 44 591 0800</span></div>
-          <div class="cd"><strong>Графік</strong><span>Пн -- Пт, 9:00 -- 18:00</span></div>
+          <div class="cd"><strong>Графік</strong><span>Пн - Пт, 9:00 - 18:00</span></div>
         </div>
       </div>
       <form id="contactForm" class="contact-form reveal-right">
         <div class="form-row">
-          <input type="text" required placeholder="Ім'я">
-          <input type="text" required placeholder="Компанія">
+          <input type="text" required placeholder="Ім'я" aria-label="Ім'я">
+          <input type="text" required placeholder="Компанія" aria-label="Компанія">
         </div>
         <div class="form-row">
-          <input type="email" required placeholder="Email">
-          <input type="tel" placeholder="Телефон">
+          <input type="email" required placeholder="Email" aria-label="Email">
+          <input type="tel" placeholder="Телефон" aria-label="Телефон">
         </div>
-        <textarea required placeholder="Опишіть ваш запит коротко..."></textarea>
+        <textarea required placeholder="Опишіть ваш запит коротко..." aria-label="Опишіть ваш запит"></textarea>
         <button type="submit" class="btn btn-green" style="width:100%;justify-content:center;">
           Надіслати
           <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -269,7 +280,7 @@
   <div class="container">
     <div class="footer-top">
       <div class="footer-brand">
-        <a href="#" class="nav-logo"><img src="img/logo-transparent.png" alt="FTH" class="footer-logo-img"></a>
+        <a href="/" class="nav-logo"><img src="img/logo-transparent.png" alt="FTH" class="footer-logo-img"></a>
         <p class="footer-tagline">Трансформація фінансової звітності з П(С)БО до МСФЗ для українських IT-компаній. Системний підхід, побудований на 47 стандартах.</p>
         <div class="footer-certs"><span>ACCA</span><span>DipIFR</span><span>CPA</span></div>
       </div>
@@ -296,7 +307,7 @@
         <ul>
           <li><a href="mailto:info@fth-advisory.com">info@fth-advisory.com</a></li>
           <li><a href="tel:+380445910800">+380 44 591 0800</a></li>
-          <li><span class="footer-info">Пн -- Пт, 9:00 -- 18:00</span></li>
+          <li><span class="footer-info">Пн - Пт, 9:00 - 18:00</span></li>
         </ul>
       </div>
     </div>
