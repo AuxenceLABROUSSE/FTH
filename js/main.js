@@ -268,4 +268,77 @@ document.addEventListener('DOMContentLoaded', () => {
   style.textContent = '@keyframes spin{to{transform:rotate(360deg)}}';
   document.head.appendChild(style);
 
+  // MAGNETIC BUTTONS -- buttons subtly follow cursor on hover
+  document.querySelectorAll('.btn-green, .nav-cta').forEach(btn => {
+    btn.addEventListener('mousemove', (e) => {
+      const rect = btn.getBoundingClientRect();
+      const x = e.clientX - rect.left - rect.width / 2;
+      const y = e.clientY - rect.top - rect.height / 2;
+      btn.style.transform = `translate(${x * .15}px, ${y * .2}px)`;
+    });
+    btn.addEventListener('mouseleave', () => {
+      btn.style.transform = '';
+      btn.style.transition = 'transform .4s cubic-bezier(.22,1,.36,1)';
+      setTimeout(() => btn.style.transition = '', 400);
+    });
+  });
+
+  // TILT ON SERVICE CARDS -- subtle 3D perspective on hover
+  document.querySelectorAll('.service-card, .sys-card').forEach(card => {
+    card.addEventListener('mousemove', (e) => {
+      const rect = card.getBoundingClientRect();
+      const x = (e.clientX - rect.left) / rect.width - .5;
+      const y = (e.clientY - rect.top) / rect.height - .5;
+      card.style.transform = `perspective(800px) rotateY(${x * 6}deg) rotateX(${-y * 6}deg) translateY(-4px)`;
+    });
+    card.addEventListener('mouseleave', () => {
+      card.style.transform = '';
+    });
+  });
+
+  // TYPED EFFECT ON HERO -- subtle cursor blink after h1 loads
+  const heroH1 = document.querySelector('.hero h1');
+  if (heroH1) {
+    setTimeout(() => {
+      heroH1.style.borderRight = '2px solid var(--green)';
+      heroH1.style.paddingRight = '4px';
+      heroH1.style.animation = 'none';
+      let blinkCount = 0;
+      const blink = setInterval(() => {
+        heroH1.style.borderRightColor = heroH1.style.borderRightColor === 'transparent' ? 'var(--green)' : 'transparent';
+        blinkCount++;
+        if (blinkCount > 6) {
+          clearInterval(blink);
+          heroH1.style.borderRight = 'none';
+          heroH1.style.paddingRight = '';
+        }
+      }, 500);
+    }, 1800);
+  }
+
+  // SMOOTH SCROLL PROGRESS BAR
+  const progressBar = document.createElement('div');
+  progressBar.style.cssText = 'position:fixed;top:0;left:0;height:2px;background:linear-gradient(90deg,var(--green),var(--green-accent));z-index:10001;transition:width .1s linear;width:0;pointer-events:none;';
+  document.body.appendChild(progressBar);
+  window.addEventListener('scroll', () => {
+    const scrolled = window.scrollY / (document.documentElement.scrollHeight - window.innerHeight);
+    progressBar.style.width = (scrolled * 100) + '%';
+  }, { passive: true });
+
+  // PIPELINE TAGS ENTRANCE -- stagger each tag
+  const pipelineTags = document.querySelectorAll('.hero-pipeline .hp-tags span');
+  if (pipelineTags.length) {
+    pipelineTags.forEach((tag, i) => {
+      tag.style.opacity = '0';
+      tag.style.transform = 'translateY(8px) scale(.9)';
+      tag.style.transition = `all .4s cubic-bezier(.22,1,.36,1) ${1.2 + i * .08}s`;
+    });
+    setTimeout(() => {
+      pipelineTags.forEach(tag => {
+        tag.style.opacity = '1';
+        tag.style.transform = 'translateY(0) scale(1)';
+      });
+    }, 100);
+  }
+
 });
