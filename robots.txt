@@ -2,4 +2,4 @@ User-agent: *
 Allow: /
 Disallow: /404
 
-Sitemap: https://fth.jcsm.cloud/sitemap.xml
+Sitemap: https://www.fthadvisory.com/sitemap.xml

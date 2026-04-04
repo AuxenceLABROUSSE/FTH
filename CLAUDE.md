@@ -2,7 +2,7 @@
 
 ## Project Overview
 Static website for FTH Advisory - IFRS reporting and financial transformation services for Ukrainian IT companies.
-- Domain: fth.jcsm.cloud
+- Domain: www.fthadvisory.com
 - Server: Nginx on Debian VPS (94.23.107.124)
 - SSL: Let's Encrypt via Certbot, Cloudflare DNS proxy
 
@@ -14,10 +14,8 @@ Static website for FTH Advisory - IFRS reporting and financial transformation se
   css/style.css    # Single stylesheet for all pages
   js/main.js       # Animations, scroll reveals, counters, form handling
   img/             # Logo and assets
-  about.html       # About page (multi-page)
-  services.html    # Services page (multi-page)
-  locations.html   # Locations page (multi-page)
-  contact.html     # Contact page (multi-page)
+  favicon.ico      # Multi-size favicon
+  site.webmanifest # PWA manifest
   robots.txt       # SEO
   sitemap.xml      # SEO
 ```
@@ -53,9 +51,10 @@ Static website for FTH Advisory - IFRS reporting and financial transformation se
 - Serif: `Playfair Display` (headings, section titles, hero h1 em)
 - No other fonts allowed without explicit approval
 
-### Sections Removed
-- **Team section**: Removed entirely from both UA and EN versions
-- No team members, no team grid, no team links in nav or footer
+### Experts Section
+- Founder: Vadym Sliusar (ACCA DipIFR)
+- Advisory experts: Svitlana Zubilevych, Volodymyr Kraievskyi
+- LinkedIn: https://www.linkedin.com/company/financial-transformation-hub
 
 ## Two Language Versions
 - `index.html` = Ukrainian (lang="uk")
@@ -65,14 +64,17 @@ Static website for FTH Advisory - IFRS reporting and financial transformation se
 - Any change to one version MUST be applied to the other
 
 ## Content Structure (both versions)
-1. Hero (green bg) - headline, description, CTA buttons, pipeline
-2. Services - 4 service cards
-3. System/Methodology (section-light) - stats cards
-4. Deliverables - 5 financial statements
-5. Process - 4 steps
-6. CTA (light bg) - call to action
-7. Contact - form + details
-8. Footer (green bg)
+1. Hero (white bg) - headline, CTA buttons, IFRS package widget
+2. Trust Bar - 4 key metrics
+3. Services - 4 service cards with detailed descriptions
+4. System/Approach (section-light) - methodology + 4 stats cards
+5. Deliverables - 6 items (5 statements + audit working files)
+6. Why FTH (section-light) - 5 bullet points advantages
+7. Process - 4 steps with "Result" sub-line
+8. Experts (section-light) - founder + advisory experts
+9. CTA (light bg) - call to action
+10. Contact - form + details (phone, hours, free consultation)
+11. Footer (light bg) - with LinkedIn
 
 ## Year
 Current year is 2026. All copyright notices must say 2026.
