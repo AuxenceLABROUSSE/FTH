@@ -1,0 +1,62 @@
+# FTH — Financial Transformation Hub
+
+> IFRS reporting transformation services for Ukrainian IT companies. We help SaaS, fintech, and software companies prepare audit-ready IFRS financial statements for investors, auditors, and international partners.
+
+## What we do
+
+- Transformation of financial reporting from Ukrainian local GAAP (P(S)BO / П(С)БО) to IFRS
+- Preparation of full IFRS financial statement packages (Statement of Financial Position, P&L and OCI, Cash Flow Statement, Statement of Changes in Equity, Notes)
+- Investor-ready financial structuring for fundraising and M&A
+- Methodology aligned with Big 4 audit firm practices
+
+## Who we serve
+
+- Ukrainian B2B SaaS companies
+- Fintech and product IT companies
+- IT outsourcing and outstaffing companies
+- Subsidiaries of international groups operating in Ukraine
+- Companies preparing for Series A/B/C investment rounds or external audits
+
+## Key facts
+
+- Company: Financial Transformation Hub (FTH)
+- Founded: 2018
+- Location: Kyiv, Ukraine
+- Specialization: IFRS for IT, SaaS, and fintech sectors
+- Languages: Ukrainian, English
+- Email: contact@fthadvisory.com
+- Phone: +380 44 591 0800
+- Hours: Mon–Fri, 9:00–18:00 (Europe/Kyiv)
+- LinkedIn: https://www.linkedin.com/company/financial-transformation-hub
+- Founder: Vadym Sliusar (ACCA, DipIFR)
+
+## Methodology
+
+- Full IFRS standard coverage including IFRS 15 (Revenue), IFRS 16 (Leases), IFRS 2 (Share-based Payment), IAS 21 (Foreign Currency), IAS 38 (Intangible Assets), IFRS 9 (Financial Instruments)
+- Structured transformation with documented adjustment logic
+- Working files prepared for audit review
+- Typical project timeline: 4–6 weeks for a full IFRS package
+
+## Site structure
+
+- /                Ukrainian homepage
+- /en              English homepage
+- /blog-ua         Ukrainian blog index
+- /blog            English blog index
+- /sitemap.xml     Full XML sitemap
+
+## Blog topics covered
+
+- When does a company need IFRS transformation
+- IFRS 16 leases for IT companies
+- Case study: IFRS transformation of a Ukrainian SaaS ahead of Series B
+- What documents you need before starting an IFRS transformation
+- IAS 38 capitalising software development costs
+- IAS 21 foreign currency accounting for Ukrainian IT exporters
+- How to choose an IFRS transformation advisor
+- Why Ukrainian IT companies need IFRS reporting
+- P(S)BO vs IFRS key differences for Ukrainian IT
+- IFRS 15 revenue recognition for software companies
+- IFRS 2 stock options and ESOP for Ukrainian IT startups
+- First IFRS audit guide
+- XBRL, EU integration and the future of financial reporting in Ukraine

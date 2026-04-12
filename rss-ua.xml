@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:dc="http://purl.org/dc/elements/1.1/">
+<channel>
+  <title>Блог FTH — МСФЗ для українських IT-компаній</title>
+  <link>https://www.fthadvisory.com/blog-ua</link>
+  <atom:link href="https://www.fthadvisory.com/rss-ua.xml" rel="self" type="application/rss+xml" />
+  <description>Практичні матеріали про трансформацію фінансової звітності за МСФЗ для українських IT, SaaS та фінтех-компаній від Financial Transformation Hub.</description>
+  <language>uk</language>
+  <copyright>© 2026 Financial Transformation Hub</copyright>
+  <managingEditor>contact@fthadvisory.com (Financial Transformation Hub)</managingEditor>
+  <webMaster>contact@fthadvisory.com (Financial Transformation Hub)</webMaster>
+  <lastBuildDate>Tue, 07 Apr 2026 12:00:00 +0000</lastBuildDate>
+  <generator>Financial Transformation Hub</generator>
+  <image>
+    <url>https://www.fthadvisory.com/img/logo-transparent.png</url>
+    <title>Блог FTH</title>
+    <link>https://www.fthadvisory.com/blog-ua</link>
+  </image>
+
+  <item>
+    <title>Коли компанії потрібна трансформація фінансової звітності за МСФЗ</title>
+    <link>https://www.fthadvisory.com/blog/when-ifrs-transformation-needed-ua</link>
+    <guid isPermaLink="true">https://www.fthadvisory.com/blog/when-ifrs-transformation-needed-ua</guid>
+    <pubDate>Tue, 07 Apr 2026 09:00:00 +0000</pubDate>
+    <category>Трансформація</category>
+    <dc:creator>Financial Transformation Hub</dc:creator>
+    <description>Розбираємо, у яких ситуаціях українським компаніям, особливо з IT-сектору, дійсно потрібна трансформація звітності за МСФЗ — і чому це не просто переклад формату, а перегляд логіки формування показників.</description>
+  </item>
+
+  <item>
+    <title>МСФЗ 16: облік оренди для українських IT-компаній</title>
+    <link>https://www.fthadvisory.com/blog/ifrs-16-leases-it-ua</link>
+    <guid isPermaLink="true">https://www.fthadvisory.com/blog/ifrs-16-leases-it-ua</guid>
+    <pubDate>Sun, 05 Apr 2026 09:00:00 +0000</pubDate>
+    <category>Стандарти</category>
+    <dc:creator>Financial Transformation Hub</dc:creator>
+    <description>Як МСФЗ 16 змінив облік оренди та що це означає для українських IT-компаній з офісами, дата-центрами та серверним обладнанням.</description>
+  </item>
+
+  <item>
+    <title>Кейс: трансформація фінансової звітності українського SaaS перед раундом Series B</title>
+    <link>https://www.fthadvisory.com/blog/case-study-saas-series-b-ua</link>
+    <guid isPermaLink="true">https://www.fthadvisory.com/blog/case-study-saas-series-b-ua</guid>
+    <pubDate>Fri, 03 Apr 2026 09:00:00 +0000</pubDate>
+    <category>Кейс</category>
+    <dc:creator>Financial Transformation Hub</dc:creator>
+    <description>Анонімізований кейс трансформації звітності українського B2B SaaS зі ~180 співробітниками, який залучав Series B від лондонського венчурного фонду.</description>
+  </item>
+
+  <item>
+    <title>Які документи потрібні для старту трансформації за МСФЗ: чек-лист</title>
+    <link>https://www.fthadvisory.com/blog/documents-checklist-ifrs-ua</link>
+    <guid isPermaLink="true">https://www.fthadvisory.com/blog/documents-checklist-ifrs-ua</guid>
+    <pubDate>Wed, 01 Apr 2026 09:00:00 +0000</pubDate>
+    <category>Підготовка</category>
+    <dc:creator>Financial Transformation Hub</dc:creator>
+    <description>Практичний чек-лист документів, які треба підготувати перед початком проєкту трансформації фінансової звітності за МСФЗ.</description>
+  </item>
+
+  <item>
+    <title>МСБО 38: капіталізація витрат на розробку програмного забезпечення</title>
+    <link>https://www.fthadvisory.com/blog/ias-38-software-development-ua</link>
+    <guid isPermaLink="true">https://www.fthadvisory.com/blog/ias-38-software-development-ua</guid>
+    <pubDate>Sat, 28 Mar 2026 09:00:00 +0000</pubDate>
+    <category>Стандарти</category>
+    <dc:creator>Financial Transformation Hub</dc:creator>
+    <description>Як українські IT-компанії мають застосовувати МСБО 38 до витрат на розробку власного ПЗ — від критеріїв капіталізації до амортизації.</description>
+  </item>
+
+  <item>
+    <title>МСБО 21: облік операцій в іноземній валюті для українських IT-експортерів</title>
+    <link>https://www.fthadvisory.com/blog/ias-21-foreign-currency-ua</link>
+    <guid isPermaLink="true">https://www.fthadvisory.com/blog/ias-21-foreign-currency-ua</guid>
+    <pubDate>Wed, 25 Mar 2026 09:00:00 +0000</pubDate>
+    <category>Стандарти</category>
+    <dc:creator>Financial Transformation Hub</dc:creator>
+    <description>Як українським IT-компаніям визначити функціональну валюту, відобразити курсові різниці та подати звітність за МСБО 21.</description>
+  </item>
+
+  <item>
+    <title>Як обрати консультанта з трансформації за МСФЗ: практичний гайд</title>
+    <link>https://www.fthadvisory.com/blog/choosing-ifrs-advisor-ua</link>
+    <guid isPermaLink="true">https://www.fthadvisory.com/blog/choosing-ifrs-advisor-ua</guid>
+    <pubDate>Sun, 22 Mar 2026 09:00:00 +0000</pubDate>
+    <category>Поради</category>
+    <dc:creator>Financial Transformation Hub</dc:creator>
+    <description>Як українській IT-компанії обрати консультанта з трансформації за МСФЗ — від типу фірми до питань на співбесіді й червоних прапорців.</description>
+  </item>
+
+  <item>
+    <title>XBRL, євроінтеграція та майбутнє фінансової звітності в Україні</title>
+    <link>https://www.fthadvisory.com/blog/xbrl-eu-integration-future-ua</link>
+    <guid isPermaLink="true">https://www.fthadvisory.com/blog/xbrl-eu-integration-future-ua</guid>
+    <pubDate>Sun, 15 Mar 2026 09:00:00 +0000</pubDate>
+    <category>Аналітика</category>
+    <dc:creator>Financial Transformation Hub</dc:creator>
+    <description>У міру прискорення руху України до членства в ЄС, цифрові стандарти фінансової звітності, такі як XBRL, стають дедалі актуальнішими.</description>
+  </item>
+
+  <item>
+    <title>Опціони та МСФЗ 2: що повинні знати українські IT-стартапи</title>
+    <link>https://www.fthadvisory.com/blog/ifrs-2-stock-options-ua</link>
+    <guid isPermaLink="true">https://www.fthadvisory.com/blog/ifrs-2-stock-options-ua</guid>
+    <pubDate>Tue, 20 Jan 2026 09:00:00 +0000</pubDate>
+    <category>Стандарти</category>
+    <dc:creator>Financial Transformation Hub</dc:creator>
+    <description>Програми опціонів на акції для співробітників — потужний інструмент утримання, але МСФЗ 2 вимагає специфічного облікового підходу.</description>
+  </item>
+
+  <item>
+    <title>Підготовка до першого аудиту за МСФЗ: покроковий гайд</title>
+    <link>https://www.fthadvisory.com/blog/first-ifrs-audit-guide-ua</link>
+    <guid isPermaLink="true">https://www.fthadvisory.com/blog/first-ifrs-audit-guide-ua</guid>
+    <pubDate>Fri, 05 Dec 2025 09:00:00 +0000</pubDate>
+    <category>Аудит</category>
+    <dc:creator>Financial Transformation Hub</dc:creator>
+    <description>Ваш перший аудит за МСФЗ не має бути складним випробуванням. Розглядаємо процес підготовки та типові помилки.</description>
+  </item>
+
+  <item>
+    <title>МСФЗ 15: практичний гайд з визнання доходу для software-компаній</title>
+    <link>https://www.fthadvisory.com/blog/ifrs-15-revenue-recognition-ua</link>
+    <guid isPermaLink="true">https://www.fthadvisory.com/blog/ifrs-15-revenue-recognition-ua</guid>
+    <pubDate>Tue, 28 Oct 2025 09:00:00 +0000</pubDate>
+    <category>Стандарти</category>
+    <dc:creator>Financial Transformation Hub</dc:creator>
+    <description>Визнання доходу за МСФЗ 15 може бути складним для софтверного бізнесу з багатоелементними угодами, SaaS-підписками та контрактами на основі етапів.</description>
+  </item>
+
+  <item>
+    <title>П(С)БО проти МСФЗ: ключові відмінності для українських IT-компаній</title>
+    <link>https://www.fthadvisory.com/blog/psbo-vs-ifrs-differences-ua</link>
+    <guid isPermaLink="true">https://www.fthadvisory.com/blog/psbo-vs-ifrs-differences-ua</guid>
+    <pubDate>Fri, 12 Sep 2025 09:00:00 +0000</pubDate>
+    <category>Трансформація</category>
+    <dc:creator>Financial Transformation Hub</dc:creator>
+    <description>Розуміння розриву між українськими національними стандартами бухгалтерського обліку та МСФЗ — перший крок до успішної трансформації.</description>
+  </item>
+
+  <item>
+    <title>Чому українським IT-компаніям потрібна звітність за МСФЗ</title>
+    <link>https://www.fthadvisory.com/blog/ifrs-for-ukrainian-it-ua</link>
+    <guid isPermaLink="true">https://www.fthadvisory.com/blog/ifrs-for-ukrainian-it-ua</guid>
+    <pubDate>Mon, 18 Aug 2025 09:00:00 +0000</pubDate>
+    <category>Основи МСФЗ</category>
+    <dc:creator>Financial Transformation Hub</dc:creator>
+    <description>IT-сектор України дедалі частіше стикається з вимогами міжнародної фінансової звітності. Дізнайтесь, чому відповідність МСФЗ стає необхідною для технологічних компаній.</description>
+  </item>
+</channel>
+</rss>

@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:dc="http://purl.org/dc/elements/1.1/">
+<channel>
+  <title>FTH Blog — IFRS for Ukrainian IT companies</title>
+  <link>https://www.fthadvisory.com/blog</link>
+  <atom:link href="https://www.fthadvisory.com/rss.xml" rel="self" type="application/rss+xml" />
+  <description>IFRS reporting transformation insights for Ukrainian IT, SaaS, and fintech companies. Practical guidance from Financial Transformation Hub.</description>
+  <language>en</language>
+  <copyright>© 2026 Financial Transformation Hub</copyright>
+  <managingEditor>contact@fthadvisory.com (Financial Transformation Hub)</managingEditor>
+  <webMaster>contact@fthadvisory.com (Financial Transformation Hub)</webMaster>
+  <lastBuildDate>Tue, 07 Apr 2026 12:00:00 +0000</lastBuildDate>
+  <generator>Financial Transformation Hub</generator>
+  <image>
+    <url>https://www.fthadvisory.com/img/logo-transparent.png</url>
+    <title>FTH Blog</title>
+    <link>https://www.fthadvisory.com/blog</link>
+  </image>
+
+  <item>
+    <title>When does a company need IFRS financial reporting transformation?</title>
+    <link>https://www.fthadvisory.com/blog/when-ifrs-transformation-needed</link>
+    <guid isPermaLink="true">https://www.fthadvisory.com/blog/when-ifrs-transformation-needed</guid>
+    <pubDate>Tue, 07 Apr 2026 09:00:00 +0000</pubDate>
+    <category>Transformation</category>
+    <dc:creator>Financial Transformation Hub</dc:creator>
+    <description>We unpack the situations where Ukrainian companies — especially in the IT sector — actually need to transform their financial reporting under IFRS, and why it's not just a translation of format.</description>
+  </item>
+
+  <item>
+    <title>IFRS 16: Lease accounting for Ukrainian IT companies</title>
+    <link>https://www.fthadvisory.com/blog/ifrs-16-leases-it</link>
+    <guid isPermaLink="true">https://www.fthadvisory.com/blog/ifrs-16-leases-it</guid>
+    <pubDate>Sun, 05 Apr 2026 09:00:00 +0000</pubDate>
+    <category>Standards</category>
+    <dc:creator>Financial Transformation Hub</dc:creator>
+    <description>How IFRS 16 reshaped lease accounting and what it means for Ukrainian IT companies with offices, data centres and server equipment.</description>
+  </item>
+
+  <item>
+    <title>Case study: IFRS transformation of a Ukrainian SaaS company ahead of Series B</title>
+    <link>https://www.fthadvisory.com/blog/case-study-saas-series-b</link>
+    <guid isPermaLink="true">https://www.fthadvisory.com/blog/case-study-saas-series-b</guid>
+    <pubDate>Fri, 03 Apr 2026 09:00:00 +0000</pubDate>
+    <category>Case Study</category>
+    <dc:creator>Financial Transformation Hub</dc:creator>
+    <description>Anonymised case study of an IFRS transformation for a Ukrainian B2B SaaS company with about 180 employees raising Series B from a London VC.</description>
+  </item>
+
+  <item>
+    <title>What documents you need before starting an IFRS transformation: checklist</title>
+    <link>https://www.fthadvisory.com/blog/documents-checklist-ifrs</link>
+    <guid isPermaLink="true">https://www.fthadvisory.com/blog/documents-checklist-ifrs</guid>
+    <pubDate>Wed, 01 Apr 2026 09:00:00 +0000</pubDate>
+    <category>Preparation</category>
+    <dc:creator>Financial Transformation Hub</dc:creator>
+    <description>A practical checklist of the documents you need to gather before kicking off an IFRS transformation project.</description>
+  </item>
+
+  <item>
+    <title>IAS 38: Capitalising software development costs under IFRS</title>
+    <link>https://www.fthadvisory.com/blog/ias-38-software-development</link>
+    <guid isPermaLink="true">https://www.fthadvisory.com/blog/ias-38-software-development</guid>
+    <pubDate>Sat, 28 Mar 2026 09:00:00 +0000</pubDate>
+    <category>Standards</category>
+    <dc:creator>Financial Transformation Hub</dc:creator>
+    <description>How Ukrainian IT companies should apply IAS 38 to in-house software development costs, from capitalisation criteria to amortisation.</description>
+  </item>
+
+  <item>
+    <title>IAS 21: Foreign currency accounting for Ukrainian IT exporters</title>
+    <link>https://www.fthadvisory.com/blog/ias-21-foreign-currency</link>
+    <guid isPermaLink="true">https://www.fthadvisory.com/blog/ias-21-foreign-currency</guid>
+    <pubDate>Wed, 25 Mar 2026 09:00:00 +0000</pubDate>
+    <category>Standards</category>
+    <dc:creator>Financial Transformation Hub</dc:creator>
+    <description>How Ukrainian IT companies should determine their functional currency, account for FX differences and present statements under IAS 21.</description>
+  </item>
+
+  <item>
+    <title>How to choose an IFRS transformation advisor: a practical guide</title>
+    <link>https://www.fthadvisory.com/blog/choosing-ifrs-advisor</link>
+    <guid isPermaLink="true">https://www.fthadvisory.com/blog/choosing-ifrs-advisor</guid>
+    <pubDate>Sun, 22 Mar 2026 09:00:00 +0000</pubDate>
+    <category>Guidance</category>
+    <dc:creator>Financial Transformation Hub</dc:creator>
+    <description>How a Ukrainian IT company should pick an IFRS transformation advisor, from firm type to interview questions and red flags.</description>
+  </item>
+
+  <item>
+    <title>XBRL, EU Integration, and the Future of Financial Reporting in Ukraine</title>
+    <link>https://www.fthadvisory.com/blog/xbrl-eu-integration-future</link>
+    <guid isPermaLink="true">https://www.fthadvisory.com/blog/xbrl-eu-integration-future</guid>
+    <pubDate>Sun, 15 Mar 2026 09:00:00 +0000</pubDate>
+    <category>Insights</category>
+    <dc:creator>Financial Transformation Hub</dc:creator>
+    <description>As Ukraine accelerates its path toward EU membership, digital financial reporting standards like XBRL are becoming increasingly relevant.</description>
+  </item>
+
+  <item>
+    <title>IFRS 2 Stock Options: What Ukrainian IT Startups Need to Know</title>
+    <link>https://www.fthadvisory.com/blog/ifrs-2-stock-options</link>
+    <guid isPermaLink="true">https://www.fthadvisory.com/blog/ifrs-2-stock-options</guid>
+    <pubDate>Tue, 20 Jan 2026 09:00:00 +0000</pubDate>
+    <category>Standards</category>
+    <dc:creator>Financial Transformation Hub</dc:creator>
+    <description>Employee stock option programs are a powerful retention tool, but IFRS 2 requires specific accounting treatment that can materially affect financial statements.</description>
+  </item>
+
+  <item>
+    <title>Preparing for Your First IFRS Audit: A Step-by-Step Guide</title>
+    <link>https://www.fthadvisory.com/blog/first-ifrs-audit-guide</link>
+    <guid isPermaLink="true">https://www.fthadvisory.com/blog/first-ifrs-audit-guide</guid>
+    <pubDate>Fri, 05 Dec 2025 09:00:00 +0000</pubDate>
+    <category>Audit</category>
+    <dc:creator>Financial Transformation Hub</dc:creator>
+    <description>Your first IFRS audit doesn't have to be a struggle. We walk through the preparation process and the most common pitfalls.</description>
+  </item>
+
+  <item>
+    <title>IFRS 15: A Practical Guide to Revenue Recognition for Software Companies</title>
+    <link>https://www.fthadvisory.com/blog/ifrs-15-revenue-recognition</link>
+    <guid isPermaLink="true">https://www.fthadvisory.com/blog/ifrs-15-revenue-recognition</guid>
+    <pubDate>Tue, 28 Oct 2025 09:00:00 +0000</pubDate>
+    <category>Standards</category>
+    <dc:creator>Financial Transformation Hub</dc:creator>
+    <description>Revenue recognition under IFRS 15 can be complex for software companies with multi-element arrangements, SaaS subscriptions and milestone-based contracts.</description>
+  </item>
+
+  <item>
+    <title>Local GAAP vs IFRS: Key Differences for Ukrainian IT Companies</title>
+    <link>https://www.fthadvisory.com/blog/psbo-vs-ifrs-differences</link>
+    <guid isPermaLink="true">https://www.fthadvisory.com/blog/psbo-vs-ifrs-differences</guid>
+    <pubDate>Fri, 12 Sep 2025 09:00:00 +0000</pubDate>
+    <category>Transformation</category>
+    <dc:creator>Financial Transformation Hub</dc:creator>
+    <description>Understanding the gap between Ukrainian national accounting standards and IFRS is the first step to a successful transformation.</description>
+  </item>
+
+  <item>
+    <title>Why Ukrainian IT Companies Need IFRS Reporting</title>
+    <link>https://www.fthadvisory.com/blog/ifrs-for-ukrainian-it</link>
+    <guid isPermaLink="true">https://www.fthadvisory.com/blog/ifrs-for-ukrainian-it</guid>
+    <pubDate>Mon, 18 Aug 2025 09:00:00 +0000</pubDate>
+    <category>IFRS Basics</category>
+    <dc:creator>Financial Transformation Hub</dc:creator>
+    <description>Ukraine's IT sector increasingly faces international financial reporting requirements. Discover why IFRS compliance is becoming essential for tech companies.</description>
+  </item>
+</channel>
+</rss>

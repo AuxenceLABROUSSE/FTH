@@ -263,6 +263,11 @@ button {
   50% { transform: translateY(-8px); }
 }
 
+@keyframes pipelinePulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(22, 101, 52, .1); }
+  50% { box-shadow: 0 0 40px 8px rgba(22, 101, 52, .06); }
+}
+
 @keyframes lineGrow {
   from { transform: scaleX(0); }
   to { transform: scaleX(1); }
@@ -286,6 +291,25 @@ button {
   animation: heroFadeUp .9s var(--ease-out) .7s both;
 }
 
+.hero-pipeline {
+  animation: heroScale 1s var(--ease-out) .9s both, pipelinePulse 4s ease-in-out 2s infinite;
+}
+
+.hero-pipeline .hp-step {
+  animation: heroFadeUp .6s var(--ease-out) both;
+}
+
+.hero-pipeline .hp-step:nth-child(1) { animation-delay: 1.1s; }
+.hero-pipeline .hp-arrow:nth-child(2) { animation: heroFadeUp .4s var(--ease-out) 1.3s both; }
+.hero-pipeline .hp-step:nth-child(3) { animation-delay: 1.5s; }
+.hero-pipeline .hp-arrow:nth-child(4) { animation: heroFadeUp .4s var(--ease-out) 1.7s both; }
+.hero-pipeline .hp-step:nth-child(5) { animation-delay: 1.9s; }
+
+/* Floating animation on pipeline engine */
+.hero-pipeline.visible .hp-engine {
+  animation: float 6s ease-in-out infinite;
+}
+
 /* Shimmer effect on hero h1 em */
 .hero h1 em {
   background: linear-gradient(90deg, var(--green) 0%, var(--green-accent) 30%, var(--green) 60%);
@@ -295,6 +319,10 @@ button {
   background-clip: text;
   animation: shimmer 4s linear 2s infinite;
 }
+
+/* Pipeline arrow animation */
+.hp-arrow:nth-child(2) svg { animation: float 3s ease-in-out infinite; }
+.hp-arrow:nth-child(4) svg { animation: float 3s ease-in-out infinite 1.5s; }
 
 /* Service cards: staggered entrance with spring */
 .service-card.visible {
@@ -369,7 +397,7 @@ button {
 }
 
 .loader-logo {
-  width: 120px;
+  width: 240px;
   height: auto;
   opacity: 0;
   animation: loaderLogoIn .6s var(--ease-out) .1s both;
@@ -610,7 +638,7 @@ section {
 }
 
 .nav-logo-img {
-  height: 32px;
+  height: 60px;
   width: auto;
 }
 
@@ -844,15 +872,14 @@ section {
    ============================================================ */
 .hero {
   position: relative;
-  min-height: 100vh;
-  min-height: 100dvh;
+  min-height: auto;
   display: flex;
   align-items: center;
   justify-content: center;
   text-align: center;
   background: var(--white);
   overflow: hidden;
-  padding: 6rem 2rem 3rem;
+  padding: 8rem 2rem 5rem;
 }
 
 .hero-bg {
@@ -950,6 +977,96 @@ section {
 .hero-actions .btn-outline:hover {
   border-color: var(--green);
   color: var(--green);
+}
+
+
+/* ============================================================
+   HERO PIPELINE (glass-morphism bar)
+   ============================================================ */
+.hero-pipeline {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 2rem;
+  margin-top: 2.5rem;
+  padding: 1.5rem 2.5rem;
+  background: var(--g50);
+  border: 1px solid var(--g200);
+  border-radius: 16px;
+  box-shadow: var(--shadow-sm);
+}
+
+.hp-step {
+  text-align: center;
+  padding: .25rem 1.25rem;
+}
+
+.hp-input {
+  color: var(--g500);
+}
+
+.hp-engine {
+  background: var(--green);
+  padding: 1rem 1.75rem;
+  border-radius: 12px;
+  color: var(--white);
+}
+
+.hp-engine .hp-label {
+  color: var(--white);
+}
+
+.hp-engine .hp-tags,
+.hp-engine .hp-tags span {
+  color: rgba(255, 255, 255, .85);
+  background: rgba(255, 255, 255, .1);
+}
+
+.hp-engine .hp-label {
+  color: var(--white);
+  margin-bottom: .35rem;
+}
+
+.hp-output {
+  color: var(--green);
+}
+
+.hp-label {
+  font-size: .82rem;
+  font-weight: 600;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  color: var(--g700);
+  margin-bottom: .35rem;
+}
+
+.hp-label strong {
+  font-size: 1.5rem;
+  font-weight: 700;
+  display: block;
+  color: var(--green-accent);
+}
+
+.hp-tags {
+  font-size: .8rem;
+  color: var(--g400);
+  margin-top: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: .35rem;
+  justify-content: center;
+}
+
+.hp-tags span {
+  font-size: .78rem;
+  padding: .15rem .5rem;
+  background: rgba(0, 0, 0, .03);
+  border-radius: var(--radius-pill);
+}
+
+.hp-arrow {
+  color: var(--g300);
+  font-size: 1.2rem;
 }
 
 
@@ -2579,13 +2696,14 @@ section {
 .footer-top {
   display: grid;
   grid-template-columns: 1.5fr 1fr 1fr 1fr;
+  align-items: start;
   gap: 2.5rem;
   padding-bottom: 3rem;
   border-bottom: 1px solid var(--g200);
 }
 
 .footer-logo-img {
-  height: 28px;
+  height: 48px;
   margin-bottom: 0;
 }
 
@@ -2675,6 +2793,16 @@ section {
    RESPONSIVE - 1024px
    ============================================================ */
 @media (max-width: 1024px) {
+  .hero-pipeline {
+    flex-direction: column;
+    gap: 1rem;
+    padding: 1.5rem;
+  }
+
+  .hp-step {
+    padding: .5rem 0;
+  }
+
   .services-track {
     grid-template-columns: repeat(2, 1fr);
   }
@@ -2764,6 +2892,13 @@ section {
   .hero {
     padding: 7rem 1.5rem 4rem;
     min-height: auto;
+  }
+
+  .hero-pipeline {
+    flex-direction: column;
+    gap: 1rem;
+    margin-top: 3rem;
+    padding: 1.25rem;
   }
 
   /* Grids to single column */
@@ -2954,6 +3089,11 @@ section {
     gap: 1rem;
   }
 
+  .hero-pipeline {
+    padding: 1rem;
+  }
+
+  .hp-arrow svg { width: 16px; height: 16px; }
 }
 
 
@@ -3140,6 +3280,69 @@ section {
 .footer-bottom span:last-child {
   transition: color .3s var(--ease);
   cursor: default;
+}
+
+/* --- Hero pipeline: sequential tag entrance --- */
+@keyframes tagFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.hero-pipeline.visible .hp-tags span {
+  opacity: 0;
+  animation: tagFadeIn .5s var(--ease) forwards;
+}
+
+.hero-pipeline.visible .hp-input .hp-tags span:nth-child(1) { animation-delay: .3s; }
+.hero-pipeline.visible .hp-input .hp-tags span:nth-child(2) { animation-delay: .4s; }
+.hero-pipeline.visible .hp-input .hp-tags span:nth-child(3) { animation-delay: .5s; }
+
+.hero-pipeline.visible .hp-engine .hp-tags span:nth-child(1) { animation-delay: .55s; }
+.hero-pipeline.visible .hp-engine .hp-tags span:nth-child(2) { animation-delay: .65s; }
+.hero-pipeline.visible .hp-engine .hp-tags span:nth-child(3) { animation-delay: .75s; }
+
+.hero-pipeline.visible .hp-output .hp-tags span:nth-child(1) { animation-delay: .8s; }
+.hero-pipeline.visible .hp-output .hp-tags span:nth-child(2) { animation-delay: .9s; }
+.hero-pipeline.visible .hp-output .hp-tags span:nth-child(3) { animation-delay: 1s; }
+
+/* --- Hero pipeline arrows: fade in sequentially --- */
+.hero-pipeline.visible .hp-arrow {
+  opacity: 0;
+  animation: tagFadeIn .4s var(--ease) forwards;
+}
+
+.hero-pipeline.visible .hp-arrow:first-of-type { animation-delay: .25s; }
+.hero-pipeline.visible .hp-arrow:last-of-type { animation-delay: .6s; }
+
+/* --- Pipeline arrow SVG size --- */
+.hp-arrow svg {
+  width: 24px;
+  height: 24px;
+}
+
+/* --- Pipeline step labels: fade in --- */
+.hero-pipeline.visible .hp-label {
+  opacity: 0;
+  animation: tagFadeIn .4s var(--ease) forwards;
+}
+
+.hero-pipeline.visible .hp-input .hp-label { animation-delay: .15s; }
+.hero-pipeline.visible .hp-engine .hp-label { animation-delay: .4s; }
+.hero-pipeline.visible .hp-output .hp-label { animation-delay: .7s; }
+
+/* --- Pipeline engine step: subtle glow --- */
+.hp-engine {
+  transition: box-shadow .4s var(--ease);
+}
+
+.hero-pipeline.visible .hp-engine {
+  box-shadow: 0 0 30px rgba(34, 197, 94, .15);
 }
 
 /* --- Contact details: subtle left accent on hover --- */
@@ -3576,7 +3779,7 @@ section {
     opacity: 1 !important;
     transform: none !important;
   }
-  .hero h1, .hero-desc, .hero-actions, .hero-widget {
+  .hero h1, .hero-desc, .hero-actions, .hero-pipeline {
     animation: none !important;
     opacity: 1 !important;
     transform: none !important;

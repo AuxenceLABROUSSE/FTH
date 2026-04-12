@@ -20,7 +20,11 @@ Static website for FTH Advisory - IFRS reporting and financial transformation se
   sitemap.xml      # SEO
 ```
 
-## Design Rules - STRICT
+## Design System — Premium Green (v28)
+
+The site uses a refined SaaS-premium aesthetic: white background, dark green theme, Playfair display serif paired with DM Sans body, gradient buttons, soft rounded shadows, polished hover lifts. The editorial/Fraunces broadsheet experiment (v21-v27) was reverted — the user prefers the cleaner classic look.
+
+`css/style.css` is layered: base styles → **v20 PREMIUM OVERHAUL** at the bottom defines the actual visible polish (gradients, glows, shine sweeps, lift hovers). Edit there for visual changes; the v21+ editorial layers were truncated.
 
 ### Color Palette
 - **Primary**: `--green: #166534` (dark green)
@@ -29,27 +33,37 @@ Static website for FTH Advisory - IFRS reporting and financial transformation se
 - **Backgrounds**: White (`#fff`) and light grey (`--g50: #fafafa`)
 - **Text on white**: `--g900` for headings, `--g500` for body text
 - **Text on green**: White (`#fff`) or `rgba(255,255,255,.85)` minimum
+- **Gradient**: `--grad-green: linear-gradient(135deg, #166534, #15803d, #22c55e)` — used on buttons, hero h1 em, big numerals, expert initials.
 
 ### NO BLACK BACKGROUNDS - EVER
-- Hero: green background (`var(--green)`)
-- Footer: green background (`var(--green)`)
-- Section-dark: green background (`var(--green)`)
-- Page headers: green background (`var(--green)`)
-- CTA sections: light grey (`var(--g50)`) or green
-- Page loader: green
-- **NEVER use `var(--black)`, `#09090b`, `#18181b` or any dark/black color as background**
-
-### Contrast Requirements
-- White text on green (#166534): minimum rgba(255,255,255,.75)
-- Grey text on white: minimum `--g500` (#71717a), never lighter
-- All text must be clearly readable - no low-contrast combinations
-- Pipeline tags on hero: rgba(255,255,255,.75) minimum
-- Hero description: rgba(255,255,255,.85)
+- Hero, footer, section-dark, page headers, page loader: green background.
+- CTA sections: light grey or green.
+- **NEVER use `var(--black)`, `#09090b`, `#18181b` or any dark/black color as background**.
 
 ### Typography
-- Sans-serif: `DM Sans` (body, UI elements)
-- Serif: `Playfair Display` (headings, section titles, hero h1 em)
-- No other fonts allowed without explicit approval
+- **Sans-serif**: `DM Sans` (body, UI elements). Loaded via Google Fonts.
+- **Serif**: `Playfair Display` (headings, section titles, hero h1 em, big numerals). Loaded via Google Fonts.
+- **NO other fonts** — do not introduce Fraunces, Instrument Serif, JetBrains Mono, Inter, Roboto, etc.
+- Headings use moderate negative letter-spacing (-.022em).
+
+### Visual signature (v20 premium layer)
+- Soft rounded corners on cards (16px radius).
+- Soft layered shadows that intensify on hover (`var(--glow-green)`, `var(--glow-green-strong)`).
+- Gradient text-clipping on numerals, hero `<em>`, expert initials.
+- Buttons: gradient fill + shine sweep on hover.
+- Navbar: glass blur backdrop.
+- Animated mesh orbs in hero background (3 floating gradient blobs).
+- Subtle hover lift on cards (-6 to -8px translate).
+
+### Contrast
+- White text on green: minimum `rgba(255,255,255,.85)` for body, white solid for headings.
+- Grey text on white: minimum `--g500 (#71717a)` for body, `--g900` for headings.
+- Hero description: `rgba(255,255,255,.85)`.
+- Hero h1 em uses gradient text-clip — visible against forest green.
+
+### Cache busting
+- Bump `style.css?v=NN` in BOTH index.html and en.html when changing styles.
+- Current: `v=48`.
 
 ### Experts Section
 - Founder: Vadym Sliusar (ACCA DipIFR)
@@ -72,16 +86,17 @@ Static website for FTH Advisory - IFRS reporting and financial transformation se
 6. Why FTH (section-light) - 5 bullet points advantages
 7. Process - 4 steps with "Result" sub-line
 8. Experts (section-light) - founder + advisory experts
-9. CTA (light bg) - call to action
-10. Contact - form + details (phone, hours, free consultation)
-11. Footer (light bg) - with LinkedIn
+9. Testimonials - 3 client testimonial cards
+10. CTA (light bg) - call to action
+11. Contact - form + details (phone, hours, free consultation)
+12. Footer (light bg) - with LinkedIn
 
 ## Year
 Current year is 2026. All copyright notices must say 2026.
 
 ## Business Info
 - Company: Financial Transformation Hub (FTH)
-- Email: info@fth-advisory.com
+- Email: contact@fthadvisory.com
 - Phone: +380 44 591 0800
 - Hours: Mon-Fri, 9:00-18:00
 - Certifications: ACCA, DipIFR, CPA

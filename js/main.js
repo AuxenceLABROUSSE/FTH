@@ -82,6 +82,20 @@ document.addEventListener('DOMContentLoaded', () => {
     revealEls.forEach(el => revealObserver.observe(el));
   }
 
+  // HERO PIPELINE -- add visible class for tag entrance animation
+  const pipeline = document.querySelector('.hero-pipeline');
+  if (pipeline) {
+    const pipelineObserver = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          pipelineObserver.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.3 });
+    pipelineObserver.observe(pipeline);
+  }
+
   // COUNTER ANIMATION
   const counters = document.querySelectorAll('[data-count]');
   if (counters.length) {
@@ -169,7 +183,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (icon) icon.textContent = isOpen ? '+' : '-';
   };
 
-  // FORM HANDLER
+  // FORM HANDLER — Formspree
   const form = document.getElementById('contactForm');
   if (form) {
     form.addEventListener('submit', (e) => {
@@ -178,9 +192,8 @@ document.addEventListener('DOMContentLoaded', () => {
       const originalHTML = btn.innerHTML;
       const isUkrainian = document.documentElement.lang === 'uk';
 
-      // Collect form data
       const formData = new FormData(form);
-      const data = Object.fromEntries(formData.entries());
+      const savedFormHTML = form.innerHTML;
 
       btn.innerHTML = isUkrainian
         ? '<span style="display:inline-flex;align-items:center;gap:.5rem"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" style="animation:spin 1s linear infinite"><circle cx="8" cy="8" r="6" stroke="currentColor" stroke-width="2" stroke-dasharray="28" stroke-dashoffset="8" stroke-linecap="round"/></svg>Надсилаємо...</span>'
@@ -188,31 +201,33 @@ document.addEventListener('DOMContentLoaded', () => {
       btn.disabled = true;
       btn.style.opacity = '.7';
 
-      // Build mailto link with form data
-      const subject = encodeURIComponent('FTH Contact: ' + (data.name || 'New inquiry'));
-      const body = encodeURIComponent(
-        'Name: ' + (data.name || '') + '\n' +
-        'Company: ' + (data.company || '') + '\n' +
-        'Email: ' + (data.email || '') + '\n' +
-        'Phone: ' + (data.phone || '') + '\n' +
-        'Service: ' + (data.service || '') + '\n\n' +
-        'Message:\n' + (data.message || '')
-      );
-
-      // Open mailto
-      window.location.href = 'mailto:info@fth-advisory.com?subject=' + subject + '&body=' + body;
-
-      setTimeout(() => {
+      fetch('https://formspree.io/f/mreovopw', {
+        method: 'POST',
+        body: formData,
+        headers: { 'Accept': 'application/json' }
+      }).then(response => {
+        if (response.ok) {
+          // Replace form with success message + link to new form
+          const newFormLabel = isUkrainian ? 'Надіслати ще один запит' : 'Submit another request';
+          form.innerHTML = isUkrainian
+            ? '<div style="text-align:center;padding:3rem 1rem"><svg width="48" height="48" viewBox="0 0 48 48" fill="none" style="margin-bottom:1.5rem"><circle cx="24" cy="24" r="22" stroke="var(--green)" stroke-width="2"/><path d="M14 24l7 7L34 17" stroke="var(--green)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg><h3 style="color:var(--g900);margin-bottom:.75rem;font-size:1.5rem">Запит прийнято!</h3><p style="color:var(--g500);font-size:1.1rem;line-height:1.6;max-width:400px;margin:0 auto 1.5rem">Ми вже обробляємо ваш запит і зв\'яжемося з вами найближчим часом.</p><button type="button" class="btn btn-outline" id="resetFormBtn">' + newFormLabel + '</button></div>'
+            : '<div style="text-align:center;padding:3rem 1rem"><svg width="48" height="48" viewBox="0 0 48 48" fill="none" style="margin-bottom:1.5rem"><circle cx="24" cy="24" r="22" stroke="var(--green)" stroke-width="2"/><path d="M14 24l7 7L34 17" stroke="var(--green)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg><h3 style="color:var(--g900);margin-bottom:.75rem;font-size:1.5rem">Request submitted!</h3><p style="color:var(--g500);font-size:1.1rem;line-height:1.6;max-width:400px;margin:0 auto 1.5rem">We are reviewing your request and will get back to you shortly.</p><button type="button" class="btn btn-outline" id="resetFormBtn">' + newFormLabel + '</button></div>';
+          document.getElementById('resetFormBtn').addEventListener('click', () => {
+            form.innerHTML = savedFormHTML;
+          });
+        } else {
+          throw new Error('Form submission failed');
+        }
+      }).catch(() => {
         btn.innerHTML = isUkrainian
-          ? '<span style="display:inline-flex;align-items:center;gap:.5rem"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8.5l3.5 3.5L13 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Надіслано!</span>'
-          : '<span style="display:inline-flex;align-items:center;gap:.5rem"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8.5l3.5 3.5L13 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Sent!</span>';
+          ? '<span style="display:inline-flex;align-items:center;gap:.5rem">Помилка. Спробуйте ще раз.</span>'
+          : '<span style="display:inline-flex;align-items:center;gap:.5rem">Error. Please try again.</span>';
         btn.style.opacity = '1';
         setTimeout(() => {
           btn.innerHTML = originalHTML;
           btn.disabled = false;
-          form.reset();
-        }, 2800);
-      }, 1400);
+        }, 3000);
+      });
     });
   }
 
@@ -300,5 +315,7 @@ document.addEventListener('DOMContentLoaded', () => {
       progressBar.style.width = (scrolled * 100) + '%';
     }, { passive: true });
   }
+
+  // PIPELINE TAGS ENTRANCE -- handled by CSS animations in style.css
 
 });
