@@ -3,3 +3,6 @@ Allow: /
 Disallow: /404
 
 Sitemap: https://www.fthadvisory.com/sitemap.xml
+
+# LLM context
+LLMs-Txt: https://www.fthadvisory.com/llms.txt
