@@ -1,4 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
+  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   // PAGE LOADER
   const loader = document.querySelector('.page-loader');
@@ -10,27 +11,29 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // CURSOR GLOW
-  const cursorGlow = document.querySelector('.cursor-glow');
-  if (cursorGlow && window.innerWidth > 768) {
-    let mouseX = 0, mouseY = 0;
-    let glowX = 0, glowY = 0;
-    let mouseActive = false;
-    document.addEventListener('mousemove', (e) => {
-      mouseX = e.clientX;
-      mouseY = e.clientY;
-      if (!mouseActive) {
-        mouseActive = true;
-        cursorGlow.style.opacity = '1';
+  if (!prefersReducedMotion) {
+    const cursorGlow = document.querySelector('.cursor-glow');
+    if (cursorGlow && window.innerWidth > 768) {
+      let mouseX = 0, mouseY = 0;
+      let glowX = 0, glowY = 0;
+      let mouseActive = false;
+      document.addEventListener('mousemove', (e) => {
+        mouseX = e.clientX;
+        mouseY = e.clientY;
+        if (!mouseActive) {
+          mouseActive = true;
+          cursorGlow.style.opacity = '1';
+        }
+      });
+      function animateGlow() {
+        glowX += (mouseX - glowX) * 0.08;
+        glowY += (mouseY - glowY) * 0.08;
+        cursorGlow.style.left = glowX + 'px';
+        cursorGlow.style.top = glowY + 'px';
+        requestAnimationFrame(animateGlow);
       }
-    });
-    function animateGlow() {
-      glowX += (mouseX - glowX) * 0.08;
-      glowY += (mouseY - glowY) * 0.08;
-      cursorGlow.style.left = glowX + 'px';
-      cursorGlow.style.top = glowY + 'px';
-      requestAnimationFrame(animateGlow);
+      animateGlow();
     }
-    animateGlow();
   }
 
   // NAVBAR SCROLL -- rAF-throttled for smooth performance
@@ -57,6 +60,7 @@ document.addEventListener('DOMContentLoaded', () => {
     toggle.addEventListener('click', () => {
       const isOpen = menu.classList.toggle('active');
       toggle.classList.toggle('active');
+      toggle.setAttribute('aria-expanded', isOpen);
       document.body.style.overflow = isOpen ? 'hidden' : '';
     });
     menu.querySelectorAll('a').forEach(a => {
@@ -142,25 +146,27 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // PARALLAX -- rAF-throttled
-  const parallaxEls = document.querySelectorAll('[data-parallax]');
-  if (parallaxEls.length && window.innerWidth > 768) {
-    let parallaxTicking = false;
-    window.addEventListener('scroll', () => {
-      if (!parallaxTicking) {
-        requestAnimationFrame(() => {
-          parallaxEls.forEach(el => {
-            const speed = parseFloat(el.dataset.parallax) || 0.1;
-            const rect = el.getBoundingClientRect();
-            const center = rect.top + rect.height / 2;
-            const viewCenter = window.innerHeight / 2;
-            const offset = (center - viewCenter) * speed;
-            el.style.transform = `translateY(${offset}px)`;
+  if (!prefersReducedMotion) {
+    const parallaxEls = document.querySelectorAll('[data-parallax]');
+    if (parallaxEls.length && window.innerWidth > 768) {
+      let parallaxTicking = false;
+      window.addEventListener('scroll', () => {
+        if (!parallaxTicking) {
+          requestAnimationFrame(() => {
+            parallaxEls.forEach(el => {
+              const speed = parseFloat(el.dataset.parallax) || 0.1;
+              const rect = el.getBoundingClientRect();
+              const center = rect.top + rect.height / 2;
+              const viewCenter = window.innerHeight / 2;
+              const offset = (center - viewCenter) * speed;
+              el.style.transform = `translateY(${offset}px)`;
+            });
+            parallaxTicking = false;
           });
-          parallaxTicking = false;
-        });
-        parallaxTicking = true;
-      }
-    }, { passive: true });
+          parallaxTicking = true;
+        }
+      }, { passive: true });
+    }
   }
 
   // FAQ TOGGLE (for contact page)
@@ -201,24 +207,35 @@ document.addEventListener('DOMContentLoaded', () => {
       btn.disabled = true;
       btn.style.opacity = '.7';
 
+      const controller = new AbortController();
+      const timeout = setTimeout(() => controller.abort(), 15000);
+
       fetch('https://formspree.io/f/mreovopw', {
         method: 'POST',
         body: formData,
-        headers: { 'Accept': 'application/json' }
+        headers: { 'Accept': 'application/json' },
+        signal: controller.signal
       }).then(response => {
+        clearTimeout(timeout);
         if (response.ok) {
           // Replace form with success message + link to new form
           const newFormLabel = isUkrainian ? 'Надіслати ще один запит' : 'Submit another request';
           form.innerHTML = isUkrainian
-            ? '<div style="text-align:center;padding:3rem 1rem"><svg width="48" height="48" viewBox="0 0 48 48" fill="none" style="margin-bottom:1.5rem"><circle cx="24" cy="24" r="22" stroke="var(--green)" stroke-width="2"/><path d="M14 24l7 7L34 17" stroke="var(--green)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg><h3 style="color:var(--g900);margin-bottom:.75rem;font-size:1.5rem">Запит прийнято!</h3><p style="color:var(--g500);font-size:1.1rem;line-height:1.6;max-width:400px;margin:0 auto 1.5rem">Ми вже обробляємо ваш запит і зв\'яжемося з вами найближчим часом.</p><button type="button" class="btn btn-outline" id="resetFormBtn">' + newFormLabel + '</button></div>'
-            : '<div style="text-align:center;padding:3rem 1rem"><svg width="48" height="48" viewBox="0 0 48 48" fill="none" style="margin-bottom:1.5rem"><circle cx="24" cy="24" r="22" stroke="var(--green)" stroke-width="2"/><path d="M14 24l7 7L34 17" stroke="var(--green)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg><h3 style="color:var(--g900);margin-bottom:.75rem;font-size:1.5rem">Request submitted!</h3><p style="color:var(--g500);font-size:1.1rem;line-height:1.6;max-width:400px;margin:0 auto 1.5rem">We are reviewing your request and will get back to you shortly.</p><button type="button" class="btn btn-outline" id="resetFormBtn">' + newFormLabel + '</button></div>';
+            ? '<div role="status" aria-live="polite" style="text-align:center;padding:3rem 1rem"><svg width="48" height="48" viewBox="0 0 48 48" fill="none" style="margin-bottom:1.5rem"><circle cx="24" cy="24" r="22" stroke="var(--green)" stroke-width="2"/><path d="M14 24l7 7L34 17" stroke="var(--green)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg><h3 style="color:var(--g900);margin-bottom:.75rem;font-size:1.5rem">Запит прийнято!</h3><p style="color:var(--g500);font-size:1.1rem;line-height:1.6;max-width:400px;margin:0 auto 1.5rem">Ми вже обробляємо ваш запит і зв\'яжемося з вами найближчим часом.</p><button type="button" class="btn btn-outline" id="resetFormBtn">' + newFormLabel + '</button></div>'
+            : '<div role="status" aria-live="polite" style="text-align:center;padding:3rem 1rem"><svg width="48" height="48" viewBox="0 0 48 48" fill="none" style="margin-bottom:1.5rem"><circle cx="24" cy="24" r="22" stroke="var(--green)" stroke-width="2"/><path d="M14 24l7 7L34 17" stroke="var(--green)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg><h3 style="color:var(--g900);margin-bottom:.75rem;font-size:1.5rem">Request submitted!</h3><p style="color:var(--g500);font-size:1.1rem;line-height:1.6;max-width:400px;margin:0 auto 1.5rem">We are reviewing your request and will get back to you shortly.</p><button type="button" class="btn btn-outline" id="resetFormBtn">' + newFormLabel + '</button></div>';
           document.getElementById('resetFormBtn').addEventListener('click', () => {
             form.innerHTML = savedFormHTML;
+            const newBtn = form.querySelector('button[type="submit"]');
+            if (newBtn) {
+              newBtn.disabled = false;
+              newBtn.style.opacity = '';
+            }
           });
         } else {
           throw new Error('Form submission failed');
         }
       }).catch(() => {
+        clearTimeout(timeout);
         btn.innerHTML = isUkrainian
           ? '<span style="display:inline-flex;align-items:center;gap:.5rem">Помилка. Спробуйте ще раз.</span>'
           : '<span style="display:inline-flex;align-items:center;gap:.5rem">Error. Please try again.</span>';
@@ -279,40 +296,51 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // MAGNETIC BUTTONS -- only on devices with fine pointer (no touch)
   const hasFinePointer = window.matchMedia('(pointer: fine)').matches;
-  if (hasFinePointer) document.querySelectorAll('.btn-green, .nav-cta').forEach(btn => {
-    btn.addEventListener('mousemove', (e) => {
-      const rect = btn.getBoundingClientRect();
-      const x = e.clientX - rect.left - rect.width / 2;
-      const y = e.clientY - rect.top - rect.height / 2;
-      btn.style.transform = `translate(${x * .15}px, ${y * .2}px)`;
+  if (!prefersReducedMotion) {
+    if (hasFinePointer) document.querySelectorAll('.btn-green, .nav-cta').forEach(btn => {
+      btn.addEventListener('mousemove', (e) => {
+        const rect = btn.getBoundingClientRect();
+        const x = e.clientX - rect.left - rect.width / 2;
+        const y = e.clientY - rect.top - rect.height / 2;
+        btn.style.transform = `translate(${x * .15}px, ${y * .2}px)`;
+      });
+      btn.addEventListener('mouseleave', () => {
+        btn.style.transform = '';
+        btn.style.transition = 'transform .4s cubic-bezier(.22,1,.36,1)';
+        setTimeout(() => btn.style.transition = '', 400);
+      });
     });
-    btn.addEventListener('mouseleave', () => {
-      btn.style.transform = '';
-      btn.style.transition = 'transform .4s cubic-bezier(.22,1,.36,1)';
-      setTimeout(() => btn.style.transition = '', 400);
-    });
-  });
+  }
 
   // TILT ON SERVICE CARDS -- only on devices with fine pointer (no touch)
-  if (hasFinePointer) document.querySelectorAll('.service-card, .sys-card').forEach(card => {
-    card.addEventListener('mousemove', (e) => {
-      const rect = card.getBoundingClientRect();
-      const x = (e.clientX - rect.left) / rect.width - .5;
-      const y = (e.clientY - rect.top) / rect.height - .5;
-      card.style.transform = `perspective(800px) rotateY(${x * 6}deg) rotateX(${-y * 6}deg) translateY(-4px)`;
+  if (!prefersReducedMotion) {
+    if (hasFinePointer) document.querySelectorAll('.service-card, .sys-card').forEach(card => {
+      card.addEventListener('mousemove', (e) => {
+        const rect = card.getBoundingClientRect();
+        const x = (e.clientX - rect.left) / rect.width - .5;
+        const y = (e.clientY - rect.top) / rect.height - .5;
+        card.style.transform = `perspective(800px) rotateY(${x * 6}deg) rotateX(${-y * 6}deg) translateY(-4px)`;
+      });
+      card.addEventListener('mouseleave', () => {
+        card.style.transform = '';
+      });
     });
-    card.addEventListener('mouseleave', () => {
-      card.style.transform = '';
-    });
-  });
+  }
 
 
   // SMOOTH SCROLL PROGRESS BAR
   const progressBar = document.getElementById('scrollProgress');
   if (progressBar) {
+    let progressTicking = false;
     window.addEventListener('scroll', () => {
-      const scrolled = window.scrollY / (document.documentElement.scrollHeight - window.innerHeight);
-      progressBar.style.width = (scrolled * 100) + '%';
+      if (!progressTicking) {
+        requestAnimationFrame(() => {
+          const scrolled = window.scrollY / (document.documentElement.scrollHeight - window.innerHeight);
+          progressBar.style.width = (scrolled * 100) + '%';
+          progressTicking = false;
+        });
+        progressTicking = true;
+      }
     }, { passive: true });
   }
 
