@@ -8,6 +8,10 @@
 .advisory-secondary .article-cta { background: #edf0e7; border: 1px solid #dce0d5; border-radius: 8px; }
 .advisory-secondary .blog-card { min-width: 0; }
 .advisory-secondary :is(.article-meta,.blog-card-meta) { flex-wrap: wrap; }
+.advisory-secondary .page-header-title { font-weight: 400; letter-spacing: -.025em; }
+.advisory-secondary .error-ua { color: #62626b !important; }
+.advisory-secondary .error-links { margin-top: 1.5rem; color: #52634f; }
+.advisory-secondary .error-links a { color: var(--green); text-decoration: underline; text-underline-offset: 3px; padding-block: .35rem; display: inline-block; }
 @media (max-width:768px) { .advisory-secondary .blog-grid { grid-template-columns: minmax(0,1fr) !important; } }
 .advisory-home { --green: #245438; --green-deep: #163b29; --green-accent: #34764c; --section-pad: 5.5rem; background: #faf9f5; }
 .advisory-home::before, .advisory-home .hero-bg, .advisory-home .hero::after { display: none; }
