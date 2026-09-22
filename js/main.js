@@ -67,10 +67,21 @@ document.addEventListener('DOMContentLoaded', () => {
       a.addEventListener('click', () => {
         menu.classList.remove('active');
         toggle.classList.remove('active');
+        toggle.setAttribute('aria-expanded', 'false');
         document.body.style.overflow = '';
       });
     });
   }
+
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape' && menu?.classList.contains('active')) {
+      menu.classList.remove('active');
+      toggle.classList.remove('active');
+      toggle.setAttribute('aria-expanded', 'false');
+      document.body.style.overflow = '';
+      toggle.focus();
+    }
+  });
 
   // SCROLL REVEAL -- trigger when 12% visible, offset from bottom for natural feel
   const revealEls = document.querySelectorAll('.reveal, .reveal-left, .reveal-right, .reveal-scale');
