@@ -1,4 +1,11 @@
 /* FTH shared visual system, Ukrainian and English editions. */
+/* Self-hosted fonts (OFL, @fontsource-variable). DM Sans has no Cyrillic: Ukrainian body text uses the system stack. */
+@font-face { font-family: 'Playfair Display'; font-style: normal; font-display: swap; font-weight: 400 900; src: url(/fonts/playfair-display-cyrillic-wght-normal.woff2) format('woff2'); unicode-range: U+0301,U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116; }
+@font-face { font-family: 'Playfair Display'; font-style: italic; font-display: swap; font-weight: 400 900; src: url(/fonts/playfair-display-cyrillic-wght-italic.woff2) format('woff2'); unicode-range: U+0301,U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116; }
+@font-face { font-family: 'Playfair Display'; font-style: normal; font-display: swap; font-weight: 400 900; src: url(/fonts/playfair-display-latin-wght-normal.woff2) format('woff2'); unicode-range: U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD; }
+@font-face { font-family: 'Playfair Display'; font-style: italic; font-display: swap; font-weight: 400 900; src: url(/fonts/playfair-display-latin-wght-italic.woff2) format('woff2'); unicode-range: U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD; }
+@font-face { font-family: 'DM Sans'; font-style: normal; font-display: swap; font-weight: 100 1000; src: url(/fonts/dm-sans-latin-wght-normal.woff2) format('woff2'); unicode-range: U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD; }
+html:lang(uk) { --font-sans: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif; }
 .form-privacy { font-size: .82rem; line-height: 1.65; color: #52634f; margin-bottom: 1rem; }
 .form-privacy a { text-decoration: underline; color: #245438; }
 .advisory-secondary .article-header { background: #f0f1eb; border-bottom: 1px solid #dce0d5; }
@@ -32,7 +39,7 @@
 .advisory-home .hero { padding: 9rem 0 5rem; background: #faf9f5; }
 .advisory-home .hero-split { grid-template-columns: 1.12fr 1fr; gap: clamp(2rem, 5vw, 5rem); align-items: center; }
 .advisory-home .hero-inner, .advisory-home .hero-split .hero-inner { text-align: left; }
-.advisory-home .hero h1 { font-size: clamp(2.45rem, 4.3vw, 4rem); line-height: 1.09; letter-spacing: -.035em; font-weight: 400; margin-bottom: 1.6rem; }
+.advisory-home .hero h1 { font-size: clamp(2.45rem, 4.3vw, 4rem); line-height: 1.09; letter-spacing: -.02em; font-weight: 400; margin-bottom: 1.6rem; }
 .advisory-home .hero h1 em { letter-spacing: -.025em; }
 .advisory-home .hero-desc { font-size: 1.06rem; max-width: 34rem; margin: 0 0 2rem; line-height: 1.8; color: #555e55; }
 .advisory-home .hero-split .hero-actions { justify-content: flex-start; gap: .8rem; }
@@ -55,7 +62,7 @@
 .advisory-home .trust-item { text-align: left; padding-left: 1.25rem; border-left: 2px solid #8ba27e; }
 .advisory-home .trust-item strong { font-size: 1.45rem; line-height: 1.2; font-weight: 400; margin-bottom: .7rem; }
 .advisory-home .trust-item span { line-height: 1.7; color: #56604f; }
-.advisory-home .section-title { font-weight: 400; letter-spacing: -.025em; line-height: 1.17; }
+.advisory-home .section-title { font-weight: 400; letter-spacing: -.015em; line-height: 1.17; }
 .advisory-home .section-overline { letter-spacing: .16em; font-size: .72rem; }
 .advisory-home #services .section-header { text-align: left; max-width: 850px; margin-left: 0; }
 .advisory-home #services .section-title { font-size: clamp(1.8rem, 3vw, 2.65rem); }
@@ -68,7 +75,7 @@
 .advisory-home .service-card h3 { font-size: 1.18rem; }
 .advisory-home .section-light { background: #f0f1eb; }
 .advisory-home :is(.sys-card-hero,.sys-card-feature,.dlv,.expert-card) { border-radius: 8px; box-shadow: none; }
-.advisory-home .expert-initials { border-radius: 8px; font-family: Georgia,serif; background: #e5ecde; color: #244d35; }
+.advisory-home .expert-initials { border-radius: 8px; font-family: var(--font-serif); background: #e5ecde; color: #244d35; }
 .advisory-home .section-cta { background: #edf0e7; border-block: 1px solid #dce2d4; }
 .advisory-home .contact-form { background: #fff; border: 1px solid #dce0d5; padding: 2rem; border-radius: 8px; box-shadow: 0 14px 45px #223d2510; }
 .advisory-home .contact-form :is(input,textarea) { background: #fafbf7; border-color: #aeb8a6; border-radius: 4px; font-size: 1rem; }
