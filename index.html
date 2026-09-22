@@ -87,7 +87,7 @@
   }
   </script>
   <link rel="stylesheet" href="/css/style.min.css?v=1">
-  <link rel="stylesheet" href="/css/advisory.css?v=8">
+  <link rel="stylesheet" href="/css/advisory.css?v=9">
   <link rel="preload" as="font" type="font/woff2" crossorigin href="/fonts/playfair-display-cyrillic-wght-normal.woff2">
   <link rel="icon" href="/favicon.ico" sizes="48x48">
   <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32x32.png">
@@ -424,7 +424,7 @@
       <h2>Запрошуємо до обговорення можливостей підготовки вашої звітності за МСФЗ</h2>
       <p>Безкоштовна консультація - розкажіть про вашу ситуацію, і ми запропонуємо оптимальний підхід.</p>
       <div class="cta-actions">
-        <a href="#contact" class="btn btn-green">Замовити консультацію</a>
+        <a href="#contact" class="btn btn-green">Обговорити проєкт</a>
         <a href="mailto:contact@fthadvisory.com" class="btn btn-outline">contact&#64;fthadvisory&#46;com</a>
       </div>
     </div>
@@ -446,22 +446,32 @@
       <form id="contactForm" class="contact-form reveal-right" action="https://formspree.io/f/mreovopw" method="POST">
         <input type="text" name="_gotcha" class="hp-field" tabindex="-1" autocomplete="off">
         <div class="form-row">
-          <label class="sr-only" for="name">Ваше ім'я</label>
-          <input type="text" name="name" id="name" required placeholder="Ім'я" aria-label="Ім'я">
-          <label class="sr-only" for="company">Назва компанії</label>
-          <input type="text" name="company" id="company" required placeholder="Компанія" aria-label="Компанія">
+          <div class="form-field">
+            <label for="name">Ваше ім'я</label>
+            <input type="text" name="name" id="name" required autocomplete="name">
+          </div>
+          <div class="form-field">
+            <label for="company">Назва компанії</label>
+            <input type="text" name="company" id="company" required autocomplete="organization">
+          </div>
         </div>
         <div class="form-row">
-          <label class="sr-only" for="email">Електронна пошта</label>
-          <input type="email" name="email" id="email" required placeholder="Email" aria-label="Email">
-          <label class="sr-only" for="phone">Номер телефону</label>
-          <input type="tel" name="phone" id="phone" placeholder="Телефон" aria-label="Телефон">
+          <div class="form-field">
+            <label for="email">Електронна пошта</label>
+            <input type="email" name="email" id="email" required autocomplete="email">
+          </div>
+          <div class="form-field">
+            <label for="phone">Телефон (необов'язково)</label>
+            <input type="tel" name="phone" id="phone" autocomplete="tel">
+          </div>
         </div>
-        <label class="sr-only" for="message">Ваше повідомлення</label>
-        <textarea name="message" id="message" required placeholder="Опишіть ваш запит коротко..." aria-label="Опишіть ваш запит"></textarea>
+        <div class="form-field">
+          <label for="message">Ваше повідомлення</label>
+          <textarea name="message" id="message" required placeholder="Опишіть ваш запит коротко..."></textarea>
+        </div>
         <p class="form-privacy">Ваші дані передаються FTH через Formspree для відповіді на запит. Не додавайте конфіденційні фінансові документи. Докладніше у <a href="/privacy-ua">Політиці конфіденційності</a>.</p>
         <button type="submit" class="btn btn-green">
-          Надіслати
+          Надіслати запит
           <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </button>
       </form>

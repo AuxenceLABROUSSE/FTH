@@ -87,7 +87,7 @@
   }
   </script>
   <link rel="stylesheet" href="/css/style.min.css?v=1">
-  <link rel="stylesheet" href="/css/advisory.css?v=8">
+  <link rel="stylesheet" href="/css/advisory.css?v=9">
   <link rel="preload" as="font" type="font/woff2" crossorigin href="/fonts/playfair-display-latin-wght-normal.woff2">
   <link rel="icon" href="/favicon.ico" sizes="48x48">
   <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32x32.png">
@@ -137,7 +137,7 @@
         <h1 class="reveal">Financial Reporting Transformation<br>from UAS to <em>IFRS</em></h1>
         <p class="hero-desc reveal">Financial Transformation Hub (FTH) helps transform financial data and prepare IFRS-compliant reporting.</p>
         <div class="hero-actions reveal">
-          <a href="#contact" class="btn btn-green">Discuss Your Project <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+          <a href="#contact" class="btn btn-green">Discuss a Project <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
           <a href="#services" class="btn btn-outline">Our Services</a>
         </div>
       </div>
@@ -424,7 +424,7 @@
       <h2>Let's Discuss How We Can Prepare Your IFRS Financial Statements</h2>
       <p>Free consultation - tell us about your situation and we'll suggest the best approach.</p>
       <div class="cta-actions">
-        <a href="#contact" class="btn btn-green">Schedule a Consultation</a>
+        <a href="#contact" class="btn btn-green">Discuss a Project</a>
         <a href="mailto:contact@fthadvisory.com" class="btn btn-outline">contact&#64;fthadvisory&#46;com</a>
       </div>
     </div>
@@ -446,22 +446,32 @@
       <form id="contactForm" class="contact-form reveal-right" action="https://formspree.io/f/mreovopw" method="POST">
         <input type="text" name="_gotcha" class="hp-field" tabindex="-1" autocomplete="off">
         <div class="form-row">
-          <label class="sr-only" for="name">Your name</label>
-          <input type="text" name="name" id="name" required placeholder="Name" aria-label="Name">
-          <label class="sr-only" for="company">Company name</label>
-          <input type="text" name="company" id="company" required placeholder="Company" aria-label="Company">
+          <div class="form-field">
+            <label for="name">Your name</label>
+            <input type="text" name="name" id="name" required autocomplete="name">
+          </div>
+          <div class="form-field">
+            <label for="company">Company name</label>
+            <input type="text" name="company" id="company" required autocomplete="organization">
+          </div>
         </div>
         <div class="form-row">
-          <label class="sr-only" for="email">Email address</label>
-          <input type="email" name="email" id="email" required placeholder="Email" aria-label="Email">
-          <label class="sr-only" for="phone">Phone number</label>
-          <input type="tel" name="phone" id="phone" placeholder="Phone" aria-label="Phone">
+          <div class="form-field">
+            <label for="email">Email address</label>
+            <input type="email" name="email" id="email" required autocomplete="email">
+          </div>
+          <div class="form-field">
+            <label for="phone">Phone (optional)</label>
+            <input type="tel" name="phone" id="phone" autocomplete="tel">
+          </div>
         </div>
-        <label class="sr-only" for="message">Your message</label>
-        <textarea name="message" id="message" required placeholder="Briefly describe your request..." aria-label="Describe your request"></textarea>
+        <div class="form-field">
+          <label for="message">Your message</label>
+          <textarea name="message" id="message" required placeholder="Briefly describe your request..."></textarea>
+        </div>
         <p class="form-privacy">Your details are sent to FTH through Formspree to respond to your enquiry. Please do not include sensitive financial documents. See our <a href="/privacy">Privacy Policy</a>.</p>
         <button type="submit" class="btn btn-green">
-          Send
+          Send request
           <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </button>
       </form>

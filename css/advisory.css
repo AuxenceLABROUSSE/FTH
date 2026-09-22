@@ -96,6 +96,8 @@ html { scroll-padding-top: 6.5rem; }
 .advisory-home .expert-initials { border-radius: 8px; font-family: var(--font-serif); background: #e5ecde; color: #244d35; }
 .advisory-home .section-cta { background: #edf0e7; border-block: 1px solid #dce2d4; }
 .advisory-home .contact-form { background: #fff; border: 1px solid #dce0d5; padding: 2rem; border-radius: 8px; box-shadow: 0 14px 45px #223d2510; }
+.advisory-home .contact-form label { display: block; font-size: .85rem; font-weight: 500; color: #2f3d31; margin: 0 0 .35rem; }
+.advisory-home .form-field { min-width: 0; }
 .advisory-home .contact-form :is(input,textarea) { background: #fafbf7; border-color: #aeb8a6; border-radius: 4px; font-size: 1rem; }
 .advisory-home :is(.sys-card-feature-num,.dlv-sub,.contact-details .cd strong) { color: #52634f; opacity: 1; }
 .advisory-home :is(a,button,input,textarea):focus-visible { outline: 3px solid #487941; outline-offset: 4px; }
