@@ -53,35 +53,26 @@ document.addEventListener('DOMContentLoaded', () => {
     handleScroll();
   }
 
-  // MOBILE MENU
+  // MOBILE MENU -- one state function; while open, main/footer are inert so focus stays in the menu
   const toggle = document.getElementById('mobileToggle');
   const menu = document.getElementById('navMenu');
   if (toggle && menu) {
-    toggle.addEventListener('click', () => {
-      const isOpen = menu.classList.toggle('active');
-      toggle.classList.toggle('active');
-      toggle.setAttribute('aria-expanded', isOpen);
-      document.body.style.overflow = isOpen ? 'hidden' : '';
+    const setMenu = (open, returnFocus) => {
+      menu.classList.toggle('active', open);
+      toggle.classList.toggle('active', open);
+      toggle.setAttribute('aria-expanded', open);
+      document.body.style.overflow = open ? 'hidden' : '';
+      document.querySelectorAll('main, footer').forEach(el => { el.inert = open; });
+      if (open) menu.querySelector('a')?.focus();
+      else if (returnFocus) toggle.focus();
+    };
+    toggle.addEventListener('click', () => setMenu(!menu.classList.contains('active')));
+    menu.querySelectorAll('a').forEach(a => a.addEventListener('click', () => setMenu(false)));
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape' && menu.classList.contains('active')) setMenu(false, true);
     });
-    menu.querySelectorAll('a').forEach(a => {
-      a.addEventListener('click', () => {
-        menu.classList.remove('active');
-        toggle.classList.remove('active');
-        toggle.setAttribute('aria-expanded', 'false');
-        document.body.style.overflow = '';
-      });
-    });
+    window.matchMedia('(min-width: 769px)').addEventListener('change', (e) => { if (e.matches) setMenu(false); });
   }
-
-  document.addEventListener('keydown', (event) => {
-    if (event.key === 'Escape' && menu?.classList.contains('active')) {
-      menu.classList.remove('active');
-      toggle.classList.remove('active');
-      toggle.setAttribute('aria-expanded', 'false');
-      document.body.style.overflow = '';
-      toggle.focus();
-    }
-  });
 
   // SCROLL REVEAL -- trigger when 12% visible, offset from bottom for natural feel
   const revealEls = document.querySelectorAll('.reveal, .reveal-left, .reveal-right, .reveal-scale');

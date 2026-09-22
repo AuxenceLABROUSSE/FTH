@@ -19,6 +19,11 @@
 .advisory-home .nav-menu a { white-space: nowrap; font-size: .82rem; }
 .advisory-home .nav-cta { white-space: nowrap; padding: .8rem 1.1rem; border-radius: 6px; }
 .advisory-home .nav-right { gap: .65rem; }
+.advisory-home .navbar.scrolled { -webkit-backdrop-filter: none; backdrop-filter: none; }
+.advisory-home .nav-menu-cta { display: none; }
+.mobile-toggle.active span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+.mobile-toggle.active span:nth-child(2) { opacity: 0; }
+.mobile-toggle.active span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
 .advisory-home .btn { border-radius: 6px; min-height: 50px; }
 .advisory-home .hero { padding: 9rem 0 5rem; background: #faf9f5; }
 .advisory-home .hero-split { grid-template-columns: 1.12fr 1fr; gap: clamp(2rem, 5vw, 5rem); align-items: center; }
@@ -90,6 +95,11 @@
   .advisory-home .services-track { grid-template-columns: 1fr; }
   .advisory-home .services-track .service-card { padding: 1.5rem; }
   .advisory-home .nav-menu a { font-size: 1.15rem; }
+  .advisory-home :is(.nav-logo,.nav-right,.mobile-toggle) { position: relative; z-index: 1002; }
+  .advisory-home .nav-menu { background: #faf9f5; gap: 1.6rem; }
+  .advisory-home .nav-menu-cta { display: block; margin-top: .6rem; }
+  .advisory-home .nav-menu .nav-menu-cta a { color: #fff !important; font-size: 1rem; padding: .9rem 1.6rem; }
+  .advisory-home .nav-menu .nav-menu-cta a::after { display: none; }
   .advisory-home .contact-form { padding: 1.25rem; }
   .advisory-home .cta-actions .btn { white-space: normal; overflow-wrap: anywhere; }
 }
