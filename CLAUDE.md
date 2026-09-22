@@ -42,6 +42,7 @@ Editorial consulting-firm look: paper background, forest green, serif headings, 
 ### Typography
 - **Serif (headings)**: `Playfair Display`, weight 400, one accent word in green italic (МСФЗ / IFRS). Self-hosted in `/fonts`, Georgia fallback.
 - **Sans (body)**: `DM Sans` for English (self-hosted, latin only). DM Sans has no Cyrillic, so Ukrainian pages use the system stack (`html:lang(uk)` redefines `--font-sans`).
+- Web-font swaps must not move text (CLS 0): homepages preload the h1 fonts (roman + italic), and DM Sans has a metric-matched Arial fallback (`'DM Sans Fallback'`, size-adjust computed with fontTools).
 - **NO other fonts** - no Google Fonts link, no Fraunces, Inter, Roboto webfont, etc.
 - Numbers that matter (hero ledger, process, model rows) use `font-variant-numeric: tabular-nums lining-nums`.
 
@@ -58,8 +59,8 @@ Editorial consulting-firm look: paper background, forest green, serif headings, 
 
 ### Cache busting
 - CSS/JS are cached 1 year (`immutable`): every page references them with `?v=N`.
-- After ANY change to `advisory.css` or `main.js`, bump the version in ALL 41 HTML files (e.g. `sed -i 's/advisory\.css?v=16/advisory.css?v=17/'` on `*.html blog/*.html`).
-- Current: `style.min.css?v=1`, `advisory.css?v=16`, `main.js?v=13`.
+- After ANY change to `advisory.css` or `main.js`, bump the version in ALL 41 HTML files (e.g. `sed -i 's/advisory\.css?v=17/advisory.css?v=18/'` on `*.html blog/*.html`).
+- Current: `style.min.css?v=1`, `advisory.css?v=17`, `main.js?v=13`.
 - Images/fonts are cached 30 days and not versioned: give a new file name when replacing one.
 
 ### Shared template (secondary pages)
