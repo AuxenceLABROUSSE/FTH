@@ -43,18 +43,32 @@ html:lang(uk) { --font-sans: system-ui, -apple-system, 'Segoe UI', Roboto, sans-
 .advisory-home .hero h1 em { letter-spacing: -.025em; }
 .advisory-home .hero-desc { font-size: 1.06rem; max-width: 34rem; margin: 0 0 2rem; line-height: 1.8; color: #555e55; }
 .advisory-home .hero-split .hero-actions { justify-content: flex-start; gap: .8rem; }
-.advisory-home .hero-widget { background: #173d2b; color: #fff; border: 1px solid #244f39; border-radius: 10px; padding: 2rem; box-shadow: 10px 12px 0 #e5e8de; transform: none !important; }
+.advisory-home .hero-widget { text-align: left; background: #173d2b; color: #fff; border: 1px solid #244f39; border-radius: 10px; padding: 2rem; box-shadow: 10px 12px 0 #e5e8de; transform: none !important; }
 .advisory-home .hw-header { border-color: #54755e; padding-bottom: 1.25rem; margin-bottom: 1.25rem; }
 .advisory-home .hw-header svg { color: #dcebcf; }
-.advisory-home .hw-badge { color: #e4eedb; letter-spacing: .07em; font-size: .75rem; text-transform: uppercase; }
+.advisory-home .hw-badge { color: #e4eedb; letter-spacing: .07em; font-size: .8125rem; text-transform: uppercase; }
 .advisory-home .hw-metrics { gap: .5rem; }
 .advisory-home .hw-metric { background: #264b36; border: 1px solid #52705b; border-radius: 4px; padding: 1rem .45rem; }
 .advisory-home .hw-metric strong { color: #fff; font-size: 1rem; }
-.advisory-home .hw-metric span { color: #e0e8da; font-size: .72rem; }
-.advisory-home .hw-checklist { margin-top: 1.5rem; }
-.advisory-home .hw-checklist li { color: #f4f5ee; padding: .55rem 0; border-bottom: 1px solid #42644e; font-size: .82rem; }
-.advisory-home .hw-checklist li:last-child { border-bottom: 0; }
-.advisory-home .hw-checklist svg path, .advisory-home .hw-header svg path { stroke: #c7ddb3; }
+.advisory-home .hw-metric span { color: #e0e8da; font-size: .8125rem; line-height: 1.4; display: block; }
+/* Hero ledger: statements as ledger rows, total ruled like a financial statement (single rule above, double below) */
+.advisory-home .hw-ledger { list-style: none; margin: 1.5rem 0 0; padding: 0; }
+.advisory-home .hw-ledger li { display: grid; grid-template-columns: 2.1rem minmax(0,1fr); align-items: baseline; gap: .6rem; padding: .62rem 0; border-bottom: 1px solid #42644e; color: #f4f5ee; font-size: .875rem; line-height: 1.45; }
+.advisory-home .hw-ledger li:last-child { border-bottom: 0; }
+.advisory-home .hw-ref { font-family: var(--font-serif); font-size: 1rem; color: #c7ddb3; font-variant-numeric: tabular-nums lining-nums; }
+.advisory-home .hw-total { display: flex; justify-content: space-between; align-items: baseline; gap: 1rem; margin: .35rem 0 0; padding: .8rem 0 .7rem; border-top: 1px solid #c7ddb3; border-bottom: 3px double #c7ddb3; }
+.advisory-home .hw-total span:first-child { font-size: .8125rem; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: #c7ddb3; }
+.advisory-home .hw-total span:last-child { font-family: var(--font-serif); font-size: 1.05rem; color: #fff; text-align: right; font-variant-numeric: tabular-nums lining-nums; }
+.advisory-home .hw-header svg path { stroke: #c7ddb3; }
+@media (prefers-reduced-motion: no-preference) {
+  .advisory-home :is(.hw-ledger li,.hw-total) { animation: hw-row .4s cubic-bezier(.22,1,.36,1) both; }
+  .advisory-home .hw-ledger li:nth-child(2) { animation-delay: 60ms; }
+  .advisory-home .hw-ledger li:nth-child(3) { animation-delay: 120ms; }
+  .advisory-home .hw-ledger li:nth-child(4) { animation-delay: 180ms; }
+  .advisory-home .hw-ledger li:nth-child(5) { animation-delay: 240ms; }
+  .advisory-home .hw-total { animation-delay: 300ms; }
+}
+@keyframes hw-row { from { opacity: 0; transform: translateY(6px); } }
 .advisory-home .hero :is(.reveal,.reveal-right,h1,.hero-desc,.hero-actions) { opacity: 1; transform: none; animation: none; transition: none; }
 .advisory-home :is(.reveal,.reveal-left,.reveal-right,.reveal-scale) { opacity: 1; transform: none; animation: none; }
 .advisory-home .trust-bar { background: #eeefe7; padding: 2.3rem 0; border-block: 1px solid #dadfd2; }
@@ -99,7 +113,7 @@ html:lang(uk) { --font-sans: system-ui, -apple-system, 'Segoe UI', Roboto, sans-
   .advisory-home .hero-widget { margin: 0; box-shadow: 5px 6px 0 #e5e8de; }
   .advisory-home .hw-metrics { grid-template-columns: repeat(3,1fr); }
   .advisory-home .hw-metric strong { font-size: .85rem; }
-  .advisory-home .hw-metric span { font-size: .7rem; }
+  .advisory-home .hw-metric span { font-size: .8125rem; }
   .advisory-home .trust-items { grid-template-columns: 1fr; gap: 1.4rem; }
   .advisory-home .trust-item { flex: initial; }
   .advisory-home .trust-item strong { font-size: 1.3rem; margin-bottom: .3rem; }
