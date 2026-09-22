@@ -20,6 +20,8 @@ html:lang(uk) { --font-sans: system-ui, -apple-system, 'Segoe UI', Roboto, sans-
 .advisory-secondary .error-links { margin-top: 1.5rem; color: #52634f; }
 .advisory-secondary .error-links a { color: var(--green); text-decoration: underline; text-underline-offset: 3px; padding-block: .35rem; display: inline-block; }
 @media (max-width:768px) { .advisory-secondary .blog-grid { grid-template-columns: minmax(0,1fr) !important; } }
+html { scroll-padding-top: 6.5rem; }
+.advisory-home .scroll-progress { background: var(--green); }
 .advisory-home { --green: #245438; --green-deep: #163b29; --green-accent: #34764c; --section-pad: 5.5rem; background: #faf9f5; }
 .advisory-home::before, .advisory-home .hero-bg, .advisory-home .hero::after { display: none; }
 .advisory-home .navbar { background: #faf9f5; border-bottom: 1px solid #dedfd6; box-shadow: none; }
@@ -40,7 +42,7 @@ html:lang(uk) { --font-sans: system-ui, -apple-system, 'Segoe UI', Roboto, sans-
 .advisory-home .hero-split { grid-template-columns: 1.12fr 1fr; gap: clamp(2rem, 5vw, 5rem); align-items: center; }
 .advisory-home .hero-inner, .advisory-home .hero-split .hero-inner { text-align: left; }
 .advisory-home .hero h1 { font-size: clamp(2.45rem, 4.3vw, 4rem); line-height: 1.09; letter-spacing: -.02em; font-weight: 400; margin-bottom: 1.6rem; }
-.advisory-home .hero h1 em { letter-spacing: -.025em; }
+.advisory-home .hero h1 em { letter-spacing: -.025em; animation: none; background: none; -webkit-text-fill-color: currentColor; color: var(--green); }
 .advisory-home .hero-desc { font-size: 1.06rem; max-width: 34rem; margin: 0 0 2rem; line-height: 1.8; color: #555e55; }
 .advisory-home .hero-split .hero-actions { justify-content: flex-start; gap: .8rem; }
 .advisory-home .hero-widget { text-align: left; background: #173d2b; color: #fff; border: 1px solid #244f39; border-radius: 10px; padding: 2rem; box-shadow: 10px 12px 0 #e5e8de; transform: none !important; }
@@ -81,6 +83,7 @@ html:lang(uk) { --font-sans: system-ui, -apple-system, 'Segoe UI', Roboto, sans-
 .advisory-home #services .section-header { text-align: left; max-width: 850px; margin-left: 0; }
 .advisory-home #services .section-title { font-size: clamp(1.8rem, 3vw, 2.65rem); }
 .advisory-home .services-scroll-wrapper { overflow: visible; }
+.advisory-home .services-track { padding-bottom: 0; scroll-snap-type: none; }
 .advisory-home .services-track { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 1px; background: #dce0d5; border: 1px solid #dce0d5; border-radius: 8px; overflow: hidden; }
 .advisory-home .services-track .service-card { min-width: 0; width: auto; background: #fff; border: 0; border-radius: 0; padding: 2rem; box-shadow: none; transform: none; }
 .advisory-home .service-card:hover { background: #f4f6ef; }
@@ -88,6 +91,7 @@ html:lang(uk) { --font-sans: system-ui, -apple-system, 'Segoe UI', Roboto, sans-
 .advisory-home .service-card .card-number { color: #52654b; }
 .advisory-home .service-card h3 { font-size: 1.18rem; }
 .advisory-home .section-light { background: #f0f1eb; }
+.advisory-home .sys-card-hero { background: #173d2b; }
 .advisory-home :is(.sys-card-hero,.sys-card-feature,.dlv,.expert-card) { border-radius: 8px; box-shadow: none; }
 .advisory-home .expert-initials { border-radius: 8px; font-family: var(--font-serif); background: #e5ecde; color: #244d35; }
 .advisory-home .section-cta { background: #edf0e7; border-block: 1px solid #dce2d4; }
