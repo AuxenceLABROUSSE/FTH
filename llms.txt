@@ -7,7 +7,6 @@
 - Transformation of financial reporting from Ukrainian local GAAP (P(S)BO / П(С)БО) to IFRS
 - Preparation of full IFRS financial statement packages (Statement of Financial Position, P&L and OCI, Cash Flow Statement, Statement of Changes in Equity, Notes)
 - Investor-ready financial structuring for fundraising and M&A
-- Methodology aligned with Big 4 audit firm practices
 
 ## Who we serve
 
@@ -25,8 +24,7 @@
 - Specialization: IFRS for IT, SaaS, and fintech sectors
 - Languages: Ukrainian, English
 - Email: contact@fthadvisory.com
-- Phone: +380 44 591 0800
-- Hours: Mon–Fri, 9:00–18:00 (Europe/Kyiv)
+- Hours: Mon–Sun, 9:00–18:00 (Europe/Kyiv)
 - LinkedIn: https://www.linkedin.com/company/financial-transformation-hub
 - Founder: Vadym Sliusar (ACCA, DipIFR)
 
@@ -35,7 +33,7 @@
 - Full IFRS standard coverage including IFRS 15 (Revenue), IFRS 16 (Leases), IFRS 2 (Share-based Payment), IAS 21 (Foreign Currency), IAS 38 (Intangible Assets), IFRS 9 (Financial Instruments)
 - Structured transformation with documented adjustment logic
 - Working files prepared for audit review
-- Typical project timeline: 4–6 weeks for a full IFRS package
+- Typical project timeline: 2–6 weeks for a full IFRS package, depending on data volume
 
 ## Site structure
 
@@ -47,6 +45,9 @@
 
 ## Blog topics covered
 
+- IFRS 18: new financial statement presentation requirements from 2027
+- IFRS 15: revenue analysis and typical transformation adjustments
+- How AI is changing the value of the accountant
 - When does a company need IFRS transformation
 - IFRS 16 leases for IT companies
 - Case study: IFRS transformation of a Ukrainian SaaS ahead of Series B
