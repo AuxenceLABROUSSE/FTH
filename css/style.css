@@ -15,7 +15,7 @@
   --g800: #27272a;
   --g700: #3f3f46;
   --g600: #52525b;
-  --g500: #71717a;
+  --g500: #62626b;
   --g400: #a1a1aa;
   --g300: #d4d4d8;
   --g200: #e4e4e7;
@@ -2776,6 +2776,7 @@ section {
 
 .footer-logo-img {
   height: 48px;
+  width: auto;
   margin-bottom: 0;
 }
 
