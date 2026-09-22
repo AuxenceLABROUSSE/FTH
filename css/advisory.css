@@ -1,4 +1,14 @@
-/* FTH editorial home: shared by the Ukrainian and English editions. */
+/* FTH shared visual system, Ukrainian and English editions. */
+.form-privacy { font-size: .82rem; line-height: 1.65; color: #52634f; margin-bottom: 1rem; }
+.form-privacy a { text-decoration: underline; color: #245438; }
+.advisory-secondary .article-header { background: #f0f1eb; border-bottom: 1px solid #dce0d5; }
+.advisory-secondary :is(.article-read-time,.blog-card-date) { color: #52634f; }
+.advisory-secondary .article-body { overflow-wrap: anywhere; }
+.advisory-secondary .article-body table { display: block; max-width: 100%; overflow-x: auto; }
+.advisory-secondary .article-cta { background: #edf0e7; border: 1px solid #dce0d5; border-radius: 8px; }
+.advisory-secondary .blog-card { min-width: 0; }
+.advisory-secondary :is(.article-meta,.blog-card-meta) { flex-wrap: wrap; }
+@media (max-width:768px) { .advisory-secondary .blog-grid { grid-template-columns: minmax(0,1fr) !important; } }
 .advisory-home { --green: #245438; --green-deep: #163b29; --green-accent: #34764c; --section-pad: 5.5rem; background: #faf9f5; }
 .advisory-home::before, .advisory-home .hero-bg, .advisory-home .hero::after { display: none; }
 .advisory-home .navbar { background: #faf9f5; border-bottom: 1px solid #dedfd6; box-shadow: none; }
