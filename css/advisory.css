@@ -146,3 +146,61 @@ html { scroll-padding-top: 6.5rem; }
 }
 @media print { .advisory-home .hero-widget { background: white; color: black; box-shadow: none; } }
 .advisory-home :is(h1,h2,h3) { font-variant-numeric: lining-nums; }
+/* Homepage editorial finish: one left axis, hairline lists instead of card piles, compact mobile rhythm */
+.advisory-home .section-header.center { text-align: left; margin-left: 0; max-width: 850px; }
+.advisory-home .section-header.center .section-desc { margin: 0; }
+.advisory-home .section-title { text-wrap: balance; }
+.advisory-home .section-overline { font-size: .75rem; }
+.advisory-home :is(.dlv-sub,.trust-item span) { font-size: .875rem; letter-spacing: 0; line-height: 1.45; }
+.advisory-home .deliverables-grid { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); column-gap: 3rem; row-gap: 0; border-top: 1px solid #dce0d5; }
+.advisory-home .deliverables-grid .dlv { display: grid; grid-template-columns: 1.5rem minmax(0,1fr); column-gap: .9rem; align-content: start; text-align: left; background: none; border: 0; border-bottom: 1px solid #dce0d5; border-radius: 0; padding: 1.1rem 0; box-shadow: none; transform: none; }
+.advisory-home .deliverables-grid .dlv-icon { grid-row: span 2; margin: .15rem 0 0; }
+.advisory-home .dlv-sub { margin-top: .2rem; color: #52634f; }
+.advisory-home .dlv-accent > span { color: var(--green); }
+.advisory-home .sys-card-features { grid-template-columns: 1fr; gap: 0; border-top: 1px solid #dce0d5; margin-top: 1rem; }
+.advisory-home .sys-card-feature { display: grid; grid-template-columns: 2.25rem minmax(0,1fr); gap: .75rem; align-items: baseline; background: none; border: 0; border-bottom: 1px solid #dce0d5; border-radius: 0; padding: 1rem 0; box-shadow: none; transform: none; }
+.advisory-home .sys-card-feature .sys-card-feature-num { font-family: var(--font-serif); font-size: 1.05rem; font-weight: 400; letter-spacing: 0; margin: 0; color: var(--green); font-variant-numeric: tabular-nums lining-nums; }
+.advisory-home .why-list li { background: none; border: 0; border-bottom: 1px solid #dce0d5; border-radius: 0; box-shadow: none; padding: 1rem 0; transform: none; }
+.advisory-home .why-list li:first-child { border-top: 1px solid #dce0d5; }
+.advisory-home .pcard { text-align: left; transform: none; }
+.advisory-home .pcard-num { margin: 0 0 1.25rem; font-family: var(--font-serif); font-weight: 400; font-size: 1.05rem; font-variant-numeric: lining-nums; }
+.advisory-home .pcard:hover .pcard-num { transform: none; box-shadow: none; }
+.advisory-home .process-steps::before { left: 26px; width: calc(75% + 1.5rem); background: #dce0d5; }
+.advisory-home .expert-card { text-align: left; }
+.advisory-home .expert-team { display: flex; gap: 1.5rem; align-items: flex-start; }
+.advisory-home .expert-certs { justify-content: flex-start; flex-wrap: wrap; }
+.advisory-home .expert-certs span { font-size: .75rem; }
+.advisory-home .expert-team p { max-width: 65ch; }
+.advisory-home .footer-certs span { font-size: .75rem; }
+.advisory-home .footer-col li a { display: inline-block; padding-block: .35rem; }
+.advisory-home .footer-col ul { gap: .1rem; }
+.advisory-home .form-privacy a { display: inline-block; padding-block: .2rem; }
+.advisory-home .cta-inner { text-align: left; margin-left: 0; }
+.advisory-home .cta-actions { justify-content: flex-start; }
+.advisory-home .sys-card-hero { text-align: left; }
+.advisory-home .sys-card-hero-icon { margin: 0 0 1.1rem; }
+.advisory-home .sys-card-hero strong { font-weight: 400; font-size: 1.3rem; }
+.advisory-home .footer-bottom-links a { display: inline-block; padding-block: .3rem; }
+@media (max-width:768px) {
+  .advisory-home { --section-pad: 3rem; }
+  .advisory-home .section-header { margin-bottom: 1.75rem; }
+  .advisory-home .section-desc { font-size: 1rem; line-height: 1.65; }
+  .advisory-home .section-title { font-size: 1.65rem; }
+  .advisory-home .deliverables-grid { grid-template-columns: 1fr; }
+  .advisory-home .services-track .service-card { display: grid; grid-template-columns: 40px minmax(0,1fr); column-gap: .9rem; align-items: center; }
+  .advisory-home .services-track .service-card .card-icon { width: 40px; height: 40px; margin: 0; }
+  .advisory-home .services-track .service-card h3 { margin: 0; }
+  .advisory-home .services-track .service-card p { grid-column: 1 / -1; margin-top: .8rem; }
+  .advisory-home .hero { padding-top: 6.25rem; }
+  .advisory-home .trust-bar { padding: 1.9rem 0; }
+  .advisory-home .sys-card-hero { padding: 1.5rem 1.25rem; }
+  .advisory-home .process-steps { grid-template-columns: 1fr; gap: 0; }
+  .advisory-home .pcard { display: grid; grid-template-columns: 52px minmax(0,1fr); column-gap: 1rem; padding: 1.1rem 0; border-bottom: 1px solid #dce0d5; }
+  .advisory-home .pcard > :not(.pcard-num) { grid-column: 2; }
+  .advisory-home .pcard-num { grid-row: 1 / span 3; margin: 0; }
+  .advisory-home .expert-main { flex-direction: row; align-items: flex-start; text-align: left; }
+  .advisory-home .expert-card { padding: 1.5rem 1.25rem; gap: 1rem; }
+  .advisory-home .expert-initials { width: 48px; height: 48px; font-size: 1rem; }
+  .advisory-home .footer-top { grid-template-columns: 1fr 1fr; column-gap: 1.25rem; row-gap: 2rem; }
+  .advisory-home .footer-brand { grid-column: 1 / -1; }
+}
