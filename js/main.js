@@ -48,20 +48,6 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
 
-  // SCROLL REVEAL -- trigger when 12% visible, offset from bottom for natural feel
-  const revealEls = document.querySelectorAll('.reveal, .reveal-left, .reveal-right, .reveal-scale');
-  if (revealEls.length) {
-    const revealObserver = new IntersectionObserver((entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('visible');
-          revealObserver.unobserve(entry.target);
-        }
-      });
-    }, { threshold: 0.12, rootMargin: '0px 0px -60px 0px' });
-    revealEls.forEach(el => revealObserver.observe(el));
-  }
-
   // FORM HANDLER — Formspree. The outcome goes to the permanent #formStatus live region (errors, with a mailto fallback);
   // on success the fields give way to a confirmation whose heading takes the focus.
   const form = document.getElementById('contactForm');

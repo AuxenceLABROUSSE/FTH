@@ -306,3 +306,5 @@ html { scroll-padding-top: 6.5rem; }
   .advisory-secondary .ledger tbody tr:last-child { border-bottom: 0; }
   .advisory-secondary .ledger tfoot tr { border-top: 1px solid #c7ddb3; border-bottom: 3px double #c7ddb3; }
 }
+/* Section dash: static (the scroll reveal that grew it is gone) */
+.advisory-home .section-overline::before { width: 24px; animation: none; transition: none; }
