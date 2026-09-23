@@ -246,6 +246,7 @@ html { scroll-padding-top: 6.5rem; }
 .advisory-secondary .page-header + section { padding-top: 3rem; }
 @media (max-width:768px) { .advisory-secondary .page-header { padding: 7.5rem 0 2rem; } }
 /* Contact: the former CTA band is the introduction of the form */
+.advisory-home #contact { border-top: 1px solid #dce0d5; }
 .advisory-home .contact-lead { margin: 0; max-width: 34rem; }
 .advisory-home .contact-details .cd a { color: var(--green); text-decoration: underline; text-underline-offset: 3px; overflow-wrap: anywhere; }
 /* Form outcome: permanent live region, confirmation panel, spinner only when motion is welcome */
