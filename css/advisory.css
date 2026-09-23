@@ -232,7 +232,9 @@ html { scroll-padding-top: 6.5rem; }
   .advisory-home .footer-bottom-links { justify-content: flex-start; flex-wrap: wrap; column-gap: 1.5rem; row-gap: 0; }
 }
 /* Current page in the menu (Blog on the blog and its articles) */
-.advisory-home .nav-menu a[aria-current] { color: var(--green); text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 6px; }
+/* Current page (Blog) and current section (scrollspy, main.js): green and underlined at every width */
+.advisory-home .nav-menu li:not(.nav-menu-cta) a:is([aria-current],.is-current) { color: var(--green) !important; text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 6px; }
+.advisory-home .nav-menu a:is([aria-current],.is-current)::after { display: none; }
 .advisory-home main:focus { outline: none; }
 /* Secondary pages on the left axis: blog index and 404 on the container edge, articles and legal pages on their reading column */
 .advisory-secondary :is(.page-header,.article-header) { text-align: left; background: #faf9f5; border-bottom: 1px solid #dce0d5; }
@@ -295,7 +297,7 @@ html { scroll-padding-top: 6.5rem; }
 .advisory-secondary .ledger :is(th,td):last-child { padding-right: 0; text-align: right; }
 .advisory-secondary .ledger th { color: #c7ddb3; font-size: .8125rem; font-weight: 600; letter-spacing: .05em; }
 .advisory-secondary .ledger :is(thead th,tfoot th) { font-size: .75rem; letter-spacing: .07em; text-transform: uppercase; }
-.advisory-secondary .ledger :is(tbody,tfoot) td:last-child { font-family: var(--font-serif); font-size: 1.05rem; color: #fff; font-variant-numeric: tabular-nums lining-nums; white-space: nowrap; }
+.advisory-secondary .ledger :is(tbody,tfoot) td:last-child { font-family: var(--font-sans); font-weight: 600; font-size: 1rem; color: #fff; font-variant-numeric: tabular-nums lining-nums; white-space: nowrap; }
 .advisory-secondary .ledger tbody tr:last-child :is(th,td) { border-bottom: 0; }
 .advisory-secondary .ledger tfoot :is(th,td) { border-top: 1px solid #c7ddb3; border-bottom: 3px double #c7ddb3; padding-block: .8rem .7rem; }
 @media (max-width:768px) {
@@ -311,3 +313,33 @@ html { scroll-padding-top: 6.5rem; }
 }
 /* Section dash: static (the scroll reveal that grew it is gone) */
 .advisory-home .section-overline::before { width: 24px; animation: none; transition: none; }
+/* UA/EN switch in the Advisory shapes: 6px radius, hairline instead of a shadow, no grey pill once scrolled */
+.advisory-home .navbar .lang-switch { background: none; padding: 0; }
+.advisory-home .lang-btn { border: 1px solid transparent; border-radius: 6px; }
+.advisory-home .navbar .lang-btn.active { background: #fff; border-color: #dce0d5; box-shadow: none; color: var(--g900); }
+/* No hover lift (retired direction); the focus ring appears at once (only colours are animated) */
+.advisory-home :is(.btn,.nav-cta,.expert-card):hover { transform: none; box-shadow: none; }
+.advisory-home :is(.btn,.nav-cta,.lang-btn) { transition-property: background-color, border-color, color; }
+/* Process: number, title, text and "Result" share rows across the columns (subgrid), so the result rules line up */
+@media (min-width:769px) {
+  .advisory-home .pcard { display: grid; grid-row: span 4; grid-template-rows: subgrid; row-gap: 0; align-content: start; }
+}
+/* Form: inline messages in the page language (main.js), linked by aria-describedby */
+.advisory-home .field-error { margin: .35rem 0 0; font-size: .8125rem; line-height: 1.45; color: #a33a2a; }
+.advisory-home .field-error:empty { display: none; }
+.advisory-home .contact-form textarea + .field-error { margin: -1.15rem 0 1.5rem; }
+.advisory-home .contact-form [aria-invalid="true"] { border-color: #a33a2a; }
+/* Mobile: services as a hairline list (like the deliverables); expert text on the full card width */
+@media (max-width:768px) {
+  .advisory-home .services-track { background: none; border: 0; border-top: 1px solid #dce0d5; border-radius: 0; gap: 0; }
+  .advisory-home .services-track .service-card { grid-template-columns: 32px minmax(0,1fr); background: none; padding: 1.25rem 0; border-bottom: 1px solid #dce0d5; }
+  .advisory-home .services-track .service-card .card-icon { width: 32px; height: 32px; border-radius: 4px; }
+  .advisory-home .services-track .service-card p { margin-top: .6rem; }
+  .advisory-home .expert-card { display: grid; grid-template-columns: 48px minmax(0,1fr); column-gap: 1rem; row-gap: 0; align-items: center; }
+  .advisory-home .expert-info { display: contents; }
+  .advisory-home .expert-initials { grid-row: span 2; }
+  .advisory-home .expert-info :is(p,.expert-certs) { grid-column: 1 / -1; }
+  .advisory-home .expert-info p { margin: .9rem 0 .75rem; }
+  .advisory-home .expert-info .expert-role { margin-bottom: 0; }
+}
+.advisory-home :is(.expert-certs,.footer-certs) span { border-radius: 4px; }

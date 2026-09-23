@@ -72,8 +72,29 @@ document.addEventListener('DOMContentLoaded', () => {
     });
     form.insertBefore(done, status);
 
+    // Inline errors in the page language (native bubbles speak the browser's); without JS the native validation still applies
+    form.noValidate = true;
+    const msg = document.documentElement.lang === 'uk'
+      ? { missing: 'Заповніть це поле.', email: 'Вкажіть коректну адресу електронної пошти.' }
+      : { missing: 'Please fill in this field.', email: 'Please enter a valid email address.' };
+    const fields = [...form.querySelectorAll('[required]')];
+    fields.forEach(field => {
+      const err = Object.assign(document.createElement('p'), { id: field.id + '-error', className: 'field-error' });
+      field.after(err);
+      field.setAttribute('aria-describedby', err.id);
+      field.addEventListener('input', () => { if (field.hasAttribute('aria-invalid')) check(field); });
+    });
+    const check = field => {
+      const text = field.validity.valueMissing ? msg.missing : field.validity.valid ? '' : msg.email;
+      document.getElementById(field.id + '-error').textContent = text;
+      if (text) field.setAttribute('aria-invalid', 'true'); else field.removeAttribute('aria-invalid');
+      return !text;
+    };
+
     form.addEventListener('submit', (e) => {
       e.preventDefault();
+      const invalid = fields.filter(field => !check(field));
+      if (invalid.length) { invalid[0].focus(); return; }
       status.textContent = '';
       status.classList.remove('is-error');
       btn.innerHTML = '<span class="btn-busy"><svg class="btn-spinner" width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><circle cx="8" cy="8" r="6" stroke="currentColor" stroke-width="2" stroke-dasharray="28" stroke-dashoffset="8" stroke-linecap="round"/></svg>' + t.sending + '</span>';
@@ -110,24 +131,17 @@ document.addEventListener('DOMContentLoaded', () => {
   // NAV ACTIVE LINK TRACKING -- rAF-throttled
   const sections = document.querySelectorAll('section[id]');
   if (sections.length && navbar) {
-    const navLinks = navbar.querySelectorAll('.nav-menu a');
+    const navLinks = navbar.querySelectorAll('.nav-menu li:not(.nav-menu-cta) a[href^="#"]');
     let navTrackTicking = false;
     window.addEventListener('scroll', () => {
       if (!navTrackTicking) {
         requestAnimationFrame(() => {
           const scrollY = window.scrollY + 200;
-          sections.forEach(section => {
-            const top = section.offsetTop;
-            const height = section.offsetHeight;
-            const id = section.getAttribute('id');
-            if (scrollY >= top && scrollY < top + height) {
-              navLinks.forEach(link => {
-                link.style.color = '';
-                if (link.getAttribute('href') === '#' + id) {
-                  link.style.color = 'var(--green)';
-                }
-              });
-            }
+          const current = [...sections].find(section => scrollY >= section.offsetTop && scrollY < section.offsetTop + section.offsetHeight);
+          navLinks.forEach(link => {
+            const on = !!current && link.getAttribute('href') === '#' + current.id;
+            link.classList.toggle('is-current', on);
+            if (on) link.setAttribute('aria-current', 'location'); else link.removeAttribute('aria-current');
           });
           navTrackTicking = false;
         });
