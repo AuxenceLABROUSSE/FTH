@@ -343,3 +343,27 @@ html { scroll-padding-top: 6.5rem; }
   .advisory-home .expert-info .expert-role { margin-bottom: 0; }
 }
 .advisory-home :is(.expert-certs,.footer-certs) span { border-radius: 4px; }
+/* Contact: the details follow the form in the markup, so on a phone the form comes right after the introduction; wide screens keep them under the introduction */
+.advisory-home .contact-details .cd a { display: inline-block; padding-block: .3rem; }
+@media (min-width:769px) {
+  .advisory-home .contact-layout { grid-template-areas: "text form" "details form"; grid-template-rows: auto 1fr; row-gap: 0; }
+  .advisory-home .contact-text { grid-area: text; }
+  .advisory-home .contact-form { grid-area: form; }
+  .advisory-home .contact-details { grid-area: details; }
+}
+@media (max-width:768px) {
+  .advisory-home .contact-layout { gap: 2rem; }
+  .advisory-home .contact-details { margin-top: .75rem; }
+}
+/* Advisory radii for the legacy pieces still rounded as pills or 12px */
+.advisory-home .blog-card-tag { border-radius: 4px; }
+.advisory-home :is(.card-icon,.sys-card-hero-icon) { border-radius: 8px; }
+/* Skip link: parked just above the viewport and shown at once (it used to slide in from -100% of the page height) */
+.advisory-home .skip-link { top: 1rem; border-radius: 6px; transform: translateY(-200%); transition: none; }
+.advisory-home .skip-link:focus { transform: none; }
+/* Mobile menu on the left axis of the page, links in the heading voice, CTA as heavy as the other buttons */
+@media (max-width:768px) {
+  .advisory-home .nav-menu { align-items: flex-start; text-align: left; padding-inline: 1.25rem; gap: 1.1rem; }
+  .advisory-home .nav-menu li:not(.nav-menu-cta) a { font-family: var(--font-serif); font-weight: 400; font-size: 1.35rem; letter-spacing: -.005em; }
+  .advisory-home .nav-menu .nav-menu-cta a { font-weight: 600; }
+}
