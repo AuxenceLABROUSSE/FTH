@@ -14,6 +14,7 @@ Static website for FTH Advisory: transformation of financial reporting from Ukra
   index.html          # Ukrainian homepage (lang="uk", main edition)
   en.html             # English homepage (/en)
   blog.html, blog-ua.html, blog/*.html   # blog index + 32 articles (16 EN/UA pairs, UA slug ends in -ua)
+                      # tags = 5 themes, same label on cards, article badge and RSS <category>: Standards/Стандарти, Transformation/Трансформація, Insights/Аналітика, Audit/Аудит, Case Study/Кейс
   privacy(-ua).html, terms(-ua).html, 404.html
   css/style.min.css   # legacy base layer (= css/style.css minified), purged on 23/09 of every rule no page could match - do not edit for visual changes
   css/advisory.css    # the visible design: EDIT HERE (loaded last on every page)
@@ -61,7 +62,7 @@ Editorial consulting-firm look: paper background, forest green, serif headings, 
 ### Cache busting
 - CSS/JS are cached 1 year (`immutable`): every page references them with `?v=N`.
 - After ANY change to `advisory.css` or `main.js`, bump the version in ALL 41 HTML files (e.g. `sed -i 's/advisory\.css?v=18/advisory.css?v=19/'` on `*.html blog/*.html`).
-- Current: `style.min.css?v=2`, `advisory.css?v=23`, `main.js?v=15`.
+- Current: `style.min.css?v=2`, `advisory.css?v=23`, `main.js?v=16`.
 - No scroll-reveal classes any more (`reveal*`, `stagger-children`): content is visible at once. If a page uses a new class of the legacy layer, check it is still in `style.min.css` (it was purged against the pages of 23/09).
 - Images/fonts are cached 30 days and not versioned: give a new file name when replacing one.
 

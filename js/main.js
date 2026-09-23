@@ -136,14 +136,21 @@ document.addEventListener('DOMContentLoaded', () => {
     }, { passive: true });
   }
 
-  // BLOG TOPIC FILTER -- chips built from the card tags (counts follow the articles), aria-pressed on the active one
+  // BLOG TOPIC FILTER -- chips built from the card tags (counts follow the articles), aria-pressed on the active one, count announced
   const filter = document.querySelector('.blog-filter');
   if (filter) {
     const cards = [...document.querySelectorAll('.blog-grid .blog-card')];
     const tagOf = card => card.querySelector('.blog-card-tag')?.textContent.trim() || '';
     const counts = new Map();
     cards.forEach(card => counts.set(tagOf(card), (counts.get(tagOf(card)) || 0) + 1));
-    const all = [document.documentElement.lang === 'uk' ? 'Усі' : 'All', cards.length, null];
+    const uk = document.documentElement.lang === 'uk';
+    const all = [uk ? 'Усі' : 'All', cards.length, null];
+    // polite announcement of the result count ("7 статей" / "7 articles")
+    const live = Object.assign(document.createElement('p'), { className: 'sr-only' });
+    live.setAttribute('role', 'status');
+    filter.after(live);
+    const plural = new Intl.PluralRules(uk ? 'uk' : 'en');
+    const words = uk ? { one: 'стаття', few: 'статті', many: 'статей', other: 'статті' } : { one: 'article', other: 'articles' };
     [all, ...[...counts].sort((a, b) => b[1] - a[1]).map(([tag, n]) => [tag, n, tag])].forEach(([label, n, tag]) => {
       const chip = document.createElement('button');
       chip.type = 'button';
@@ -153,6 +160,8 @@ document.addEventListener('DOMContentLoaded', () => {
       chip.addEventListener('click', () => {
         filter.querySelectorAll('.blog-chip').forEach(other => other.setAttribute('aria-pressed', String(other === chip)));
         cards.forEach(card => { card.hidden = tag !== null && tagOf(card) !== tag; });
+        const n = cards.filter(card => !card.hidden).length;
+        live.textContent = n + ' ' + (words[plural.select(n)] || words.other);
       });
       filter.append(chip);
     });
