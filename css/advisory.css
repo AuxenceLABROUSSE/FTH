@@ -227,6 +227,10 @@ html { scroll-padding-top: 6.5rem; }
 .advisory-home .footer-top, .advisory-home .footer-bottom { border-color: #dce0d5; }
 .advisory-home .footer-social a { background: #fff; border: 1px solid #dce0d5; color: #52634f; }
 .advisory-home .footer-social a:hover { background: var(--green); border-color: var(--green); color: #fff; }
+@media (max-width:768px) {
+  .advisory-home .footer-bottom { align-items: flex-start; text-align: left; }
+  .advisory-home .footer-bottom-links { justify-content: flex-start; flex-wrap: wrap; column-gap: 1.5rem; row-gap: 0; }
+}
 /* Current page in the menu (Blog on the blog and its articles) */
 .advisory-home .nav-menu a[aria-current] { color: var(--green); text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 6px; }
 .advisory-home main:focus { outline: none; }
