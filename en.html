@@ -149,7 +149,7 @@
   }
   </script>
   <link rel="stylesheet" href="/css/style.min.css?v=1">
-  <link rel="stylesheet" href="/css/advisory.css?v=18">
+  <link rel="stylesheet" href="/css/advisory.css?v=19">
   <link rel="preload" as="font" type="font/woff2" crossorigin href="/fonts/playfair-display-latin-wght-normal.woff2">
   <link rel="preload" as="font" type="font/woff2" crossorigin href="/fonts/playfair-display-latin-wght-italic.woff2">
   <link rel="icon" href="/favicon.ico" sizes="48x48">
@@ -168,7 +168,7 @@
 <!-- NAV -->
 <nav class="navbar" id="navbar" aria-label="Primary navigation">
   <div class="container">
-    <a href="/en" class="nav-logo"><img src="img/logo-fth-320.webp" srcset="img/logo-fth-160.webp 160w, img/logo-fth-320.webp 320w, img/logo-fth-480.webp 480w" sizes="148px" alt="FTH" class="nav-logo-img" width="320" height="130"></a>
+    <a href="/en" class="nav-logo"><img src="/img/logo-fth-glyph-200.webp" srcset="/img/logo-fth-glyph-100.webp 100w, /img/logo-fth-glyph-200.webp 200w, /img/logo-fth-glyph-300.webp 300w" sizes="74px" alt="FTH" class="nav-logo-img" width="200" height="130"></a>
     <ul class="nav-menu" id="navMenu">
       <li><a href="#services">Services</a></li>
       <li><a href="#system">Approach</a></li>
@@ -191,7 +191,7 @@
   </div>
 </nav>
 
-<main id="main">
+<main id="main" tabindex="-1">
 <!-- HERO -->
 <section class="hero">
   <div class="container">
@@ -213,7 +213,7 @@
         </div>
         <div class="hw-metrics">
           <div class="hw-metric"><strong>IFRS</strong><span>Full Package</span></div>
-          <div class="hw-metric"><strong>2-6 wks</strong><span>Fast Transformation</span></div>
+          <div class="hw-metric"><strong>2–6 wks</strong><span>Fast Trans&shy;formation</span></div>
           <div class="hw-metric"><strong>Audit-ready</strong><span>Reporting ready for audit</span></div>
         </div>
         <ol class="hw-ledger" aria-label="IFRS reporting package">
@@ -498,19 +498,6 @@
   </div>
 </section>
 
-<!-- CTA -->
-<section class="section-cta">
-  <div class="container">
-    <div class="cta-inner reveal">
-      <h2>Let's Discuss How We Can Prepare Your IFRS Financial Statements</h2>
-      <p>Free consultation - tell us about your situation and we'll suggest the best approach.</p>
-      <div class="cta-actions">
-        <a href="#contact" class="btn btn-green">Discuss a Project</a>
-        <a href="mailto:contact@fthadvisory.com" class="btn btn-outline">contact&#64;fthadvisory&#46;com</a>
-      </div>
-    </div>
-  </div>
-</section>
 
 <!-- CONTACT -->
 <section id="contact">
@@ -519,9 +506,11 @@
       <div class="contact-text reveal-left">
         <p class="section-overline">Get in Touch</p>
         <h2 class="section-title">Let's Discuss Your Project</h2>
+        <p class="section-desc contact-lead">Let's discuss how we can prepare your IFRS financial statements. Free consultation - tell us about your situation and we'll suggest the best approach.</p>
         <div class="contact-details">
-          <div class="cd"><strong>Working Hours</strong><span>Mon - Sun: 9:00 - 18:00</span></div>
+          <div class="cd"><strong>Working Hours</strong><span>Mon–Sun: 9:00–18:00</span></div>
           <div class="cd"><strong>Free Consultation</strong><span>Initial project discussion to understand your needs and estimate the scope of work.</span></div>
+          <div class="cd"><strong>Email</strong><span><a href="mailto:contact@fthadvisory.com">contact&#64;fthadvisory&#46;com</a></span></div>
         </div>
       </div>
       <form id="contactForm" class="contact-form reveal-right" action="https://formspree.io/f/mreovopw" method="POST">
@@ -555,6 +544,7 @@
           Send request
           <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </button>
+        <p class="form-status" id="formStatus" role="status" aria-live="polite"></p>
       </form>
     </div>
   </div>
@@ -567,7 +557,7 @@
   <div class="container">
     <div class="footer-top">
       <div class="footer-brand">
-        <a href="/en" class="nav-logo"><img src="img/logo-fth-320.webp" srcset="img/logo-fth-160.webp 160w, img/logo-fth-320.webp 320w, img/logo-fth-480.webp 480w" sizes="118px" alt="FTH" class="footer-logo-img" width="320" height="130"></a>
+        <a href="/en" class="nav-logo"><img src="/img/logo-fth-glyph-200.webp" srcset="/img/logo-fth-glyph-100.webp 100w, /img/logo-fth-glyph-200.webp 200w, /img/logo-fth-glyph-300.webp 300w" sizes="74px" alt="FTH" class="footer-logo-img" width="200" height="130"></a>
         <p class="footer-tagline">Financial reporting transformation from UAS to IFRS. Transparency, clarity, quality.</p>
         <div class="footer-certs"><span>ACCA</span><span>DipIFR</span><span>CPA</span></div>
         <div class="footer-social">
@@ -601,7 +591,7 @@
         <h3>Contact</h3>
         <ul>
           <li><a href="mailto:contact@fthadvisory.com">contact&#64;fthadvisory&#46;com</a></li>
-          <li><span class="footer-info">Mon - Sun, 9:00 - 18:00</span></li>
+          <li><span class="footer-info">Mon–Sun, 9:00–18:00</span></li>
         </ul>
       </div>
     </div>
@@ -615,6 +605,6 @@
   </div>
 </footer>
 
-<script src="/js/main.js?v=13"></script>
+<script src="/js/main.js?v=14"></script>
 </body>
 </html>

@@ -25,7 +25,7 @@ document.addEventListener('DOMContentLoaded', () => {
       toggle.classList.toggle('active', open);
       toggle.setAttribute('aria-expanded', open);
       document.body.style.overflow = open ? 'hidden' : '';
-      document.querySelectorAll('main, footer').forEach(el => { el.inert = open; });
+      document.querySelectorAll('main, footer, .skip-link').forEach(el => { el.inert = open; });
       if (open) menu.querySelector('a')?.focus();
       else if (returnFocus) toggle.focus();
     };
@@ -34,8 +34,19 @@ document.addEventListener('DOMContentLoaded', () => {
     document.addEventListener('keydown', (event) => {
       if (event.key === 'Escape' && menu.classList.contains('active')) setMenu(false, true);
     });
+    // Tab from the last control of the open menu goes back to the first one (and Shift+Tab the other way)
+    toggle.closest('nav').addEventListener('keydown', (event) => {
+      if (event.key !== 'Tab' || !menu.classList.contains('active')) return;
+      const items = [...event.currentTarget.querySelectorAll('a[href], button')].filter(el => el.getClientRects().length);
+      const edge = event.shiftKey ? items[0] : items[items.length - 1];
+      if (document.activeElement === edge) {
+        event.preventDefault();
+        (event.shiftKey ? items[items.length - 1] : items[0]).focus();
+      }
+    });
     window.matchMedia('(min-width: 769px)').addEventListener('change', (e) => { if (e.matches) setMenu(false); });
   }
+
 
   // SCROLL REVEAL -- trigger when 12% visible, offset from bottom for natural feel
   const revealEls = document.querySelectorAll('.reveal, .reveal-left, .reveal-right, .reveal-scale');
@@ -51,61 +62,61 @@ document.addEventListener('DOMContentLoaded', () => {
     revealEls.forEach(el => revealObserver.observe(el));
   }
 
-  // FORM HANDLER — Formspree
+  // FORM HANDLER — Formspree. The outcome goes to the permanent #formStatus live region (errors, with a mailto fallback);
+  // on success the fields give way to a confirmation whose heading takes the focus.
   const form = document.getElementById('contactForm');
   if (form) {
+    const status = document.getElementById('formStatus');
+    const btn = form.querySelector('button[type="submit"]');
+    const originalHTML = btn.innerHTML;
+    const t = document.documentElement.lang === 'uk'
+      ? { sending: 'Надсилаємо...', title: 'Запит прийнято!', text: 'Ми вже обробляємо ваш запит і зв\'яжемося з вами найближчим часом.', again: 'Надіслати ще один запит', error: 'Не вдалося надіслати запит. Спробуйте ще раз або напишіть нам: ' }
+      : { sending: 'Sending...', title: 'Request submitted!', text: 'We are reviewing your request and will get back to you shortly.', again: 'Submit another request', error: 'Your request could not be sent. Please try again or email us: ' };
+    const done = document.createElement('div');
+    done.className = 'form-done';
+    done.innerHTML = '<svg width="40" height="40" viewBox="0 0 48 48" fill="none" aria-hidden="true"><circle cx="24" cy="24" r="22" stroke="currentColor" stroke-width="2"/><path d="M14 24l7 7L34 17" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg><h3 tabindex="-1"></h3><p></p><button type="button" class="btn btn-outline"></button>';
+    done.querySelector('h3').textContent = t.title;
+    done.querySelector('p').textContent = t.text;
+    const again = done.querySelector('button');
+    again.textContent = t.again;
+    again.addEventListener('click', () => {
+      form.reset();
+      form.classList.remove('is-done');
+      form.querySelector('#name')?.focus();
+    });
+    form.insertBefore(done, status);
+
     form.addEventListener('submit', (e) => {
       e.preventDefault();
-      const btn = form.querySelector('button[type="submit"]');
-      const originalHTML = btn.innerHTML;
-      const isUkrainian = document.documentElement.lang === 'uk';
-
-      const formData = new FormData(form);
-      const savedFormHTML = form.innerHTML;
-
-      btn.innerHTML = isUkrainian
-        ? '<span style="display:inline-flex;align-items:center;gap:.5rem"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" style="animation:spin 1s linear infinite"><circle cx="8" cy="8" r="6" stroke="currentColor" stroke-width="2" stroke-dasharray="28" stroke-dashoffset="8" stroke-linecap="round"/></svg>Надсилаємо...</span>'
-        : '<span style="display:inline-flex;align-items:center;gap:.5rem"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" style="animation:spin 1s linear infinite"><circle cx="8" cy="8" r="6" stroke="currentColor" stroke-width="2" stroke-dasharray="28" stroke-dashoffset="8" stroke-linecap="round"/></svg>Sending...</span>';
+      status.textContent = '';
+      status.classList.remove('is-error');
+      btn.innerHTML = '<span class="btn-busy"><svg class="btn-spinner" width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><circle cx="8" cy="8" r="6" stroke="currentColor" stroke-width="2" stroke-dasharray="28" stroke-dashoffset="8" stroke-linecap="round"/></svg>' + t.sending + '</span>';
       btn.disabled = true;
-      btn.style.opacity = '.7';
 
       const controller = new AbortController();
       const timeout = setTimeout(() => controller.abort(), 15000);
 
       fetch('https://formspree.io/f/mreovopw', {
         method: 'POST',
-        body: formData,
+        body: new FormData(form),
         headers: { 'Accept': 'application/json' },
         signal: controller.signal
       }).then(response => {
-        clearTimeout(timeout);
-        if (response.ok) {
-          // Replace form with success message + link to new form
-          const newFormLabel = isUkrainian ? 'Надіслати ще один запит' : 'Submit another request';
-          form.innerHTML = isUkrainian
-            ? '<div role="status" aria-live="polite" style="text-align:center;padding:3rem 1rem"><svg width="48" height="48" viewBox="0 0 48 48" fill="none" style="margin-bottom:1.5rem"><circle cx="24" cy="24" r="22" stroke="var(--green)" stroke-width="2"/><path d="M14 24l7 7L34 17" stroke="var(--green)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg><h3 style="color:var(--g900);margin-bottom:.75rem;font-size:1.5rem">Запит прийнято!</h3><p style="color:var(--g500);font-size:1.1rem;line-height:1.6;max-width:400px;margin:0 auto 1.5rem">Ми вже обробляємо ваш запит і зв\'яжемося з вами найближчим часом.</p><button type="button" class="btn btn-outline" id="resetFormBtn">' + newFormLabel + '</button></div>'
-            : '<div role="status" aria-live="polite" style="text-align:center;padding:3rem 1rem"><svg width="48" height="48" viewBox="0 0 48 48" fill="none" style="margin-bottom:1.5rem"><circle cx="24" cy="24" r="22" stroke="var(--green)" stroke-width="2"/><path d="M14 24l7 7L34 17" stroke="var(--green)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg><h3 style="color:var(--g900);margin-bottom:.75rem;font-size:1.5rem">Request submitted!</h3><p style="color:var(--g500);font-size:1.1rem;line-height:1.6;max-width:400px;margin:0 auto 1.5rem">We are reviewing your request and will get back to you shortly.</p><button type="button" class="btn btn-outline" id="resetFormBtn">' + newFormLabel + '</button></div>';
-          document.getElementById('resetFormBtn').addEventListener('click', () => {
-            form.innerHTML = savedFormHTML;
-            const newBtn = form.querySelector('button[type="submit"]');
-            if (newBtn) {
-              newBtn.disabled = false;
-              newBtn.style.opacity = '';
-            }
-          });
-        } else {
-          throw new Error('Form submission failed');
-        }
+        if (!response.ok) throw new Error('Form submission failed');
+        form.classList.add('is-done');
+        done.querySelector('h3').focus();
       }).catch(() => {
+        status.classList.add('is-error');
+        status.textContent = t.error;
+        const mail = document.createElement('a');
+        mail.href = 'mailto:contact@fthadvisory.com';
+        mail.textContent = 'contact@fthadvisory.com';
+        status.append(mail);
+      }).finally(() => {
         clearTimeout(timeout);
-        btn.innerHTML = isUkrainian
-          ? '<span style="display:inline-flex;align-items:center;gap:.5rem">Помилка. Спробуйте ще раз.</span>'
-          : '<span style="display:inline-flex;align-items:center;gap:.5rem">Error. Please try again.</span>';
-        btn.style.opacity = '1';
-        setTimeout(() => {
-          btn.innerHTML = originalHTML;
-          btn.disabled = false;
-        }, 3000);
+        btn.innerHTML = originalHTML;
+        btn.disabled = false;
+        if (document.activeElement === document.body) btn.focus(); // disabling the button dropped the focus
       });
     });
   }
