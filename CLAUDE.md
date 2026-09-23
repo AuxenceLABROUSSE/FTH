@@ -15,9 +15,9 @@ Static website for FTH Advisory: transformation of financial reporting from Ukra
   en.html             # English homepage (/en)
   blog.html, blog-ua.html, blog/*.html   # blog index + 32 articles (16 EN/UA pairs, UA slug ends in -ua)
   privacy(-ua).html, terms(-ua).html, 404.html
-  css/style.min.css   # legacy base layer (generated from css/style.css) - do not edit for visual changes
+  css/style.min.css   # legacy base layer (= css/style.css minified), purged on 23/09 of every rule no page could match - do not edit for visual changes
   css/advisory.css    # the visible design: EDIT HERE (loaded last on every page)
-  js/main.js          # navbar state, mobile menu, scroll reveal, Formspree form, active nav link, progress bar
+  js/main.js          # navbar state, mobile menu (focus kept inside), Formspree form (#formStatus live region), blog topic filter, active nav link, progress bar
   fonts/              # self-hosted woff2 (Playfair Display latin+cyrillic, DM Sans latin)
   img/og/             # 1200x630 share images, one per page (<slug>.jpg)
   rss.xml, rss-ua.xml, sitemap.xml, robots.txt, llms.txt
@@ -33,6 +33,7 @@ Editorial consulting-firm look: paper background, forest green, serif headings, 
 - Green: `--green: #245438`, `--green-deep: #163b29`, `--green-accent: #34764c`
 - Deep green panel (hero widget, model card): `#173d2b`, flat offset shadow `10px 12px 0 #e5e8de`
 - Muted text: `#52634f`, `#555e55`
+- The legacy zinc tokens `--g50`..`--g900` are re-mapped on `.advisory-home` to green-greys (body `#1f2a22`, footer `#f0f1eb`): use them, never raw zinc values
 - Focus ring: 3px `#487941`, offset 4px
 
 ### NO BLACK BACKGROUNDS - EVER
@@ -60,11 +61,12 @@ Editorial consulting-firm look: paper background, forest green, serif headings, 
 ### Cache busting
 - CSS/JS are cached 1 year (`immutable`): every page references them with `?v=N`.
 - After ANY change to `advisory.css` or `main.js`, bump the version in ALL 41 HTML files (e.g. `sed -i 's/advisory\.css?v=18/advisory.css?v=19/'` on `*.html blog/*.html`).
-- Current: `style.min.css?v=1`, `advisory.css?v=18`, `main.js?v=13`.
+- Current: `style.min.css?v=2`, `advisory.css?v=20`, `main.js?v=15`.
+- No scroll-reveal classes any more (`reveal*`, `stagger-children`): content is visible at once. If a page uses a new class of the legacy layer, check it is still in `style.min.css` (it was purged against the pages of 23/09).
 - Images/fonts are cached 30 days and not versioned: give a new file name when replacing one.
 
 ### Shared template (secondary pages)
-The 39 secondary pages reuse the homepage `<nav>` and `<footer>` of their language (links made absolute, UA/EN pointing to the hreflang twin), a skip link and `<main id="main">`. When the homepage nav or footer changes, apply the same change to all pages of that language.
+The 39 secondary pages reuse the homepage `<nav>` and `<footer>` of their language (links made absolute, UA/EN pointing to the hreflang twin), a skip link and `<main id="main" tabindex="-1">`. Articles mark the Blog menu link `aria-current="true"` (the blog index uses `"page"`). When the homepage nav or footer changes, apply the same change to all pages of that language.
 
 ## Two Language Versions
 - `index.html` = Ukrainian (lang="uk", deliberate: main audience), `en.html` = English (lang="en")
@@ -82,9 +84,8 @@ The 39 secondary pages reuse the homepage `<nav>` and `<footer>` of their langua
 7. Process - 4 numbered steps with their output
 8. Experts - founder, IFRS expert, project team
 9. Latest insights - 3 blog articles
-10. CTA band
-11. Contact - hours, free consultation, Formspree form (visible labels)
-12. Footer
+10. Contact - introduction (former CTA band text), hours, free consultation, e-mail, Formspree form (visible labels, `#formStatus` live region for errors with a mailto fallback)
+11. Footer
 
 The text belongs to the client (content updates of 12/04 and 21/08/2026). Do not reintroduce "IT-фокус", "Big 4" positioning, the phone number or testimonials without the client's approval.
 
