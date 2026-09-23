@@ -268,7 +268,7 @@ html { scroll-padding-top: 6.5rem; }
 .advisory-home .form-done h3:focus { outline: none; }
 .advisory-home .form-done p { color: #52634f; margin: 0 0 1.5rem; max-width: 26rem; }
 /* Blog index: latest article in full width, topic chips (built by main.js from the card tags) */
-.advisory-secondary .blog-filter { display: flex; gap: .4rem; min-height: 2.75rem; margin-bottom: 2rem; overflow-x: auto; scrollbar-width: none; }
+.advisory-secondary .blog-filter { display: flex; flex-wrap: wrap; gap: .4rem; min-height: 2.75rem; margin-bottom: 2rem; }
 .advisory-secondary .blog-chip { flex: none; display: inline-flex; align-items: center; gap: .4rem; min-height: 2.75rem; padding: 0 .8rem; border: 1px solid #c3cabb; border-radius: 6px; background: #fff; color: #1f2a22; font: inherit; font-size: .875rem; font-weight: 500; cursor: pointer; }
 .advisory-secondary .blog-chip span { color: #52634f; font-size: .8125rem; font-variant-numeric: tabular-nums; }
 .advisory-secondary .blog-chip:hover { border-color: var(--green); }
@@ -276,6 +276,7 @@ html { scroll-padding-top: 6.5rem; }
 .advisory-secondary .blog-chip[aria-pressed="true"] span { color: #d7e6cb; }
 .advisory-secondary .blog-chip:focus-visible { outline: 3px solid #487941; outline-offset: 3px; }
 .advisory-secondary .blog-grid .blog-card[hidden] { display: none; }
+@media (max-width:768px) { .advisory-secondary .blog-filter { gap: .35rem; } .advisory-secondary .blog-chip { padding: 0 .6rem; font-size: .8125rem; } }
 .advisory-secondary .blog-card-featured { grid-column: 1 / -1; background: #fff; }
 .advisory-secondary .blog-card-featured .blog-card-title { font-size: clamp(1.45rem, 2.4vw, 2rem); line-height: 1.2; }
 @media (min-width:769px) {
@@ -284,9 +285,6 @@ html { scroll-padding-top: 6.5rem; }
   .advisory-secondary .blog-card-featured .blog-card-title { grid-column: 1; grid-row: 2 / span 2; margin: 0; }
   .advisory-secondary .blog-card-featured > p { grid-column: 2; grid-row: 2; margin: 0 0 1.25rem; font-size: 1rem; }
   .advisory-secondary .blog-card-featured .blog-card-link { grid-column: 2; grid-row: 3; }
-}
-@media (max-width:768px) {
-  .advisory-secondary .blog-filter { margin-inline: -1.25rem; padding-inline: 1.25rem; }
 }
 /* Case study: the adjustments published in the article, set as a ledger (same language as the hero widget) */
 .advisory-secondary .ledger-wrap { margin: 2rem 0 2.25rem; background: #173d2b; border-radius: 10px; padding: 1.5rem 1.75rem 1.25rem; box-shadow: 10px 12px 0 #e5e8de; }

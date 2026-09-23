@@ -61,7 +61,7 @@ Editorial consulting-firm look: paper background, forest green, serif headings, 
 ### Cache busting
 - CSS/JS are cached 1 year (`immutable`): every page references them with `?v=N`.
 - After ANY change to `advisory.css` or `main.js`, bump the version in ALL 41 HTML files (e.g. `sed -i 's/advisory\.css?v=18/advisory.css?v=19/'` on `*.html blog/*.html`).
-- Current: `style.min.css?v=2`, `advisory.css?v=22`, `main.js?v=15`.
+- Current: `style.min.css?v=2`, `advisory.css?v=23`, `main.js?v=15`.
 - No scroll-reveal classes any more (`reveal*`, `stagger-children`): content is visible at once. If a page uses a new class of the legacy layer, check it is still in `style.min.css` (it was purged against the pages of 23/09).
 - Images/fonts are cached 30 days and not versioned: give a new file name when replacing one.
 
