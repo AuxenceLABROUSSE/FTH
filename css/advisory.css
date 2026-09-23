@@ -215,3 +215,9 @@ html { scroll-padding-top: 6.5rem; }
   .advisory-home .footer-top { grid-template-columns: 1fr 1fr; column-gap: 1.25rem; row-gap: 2rem; }
   .advisory-home .footer-brand { grid-column: 1 / -1; }
 }
+/* Finish: 12px floor for tags, 24px targets, 404 numeral readable (3:1 on paper), balanced ledger total */
+.advisory-home .blog-card-tag { font-size: .75rem; }
+.advisory-home .nav-menu a { padding-block: .3rem; }
+.advisory-secondary .article-back { padding-block: .35rem; }
+.advisory-secondary .error-code { color: #7f9673; }
+.advisory-home .hw-total span:last-child { text-wrap: balance; }

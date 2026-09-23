@@ -59,8 +59,8 @@ Editorial consulting-firm look: paper background, forest green, serif headings, 
 
 ### Cache busting
 - CSS/JS are cached 1 year (`immutable`): every page references them with `?v=N`.
-- After ANY change to `advisory.css` or `main.js`, bump the version in ALL 41 HTML files (e.g. `sed -i 's/advisory\.css?v=17/advisory.css?v=18/'` on `*.html blog/*.html`).
-- Current: `style.min.css?v=1`, `advisory.css?v=17`, `main.js?v=13`.
+- After ANY change to `advisory.css` or `main.js`, bump the version in ALL 41 HTML files (e.g. `sed -i 's/advisory\.css?v=18/advisory.css?v=19/'` on `*.html blog/*.html`).
+- Current: `style.min.css?v=1`, `advisory.css?v=18`, `main.js?v=13`.
 - Images/fonts are cached 30 days and not versioned: give a new file name when replacing one.
 
 ### Shared template (secondary pages)
