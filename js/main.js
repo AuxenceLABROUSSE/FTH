@@ -150,6 +150,28 @@ document.addEventListener('DOMContentLoaded', () => {
     }, { passive: true });
   }
 
+  // BLOG TOPIC FILTER -- chips built from the card tags (counts follow the articles), aria-pressed on the active one
+  const filter = document.querySelector('.blog-filter');
+  if (filter) {
+    const cards = [...document.querySelectorAll('.blog-grid .blog-card')];
+    const tagOf = card => card.querySelector('.blog-card-tag')?.textContent.trim() || '';
+    const counts = new Map();
+    cards.forEach(card => counts.set(tagOf(card), (counts.get(tagOf(card)) || 0) + 1));
+    const all = [document.documentElement.lang === 'uk' ? 'Усі' : 'All', cards.length, null];
+    [all, ...[...counts].sort((a, b) => b[1] - a[1]).map(([tag, n]) => [tag, n, tag])].forEach(([label, n, tag]) => {
+      const chip = document.createElement('button');
+      chip.type = 'button';
+      chip.className = 'blog-chip';
+      chip.setAttribute('aria-pressed', String(tag === null));
+      chip.append(label + ' ', Object.assign(document.createElement('span'), { textContent: n }));
+      chip.addEventListener('click', () => {
+        filter.querySelectorAll('.blog-chip').forEach(other => other.setAttribute('aria-pressed', String(other === chip)));
+        cards.forEach(card => { card.hidden = tag !== null && tagOf(card) !== tag; });
+      });
+      filter.append(chip);
+    });
+  }
+
   // SMOOTH SCROLL PROGRESS BAR
   const progressBar = document.getElementById('scrollProgress');
   if (progressBar) {
