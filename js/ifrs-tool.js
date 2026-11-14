@@ -1,402 +1,408 @@
-/* Preliminary IFRS tool (/ifrs-tool, /ifrs-tool-ua).
-   Everything happens in this page: the trial balance (ОСВ) is read with SheetJS from the
-   file the visitor picks, and computed here. This script makes no network call (no fetch,
-   XHR, beacon or form): the file never leaves the visitor's computer.
+/* FTH Reporting Portal, client side (/ifrs-tool, /ifrs-tool-ua).
 
-   Rules (also in tools/reference-ifrs.py, which checks the figures):
-   - net = debit - credit (opening, period movement, closing); class 0 (off-balance) ignored;
-   - a parent account (10) is used only if none of its sub-accounts in the file (103, 104...)
-     has an amount, so nothing is counted twice; a parent whose amount differs from the sum
-     of its sub-accounts is reported;
-   - IFRS category: the account itself in the FTH mapping, else its longest prefix of at
-     least 2 characters (as find_type_for_account in the FTH scripts); the visitor can change it;
-   - balance sheet from classes 1-6, equity and liabilities shown as -net;
-   - the result not yet closed to retained earnings is -(sum of class 7-9 balances): it is
-     added to retained earnings, and is 0 when the TB is already closed through 79;
-   - P&L from class 7-9 period movements (79x excluded) shown as -net; if accounts were
-     closed through 79 during the period, the net movement is ~0, so the P&L uses the natural
-     side instead (credit turnover of class 7, debit turnover of class 9 or 8, debit of the
-     revenue deductions 704/7092) and says so. */
+   Steps: 1 upload -> 2 data checks -> 3 mapping -> 4 preliminary statements -> 5 IFRS readiness
+   -> 6 secure hand-over to FTH; plus "results from FTH" (signed release opened with a passphrase).
+
+   Privacy: the ОСВ is read and computed in this page (js/fth/core.js). This script makes no
+   network call (no fetch, XHR, beacon or form submit); the only output is a file the visitor
+   saves: an Excel export, or a package sealed to the FTH public key (js/fth/vault.js) that only
+   FTH can open. Nothing is stored in the browser. */
 (function () {
   'use strict';
-  var D = window.FTH_IFRS_DATA;
-  var UK = document.documentElement.lang === 'uk';
-  var T = UK ? {
-    nca: 'Необоротні активи', ca: 'Оборотні активи', totalAssets: 'Усього активів',
-    eq: 'Власний капітал', totalEquity: 'Усього власного капіталу',
-    ncl: 'Довгострокові зобов’язання', cl: 'Поточні зобов’язання', totalLiab: 'Усього зобов’язань',
-    totalEqLiab: 'Усього капіталу та зобов’язань', opening: 'На початок', closing: 'На кінець',
-    item: 'Стаття', period: 'За період', line: 'Стаття', unplacedBs: 'Не класифіковано (рахунки 1–6)',
-    revenue: 'Дохід від реалізації', gross: 'Валовий прибуток', operating: 'Операційний прибуток',
-    pbt: 'Прибуток до оподаткування', unplacedPl: 'Не класифіковано (рахунки 7–9)', profit: 'Прибуток (збиток) за період',
-    account: 'Рахунок', name: 'Назва', category: 'Категорія МСФЗ', status: 'Статус',
-    exact: 'з мапінгу FTH', viaPrefix: 'за групою ', manual: 'змінено вами', unknown: 'немає категорії',
-    unplaced: 'категорія без статті', closingAcc: 'рахунок закриття, не входить до звітів',
-    none: '— не класифіковано —', noLine: ' (без статті у звітах)',
-    checkOk: 'Контроль: активи = капітал + зобов’язання (різниця 0,00 на початок і на кінець).',
-    checkKo: 'Контроль не пройдено: активи − (капітал + зобов’язання) = ',
-    checkKoUnplaced: '. Некласифіковані рахунки 1–6 із сумами: ',
-    resultAdded: 'Рік не закрито в обліку: результат, ще не перенесений на рахунок 44 (', resultAdded2: '), додано до нерозподіленого прибутку.',
-    resultClosed: 'Рік уже закрито через рахунок 79: результат вже у нерозподіленому прибутку, нічого не додано.',
-    naturalSide: 'Доходи й витрати закрито через рахунок 79 протягом періоду: звіт про прибутки та збитки складено за оборотами (кредит класу 7, дебет класу 9), без урахування сторнувань. Перевірте.',
-    summary: function (n, u) { return n + ' рахунків із сумами' + (u ? ', з них ' + u + ' потребують категорії.' : ', усі класифіковано.'); },
-    tbKo: 'Сальдо ОСВ не збігаються (дебет − кредит = ', tbKo2: '). Перевірте структуру файлу.',
-    parentKo: function (p, x) { return 'Рахунок ' + p + ' не дорівнює сумі своїх субрахунків (різниця ' + x + '): використано субрахунки.'; },
-    loading: 'Читання файлу на вашому комп’ютері…', loaded: function (n) { return 'Файл прочитано: ' + n + ' рахунків. Нічого не надіслано.'; },
-    demoLoaded: 'Завантажено приклад: ОСВ «Добро» за 2015 р.', noRows: 'У файлі не знайдено рахунків. Потрібна ОСВ: рахунок у колонці A, далі сальдо на початок, обороти, сальдо на кінець (дебет / кредит).',
-    readError: 'Не вдалося прочитати файл: ', fromFile: 'з файлу'
-  } : {
-    nca: 'Non-current assets', ca: 'Current assets', totalAssets: 'Total assets',
-    eq: 'Equity', totalEquity: 'Total equity',
-    ncl: 'Non-current liabilities', cl: 'Current liabilities', totalLiab: 'Total liabilities',
-    totalEqLiab: 'Total equity and liabilities', opening: 'Opening', closing: 'Closing',
-    item: 'Line item', period: 'Period', line: 'Line item', unplacedBs: 'Not classified (accounts 1–6)',
-    revenue: 'Revenue', gross: 'Gross profit', operating: 'Profit from operations',
-    pbt: 'Profit before tax', unplacedPl: 'Not classified (accounts 7–9)', profit: 'Profit (loss) for the period',
-    account: 'Account', name: 'Name', category: 'IFRS category', status: 'Status',
-    exact: 'FTH mapping', viaPrefix: 'via group ', manual: 'changed by you', unknown: 'no category',
-    unplaced: 'category with no line', closingAcc: 'closing account, not in the statements',
-    none: '— not classified —', noLine: ' (no statement line)',
-    checkOk: 'Check: assets = equity + liabilities (difference 0.00 at opening and closing).',
-    checkKo: 'Check failed: assets − (equity + liabilities) = ',
-    checkKoUnplaced: '. Unclassified accounts 1–6 with amounts: ',
-    resultAdded: 'The year is not closed in the books: the result not yet transferred to account 44 (', resultAdded2: ') is added to retained earnings.',
-    resultClosed: 'The year is already closed through account 79: the result is in retained earnings, nothing added.',
-    naturalSide: 'Income and expenses were closed through account 79 during the period: the P&L is built from turnovers (credit of class 7, debit of class 9), reversals not netted. Please check.',
-    summary: function (n, u) { return n + ' accounts with amounts' + (u ? ', ' + u + ' need a category.' : ', all classified.'); },
-    tbKo: 'The trial balance does not balance (debit − credit = ', tbKo2: '). Check the file layout.',
-    parentKo: function (p, x) { return 'Account ' + p + ' differs from the sum of its sub-accounts (difference ' + x + '): the sub-accounts are used.'; },
-    loading: 'Reading the file on your computer…', loaded: function (n) { return 'File read: ' + n + ' accounts. Nothing was sent.'; },
-    demoLoaded: 'Sample loaded: trial balance of “Добро”, 2015.', noRows: 'No accounts found in the file. Expected a Ukrainian trial balance (ОСВ): account in column A, then opening balance, turnovers and closing balance (debit / credit).',
-    readError: 'The file could not be read: ', fromFile: 'from the file'
-  };
-  var SECTIONS = { nca: T.nca, ca: T.ca, eq: T.eq, ncl: T.ncl, cl: T.cl };
-  var fmt = new Intl.NumberFormat(UK ? 'uk-UA' : 'en-GB', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-  var EPS = 0.005;
-  var money = function (v) { return fmt.format(Math.abs(v) < EPS ? 0 : v); };
-
-  var lineOf = {};
-  D.balanceLines.forEach(function (l) { l.categories.forEach(function (c) { lineOf[c] = { st: 'bs', line: l }; }); });
-  D.pnlLines.forEach(function (l) { l.categories.forEach(function (c) { lineOf[c] = { st: 'pl', line: l }; }); });
-  var catLabel = function (c) { return UK ? (D.categoryUk[c] || c) : c; };
-  var label = function (l) { return UK ? l.uk : l.en; };
-
-  function normCode(v) {
-    if (v === null || v === undefined) return '';
-    if (typeof v === 'number') return isFinite(v) ? String(v) : '';
-    var s = String(v).trim();
-    return /^\d+\.0$/.test(s) ? s.slice(0, -2) : s;
-  }
-  /* Amount cell: a number, or text such as "1 234,56", "1,234.56", "1.234,56", "-1234.5".
-     Spaces are dropped; with both "," and "." the last one is the decimal mark; with only one
-     kind, several occurrences are thousands separators and a single one is the decimal mark. */
-  function num(v) {
-    if (typeof v === 'number') return isFinite(v) ? v : 0;
-    if (v === null || v === undefined) return 0;
-    var t = String(v).replace(/[\s  ']/g, '');
-    if (!t) return 0;
-    var c = t.lastIndexOf(','), d = t.lastIndexOf('.');
-    if (c >= 0 && d >= 0) t = c > d ? t.replace(/\./g, '').replace(',', '.') : t.replace(/,/g, '');
-    else if (c >= 0) t = t.split(',').length > 2 ? t.replace(/,/g, '') : t.replace(',', '.');
-    else if (d >= 0 && t.split('.').length > 2) t = t.replace(/\./g, '');
-    var n = Number(t);
-    return isFinite(n) ? n : 0;
-  }
-  /* An account of the Ukrainian chart: 1 to 4 digits (class, account, sub-account, 1C/BAS
-     sub-sub-account), optionally with a short suffix (36Р, 4800.2). A longer number in column A
-     (5 digits or more: analytic codes, tax IDs, item numbers) is an analytic line, ignored. */
-  var isAccount = function (code) { return /^\d{1,4}(?:[.A-Za-zЀ-ӿ][0-9A-Za-zЀ-ӿ]{0,3})?$/.test(code); };
-  var classOf = function (code) { return code.charAt(0); };
-  var isRevenueDeduction = function (code) { return D.revenueDeductions.some(function (d) { return code.indexOf(d) === 0; }); };
-
-  // Mapping category of an account: exact (even a one-digit class such as 6), else longest prefix of >= 2 characters.
-  function mappedCategory(code) {
-    var exact = D.mapping[code];
-    if (exact) return { category: exact.category, via: '', name: exact.name };
-    for (var i = code.length - 1; i >= 2; i--) {
-      var m = D.mapping[code.slice(0, i)];
-      if (m) return { category: m.category, via: i === code.length ? '' : code.slice(0, i), name: m.name };
-    }
-    return { category: '', via: '', name: '' };
-  }
-
-  /* tb.rows: [code, openDebit, openCredit, periodDebit, periodCredit, closeDebit, closeCredit]
-     overrides: { code: category } chosen by the visitor. */
-  function compute(tb, overrides) {
-    overrides = overrides || {};
-    var acc = {};
-    tb.rows.forEach(function (r) {
-      var code = normCode(r[0]);
-      if (!isAccount(code) || code.charAt(0) === '0') return;
-      var a = acc[code] || (acc[code] = { o: 0, t: 0, c: 0, td: 0, tc: 0 });
-      a.o += num(r[1]) - num(r[2]); a.td += num(r[3]); a.tc += num(r[4]); a.c += num(r[5]) - num(r[6]);
-      a.t = a.td - a.tc;
-    });
-    var amounts = function (a) { return Math.abs(a.o) > 1e-9 || Math.abs(a.c) > 1e-9 || Math.abs(a.td) > 1e-9 || Math.abs(a.tc) > 1e-9; };
-    var codes = Object.keys(acc).filter(function (c) { return amounts(acc[c]); }).sort();
-    var hasSub = function (p) { return codes.some(function (c) { return c !== p && c.indexOf(p) === 0; }); };
-    var leaves = codes.filter(function (c) { return !hasSub(c); });
-    var warnings = [], warned = {};
-    codes.forEach(function (p) {
-      if (!hasSub(p)) return;
-      var subs = leaves.filter(function (c) { return c.indexOf(p) === 0; });
-      ['o', 'c'].forEach(function (k) {
-        var d = acc[p][k] - subs.reduce(function (s, c) { return s + acc[c][k]; }, 0);
-        if (Math.abs(d) > 0.5 && Math.abs(acc[p][k]) > EPS && !warned[p]) { warned[p] = true; warnings.push(T.parentKo(p, money(d))); }
-      });
-    });
-
-    var closed79 = codes.some(function (c) { return c.indexOf('79') === 0 && (acc[c].td || acc[c].tc); });
-    var turnover9 = leaves.some(function (c) { return classOf(c) === '9' && (acc[c].td || acc[c].tc); });
-    var unplacedBsCount = 0, bs = {}, pl = {}, unplacedBs = [0, 0], unplacedPl = 0, plBal = [0, 0], tbSum = [0, 0];
-    var accounts = leaves.map(function (code) {
-      var a = acc[code], m = mappedCategory(code);
-      var manual = Object.prototype.hasOwnProperty.call(overrides, code);
-      var cat = manual ? overrides[code] : m.category;
-      var st = '123456'.indexOf(classOf(code)) >= 0 ? 'bs' : 'pl';
-      var where = lineOf[cat] && lineOf[cat].st === st ? lineOf[cat].line : null;
-      var status = code.indexOf('79') === 0 ? 'closingAcc' : !cat ? 'unknown' : !where ? 'unplaced' : manual ? 'manual' : m.via ? 'via' : 'exact';
-      tbSum[0] += a.o; tbSum[1] += a.c;
-      if (st === 'bs') {
-        if (where) { var b = bs[where.id] || (bs[where.id] = [0, 0]); b[0] += a.o; b[1] += a.c; }
-        else { unplacedBs[0] += a.o; unplacedBs[1] += a.c; if (Math.abs(a.o) > EPS || Math.abs(a.c) > EPS) unplacedBsCount++; }
-      } else {
-        plBal[0] += a.o; plBal[1] += a.c;
-        if (code.indexOf('79') !== 0) {
-          var k = classOf(code), v;
-          if (!closed79) v = -a.t;
-          else if (isRevenueDeduction(code)) v = -a.td;
-          else if (k === '7') v = a.tc;
-          else if (k === '8' && turnover9) v = 0;
-          else v = -a.td;
-          if (where) pl[where.id] = (pl[where.id] || 0) + v; else unplacedPl += v;
-        }
-      }
-      return { code: code, name: m.name, via: m.via, category: cat, statement: st, status: status,
-        opening: a.o, movement: a.t, closing: a.c };
-    });
-
-    // Balance sheet: assets +net, equity and liabilities -net; result not yet closed added to retained earnings.
-    var resultAdded = [-plBal[0], -plBal[1]];
-    var sections = {}, balance = [];
-    D.balanceLines.forEach(function (l) {
-      var v = bs[l.id] || [0, 0], sign = l.section === 'nca' || l.section === 'ca' ? 1 : -1;
-      var row = { id: l.id, label: label(l), section: l.section, values: [sign * v[0], sign * v[1]] };
-      if (l.id === 'retained_earnings') { row.values[0] += resultAdded[0]; row.values[1] += resultAdded[1]; }
-      var s = sections[l.section] || (sections[l.section] = [0, 0]);
-      s[0] += row.values[0]; s[1] += row.values[1];
-      balance.push(row);
-    });
-    var tot = function (a, b) { return [0, 1].map(function (i) { return (sections[a] || [0, 0])[i] + (b ? (sections[b] || [0, 0])[i] : 0); }); };
-    var assets = tot('nca', 'ca'), equity = tot('eq'), liabilities = tot('ncl', 'cl');
-    var diff = [0, 1].map(function (i) { return assets[i] - equity[i] - liabilities[i]; });
-
-    var p = function (id) { return pl[id] || 0; };
-    var gross = p('revenue') + p('cost_of_sales') + p('impairment');
-    var operating = gross + p('other_income') + p('administrative') + p('distribution') + p('other_expenses');
-    var pbt = operating + p('finance_income') + p('finance_costs');
-    var profit = pbt + p('tax') + unplacedPl;
-    if (Math.abs(tbSum[0]) > 0.5 || Math.abs(tbSum[1]) > 0.5) warnings.unshift(T.tbKo + money(Math.abs(tbSum[0]) > 0.5 ? tbSum[0] : tbSum[1]) + T.tbKo2);
-    var checkOk = Math.abs(diff[0]) < EPS && Math.abs(diff[1]) < EPS && unplacedBsCount === 0;
-    return { checkOk: checkOk, unplacedBsCount: unplacedBsCount, accounts: accounts, balance: balance, sections: sections, assets: assets, equity: equity, liabilities: liabilities,
-      diff: diff, unplacedBs: unplacedBs, resultAdded: resultAdded, closed79: closed79, pl: pl, unplacedPl: unplacedPl,
-      gross: gross, operating: operating, pbt: pbt, profit: profit, revenue: p('revenue'), warnings: warnings };
-  }
-
-  /* Rows of the first sheet (array of arrays) -> { company, period, rows }.
-     Columns: found from the header row (Дебет / Кредит / Debit / Credit, three pairs; a pair
-     may span several columns, as the B+C opening debit of 1C/BAS exports), else the ОСВ
-     layout of the FTH scripts: A account, B+C, D, E, F, G, H. */
-  function parseSheet(grid) {
-    var company = '', period = '', groups = null, start = 0;
-    for (var r = 0; r < Math.min(grid.length, 15); r++) {
-      var row = grid[r] || [];
-      row.forEach(function (cell) {
-        var s = String(cell).trim(), m = s.match(/(відомість|ведомость|balance)[^]*?\s(за|for)\s+(.+)$/i);
-        if (m && !period) period = m[3];
-      });
-      if (r === 0 && row[0] && !/(відомість|ведомость)/i.test(String(row[0]))) company = String(row[0]).trim();
-      var labels = [];
-      row.forEach(function (cell, i) {
-        var s = String(cell).trim().toLowerCase();
-        if (/^(дебет|дт|debit|dr)$/.test(s)) labels.push({ i: i, d: true });
-        if (/^(кредит|кт|credit|cr)$/.test(s)) labels.push({ i: i, d: false });
-      });
-      if (!groups && labels.length >= 6 && labels.slice(0, 6).every(function (l, k) { return l.d === (k % 2 === 0); })) {
-        groups = labels.slice(0, 6).map(function (l, k) {
-          var end = k < 5 ? labels[k + 1].i : l.i + 1, cols = [];
-          for (var c = l.i; c < end; c++) cols.push(c);
-          return cols;
-        });
-        start = r + 1;
-      }
-    }
-    groups = groups || [[1, 2], [3], [4], [5], [6], [7]];
-    var rows = [];
-    for (var i = start; i < grid.length; i++) {
-      var g = grid[i] || [];
-      // Off-balance accounts 01-09 typed as numbers arrive as 1..9: keep them in class 0 (ignored).
-      var code = typeof g[0] === 'number' && g[0] >= 1 && g[0] <= 9 && Number.isInteger(g[0]) ? '0' + g[0] : normCode(g[0]);
-      if (!isAccount(code)) continue;
-      rows.push([code].concat(groups.map(function (cols) { return cols.reduce(function (s, c) { return s + num(g[c]); }, 0); })));
-    }
-    return { company: company, period: period, rows: rows };
-  }
-
-  window.FTHIFRS = { compute: compute, parseSheet: parseSheet };
-
-  /* ---------- page ---------- */
+  var C = window.FTHCore, V = window.FTHVault;
   var $ = function (id) { return document.getElementById(id); };
-  if (!$('ifrsDemo')) return;
-  var tb = null, overrides = {};
+  if (!C || !$('fthpUpload')) return;
+  var M = C.buildModel(window.FTH_IFRS_DATA, window.FTH_IFRS_MODEL);
+  var KEYS = window.FTH_KEYS;
+  var LANG = document.documentElement.lang === 'uk' ? 'uk' : 'en';
+  var UK = LANG === 'uk';
 
-  function el(tag, cls, text) {
-    var e = document.createElement(tag);
-    if (cls) e.className = cls;
-    if (text !== undefined) e.textContent = text;
-    return e;
-  }
-  function numCell(tag, v, total) {
-    var c = el(tag, 'ifrs-num' + (v < -EPS ? ' is-negative' : ''), money(v));
-    if (total) c.setAttribute('data-total', total);
-    return c;
-  }
+  var T = UK ? {
+    nca: 'Необоротні активи', ca: 'Оборотні активи', totalAssets: 'Усього активів', eq: 'Власний капітал', totalEquity: 'Усього власного капіталу',
+    ncl: 'Довгострокові зобов’язання', cl: 'Поточні зобов’язання', totalLiab: 'Усього зобов’язань', totalEqLiab: 'Усього капіталу та зобов’язань',
+    opening: 'На початок', closing: 'На кінець', item: 'Стаття', period: 'За період', unplacedBs: 'Не класифіковано (рахунки 1–6)',
+    gross: 'Валовий прибуток', operating: 'Операційний прибуток', pbt: 'Прибуток до оподаткування', unplacedPl: 'Не класифіковано (рахунки 7–9)', profit: 'Прибуток (збиток) за період',
+    account: 'Рахунок', category: 'Категорія МСФЗ', movement: 'Обороти (нетто)',
+    st: { exact: 'мапінг FTH', via: 'за групою ', fixed: 'мапінг FTH 2.0', manual: 'змінено вами', unknown: 'потрібна категорія', unplaced: 'категорія без статті' },
+    closingAcc: 'рахунок закриття, не входить до звітів', none: '— оберіть категорію —', noLine: ' (без статті)',
+    reading: 'Читання файлу на вашому комп’ютері…', read: function (n, s) { return 'Прочитано ' + n + ' рахунків з аркуша «' + s + '». Нічого не надіслано.'; },
+    demo1: 'Приклад «Добро», 2015: проста ОСВ, рік не закрито.', demo2: 'Приклад «Північ Софт», 2025: IT-компанія, рік закрито через 79.',
+    err: { tooLarge: 'Файл більший за 15 МБ. Вивантажте ОСВ без аналітики.', badType: 'Це не файл Excel (.xls або .xlsx). Перевірте формат вивантаження.', unreadable: 'Не вдалося прочитати файл. ', noRows: 'У файлі не знайдено рахунків. Потрібна ОСВ: рахунок у колонці A, далі сальдо на початок, обороти й сальдо на кінець (дебет / кредит).' },
+    tiles: ['Рахунків', 'Класифіковано', 'Перевірок пройдено', 'Баланс'], balancedYes: 'сходиться', balancedNo: 'не сходиться',
+    shown: function (n, t) { return 'Показано ' + n + ' з ' + t; },
+    kpi: ['Дохід', 'Прибуток за період', 'Усього активів', 'Власний капітал'],
+    levels: { high: 'Ймовірно суттєво', medium: 'Перевірити', info: 'До уваги' },
+    readinessSummary: function (h, m) { return h + ' ймовірно суттєвих і ' + m + ' до перевірки напрямів коригувань МСФЗ.'; },
+    sent: function (id) { return 'Пакет зашифровано ключем FTH ' + id + '. Надішліть файл на contact@fthadvisory.com або через ваш захищений канал: відкрити його може лише FTH.'; },
+    needConsent: 'Підтвердьте, що маєте право передати ці дані FTH.', needName: 'Вкажіть назву компанії та контактну особу.', noKeys: 'Ключ FTH недоступний: оновіть сторінку.',
+    sealing: 'Шифрування…', resOpening: 'Перевірка підпису й розшифрування…', resBad: 'Неправильна фраза-пароль або пошкоджений файл.', resNot: 'Це не файл результатів FTH (.fthres).',
+    resVerified: 'Підпис FTH перевірено: результати не змінювалися після випуску.', resUnverified: 'Підпис не відповідає ключу FTH цього сайту: не довіряйте цьому файлу.',
+    status: { draft: 'Чернетка', in_review: 'На перевірці', reviewed: 'Перевірено FTH', released: 'Випущено FTH' },
+    releasedBy: 'Випустив', releasedAt: 'Дата', engagement: 'Проєкт', statusL: 'Статус', notesFTH: 'Коментар FTH', local: 'П(С)БО', adj: 'Коригування', ifrs: 'МСФЗ',
+    xlsxName: 'FTH-попередня-звітність', sheetBs: 'Баланс', sheetPl: 'Прибутки та збитки', sheetMap: 'Мапінг', sheetChecks: 'Перевірки', nameCol: 'Назва', statusCol: 'Статус',
+    prelimTag: 'ПОПЕРЕДНЬО — не є звітністю за МСФЗ'
+  } : {
+    nca: 'Non-current assets', ca: 'Current assets', totalAssets: 'Total assets', eq: 'Equity', totalEquity: 'Total equity',
+    ncl: 'Non-current liabilities', cl: 'Current liabilities', totalLiab: 'Total liabilities', totalEqLiab: 'Total equity and liabilities',
+    opening: 'Opening', closing: 'Closing', item: 'Line item', period: 'Period', unplacedBs: 'Not classified (accounts 1–6)',
+    gross: 'Gross profit', operating: 'Operating profit', pbt: 'Profit before tax', unplacedPl: 'Not classified (accounts 7–9)', profit: 'Profit (loss) for the period',
+    account: 'Account', category: 'IFRS category', movement: 'Net movement',
+    st: { exact: 'FTH mapping', via: 'via group ', fixed: 'FTH mapping 2.0', manual: 'changed by you', unknown: 'needs a category', unplaced: 'category with no line' },
+    closingAcc: 'closing account, not in the statements', none: '— choose a category —', noLine: ' (no line)',
+    reading: 'Reading the file on your computer…', read: function (n, s) { return n + ' accounts read from sheet “' + s + '”. Nothing was sent.'; },
+    demo1: 'Sample “Добро”, 2015: a simple TB, year not closed.', demo2: 'Sample “Північ Софт”, 2025: an IT company, year closed through 79.',
+    err: { tooLarge: 'The file is over 15 MB. Export the trial balance without analytics.', badType: 'This is not an Excel file (.xls or .xlsx). Check the export format.', unreadable: 'The file could not be read. ', noRows: 'No accounts found. Expected a Ukrainian trial balance (ОСВ): account in column A, then opening balance, turnovers and closing balance (debit / credit).' },
+    tiles: ['Accounts', 'Classified', 'Checks passed', 'Balance sheet'], balancedYes: 'balances', balancedNo: 'does not balance',
+    shown: function (n, t) { return n + ' of ' + t + ' shown'; },
+    kpi: ['Revenue', 'Profit for the period', 'Total assets', 'Equity'],
+    levels: { high: 'Likely material', medium: 'To check', info: 'For information' },
+    readinessSummary: function (h, m) { return h + ' likely material and ' + m + ' to-check areas of IFRS adjustment.'; },
+    sent: function (id) { return 'Package encrypted with FTH key ' + id + '. E-mail the file to contact@fthadvisory.com or share it through your secure channel: only FTH can open it.'; },
+    needConsent: 'Please confirm you are authorised to share this data with FTH.', needName: 'Please enter the company name and a contact person.', noKeys: 'The FTH key is not available: reload the page.',
+    sealing: 'Encrypting…', resOpening: 'Checking the signature and decrypting…', resBad: 'Wrong passphrase or damaged file.', resNot: 'This is not an FTH results file (.fthres).',
+    resVerified: 'FTH signature verified: the results have not been altered since release.', resUnverified: 'The signature does not match the FTH key of this site: do not rely on this file.',
+    status: { draft: 'Draft', in_review: 'In review', reviewed: 'Reviewed by FTH', released: 'Released by FTH' },
+    releasedBy: 'Released by', releasedAt: 'Date', engagement: 'Engagement', statusL: 'Status', notesFTH: 'Note from FTH', local: 'Local GAAP', adj: 'Adjustments', ifrs: 'IFRS',
+    xlsxName: 'FTH-preliminary-statements', sheetBs: 'Balance sheet', sheetPl: 'Profit or loss', sheetMap: 'Mapping', sheetChecks: 'Checks', nameCol: 'Name', statusCol: 'Status',
+    prelimTag: 'PRELIMINARY — not IFRS financial statements'
+  };
+  var SECTION = { nca: T.nca, ca: T.ca, eq: T.eq, ncl: T.ncl, cl: T.cl };
+  var fmt = new Intl.NumberFormat(UK ? 'uk-UA' : 'en-GB', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  var money = function (v) { return fmt.format(Math.abs(v) < C.EPS ? 0 : v); };
+  var bsLine = {}, plLine = {};
+  M.balanceLines.forEach(function (l) { bsLine[l.id] = l; });
+  M.pnlLines.forEach(function (l) { plLine[l.id] = l; });
+
+  var state = { tb: null, source: null, overrides: {}, answers: {}, res: null, filter: 'all', query: '' };
+
+  /* ---------- DOM helpers ---------- */
+  function el(tag, cls, text) { var e = document.createElement(tag); if (cls) e.className = cls; if (text !== undefined && text !== null) e.textContent = text; return e; }
+  function numCell(tag, v, key) { var c = el(tag, 'ifrs-num' + (v < -C.EPS ? ' is-negative' : ''), money(v)); if (key) c.setAttribute('data-total', key); return c; }
   function tr(cells, cls) { var r = el('tr', cls); cells.forEach(function (c) { r.appendChild(c); }); return r; }
-  function head(cols) {
-    var h = el('thead');
-    h.appendChild(tr(cols.map(function (c, i) { var th = el('th', i ? 'ifrs-num' : '', c); th.scope = 'col'; return th; })));
-    return h;
+  function rowTh(text) { var h = el('th', '', text); h.scope = 'row'; return h; }
+  function head(cols) { var h = el('thead'); h.appendChild(tr(cols.map(function (c, i) { var t = el('th', i ? 'ifrs-num' : '', c); t.scope = 'col'; return t; }))); return h; }
+  function say(id, msg, kind) { var s = $(id); s.textContent = msg || ''; s.className = 'fthp-status' + (kind ? ' is-' + kind : ''); }
+  function download(name, data, type) {
+    var blob = data instanceof Blob ? data : new Blob([data], { type: type || 'application/octet-stream' });
+    var url = URL.createObjectURL(blob), a = el('a'); a.href = url; a.download = name; document.body.appendChild(a); a.click();
+    setTimeout(function () { URL.revokeObjectURL(url); a.remove(); }, 1000);
   }
-  function th(text) { var h = el('th', '', text); h.scope = 'row'; return h; }
+  function slug(s) { return String(s || 'company').replace(/[^\p{L}\p{N}]+/gu, '-').replace(/^-|-$/g, '').slice(0, 40) || 'company'; }
 
-  function renderAccounts(res) {
-    var wrap = $('ifrsAccounts'); wrap.textContent = '';
-    var table = el('table', 'ifrs-table ifrs-accounts');
-    table.appendChild(head([T.account, T.opening, T.period, T.closing, T.category]));
-    var body = el('tbody'), todo = 0;
-    res.accounts.forEach(function (a) {
+  /* ---------- steps ---------- */
+  var STEPS = ['fthpUpload', 'fthpChecks', 'fthpMapping', 'fthpStatements', 'fthpReadiness', 'fthpSend'];
+  function unlock(on) {
+    STEPS.slice(1).forEach(function (id) { $(id).hidden = !on; });
+    document.querySelectorAll('.fthp-steps a').forEach(function (a, i) {
+      var locked = i > 0 && i < STEPS.length && !on;
+      a.classList.toggle('is-locked', locked);
+      if (locked) a.setAttribute('aria-disabled', 'true'); else a.removeAttribute('aria-disabled');
+      a.classList.toggle('is-done', on && i === 0);
+    });
+  }
+  // Current step follows the scroll (IntersectionObserver: no layout reads on scroll).
+  if ('IntersectionObserver' in window) {
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (!e.isIntersecting) return;
+        document.querySelectorAll('.fthp-steps a').forEach(function (a) {
+          var cur = a.getAttribute('href') === '#' + e.target.id;
+          a.classList.toggle('is-current', cur);
+          if (cur) a.setAttribute('aria-current', 'step'); else a.removeAttribute('aria-current');
+        });
+      });
+    }, { rootMargin: '-30% 0px -60% 0px' });
+    STEPS.concat(['fthpResults']).forEach(function (id) { if ($(id)) io.observe($(id)); });
+  }
+  document.querySelectorAll('.fthp-steps a').forEach(function (a) {
+    a.addEventListener('click', function (e) { if (a.classList.contains('is-locked')) { e.preventDefault(); $('fthpFile').focus(); } });
+  });
+
+  /* ---------- 1. upload ---------- */
+  function load(tb, source, message) {
+    state.tb = tb; state.source = source; state.overrides = {};
+    $('fthpCompany').textContent = tb.company || '—';
+    $('fthpPeriod').textContent = tb.period || '—';
+    $('fthpFileName').textContent = source.name;
+    $('fthpSha').textContent = source.sha256 ? source.sha256.slice(0, 16) + '…' : '—';
+    $('fthpSha').title = source.sha256 || '';
+    $('fthpSendCompany').value = tb.company && !/вигадан|fictitious|^Добро$/i.test(tb.company) ? tb.company : '';
+    say('fthpStatus', message, 'ok');
+    unlock(true);
+    run();
+  }
+  function fail(msg) {
+    state.tb = null; state.res = null; unlock(false);
+    ['fthpCompany', 'fthpPeriod', 'fthpFileName', 'fthpSha'].forEach(function (id) { $(id).textContent = '—'; });
+    say('fthpStatus', msg, 'error');
+  }
+  function readFile(file) {
+    if (!file) return;
+    say('fthpStatus', T.reading, '');
+    if (file.size > C.MAX_BYTES) { fail(T.err.tooLarge); return; }
+    file.arrayBuffer().then(function (buf) {
+      var out = C.readWorkbook(buf, window.XLSX);
+      if (out.error) { fail(T.err[out.error] + (out.detail || '')); return; }
+      return V.sha256(buf).then(function (h) {
+        load(out.tb, { name: file.name.slice(0, 120), size: file.size, sha256: h, kind: out.tb.kind, sheet: out.tb.sheet, layout: out.tb.layout }, T.read(out.tb.rows.length, out.tb.sheet));
+      });
+    }).catch(function (e) { fail(T.err.unreadable + (e && e.message ? e.message : '')); });
+  }
+  $('fthpFile').addEventListener('change', function () { readFile(this.files && this.files[0]); });
+  var drop = $('fthpDrop');
+  ['dragenter', 'dragover'].forEach(function (ev) { drop.addEventListener(ev, function (e) { e.preventDefault(); drop.classList.add('is-over'); }); });
+  ['dragleave', 'drop'].forEach(function (ev) { drop.addEventListener(ev, function (e) { e.preventDefault(); drop.classList.remove('is-over'); }); });
+  drop.addEventListener('drop', function (e) { var f = e.dataTransfer && e.dataTransfer.files[0]; if (f) { $('fthpFile').value = ''; readFile(f); } });
+  function demo(tb, name, msg) {
+    $('fthpFile').value = '';
+    load({ company: tb.company, period: tb.period, rows: tb.rows }, { name: name, size: 0, sha256: '', kind: 'sample' }, msg);
+    $('fthpChecks').scrollIntoView({ block: 'start' });
+  }
+  $('fthpDemo1').addEventListener('click', function () { demo(M.demo, 'sample-dobro-2015', T.demo1); });
+  $('fthpDemo2').addEventListener('click', function () { demo(window.FTH_IFRS_DEMO_IT, 'sample-pivnich-soft-2025', T.demo2); });
+
+  /* ---------- compute + render ---------- */
+  function run() {
+    state.res = C.compute(M, state.tb, { overrides: state.overrides });
+    renderChecks(); renderMapping(); renderStatements(); renderReadiness();
+    return state.res;
+  }
+
+  function renderChecks() {
+    var r = state.res, passed = r.checks.filter(function (c) { return c.level === 'ok'; }).length, gradable = r.checks.filter(function (c) { return c.level !== 'info'; }).length;
+    var tiles = $('fthpTiles'); tiles.textContent = '';
+    [[T.tiles[0], String(r.accountCount)], [T.tiles[1], (r.accountCount - r.unknownCount) + ' / ' + r.accountCount], [T.tiles[2], passed + ' / ' + gradable], [T.tiles[3], r.balanced ? T.balancedYes : T.balancedNo]].forEach(function (t, i) {
+      var d = el('div', 'fthp-tile' + (i === 3 ? (r.balanced ? ' is-ok' : ' is-ko') : '')); d.appendChild(el('span', '', t[0])); d.appendChild(el('strong', '', t[1])); tiles.appendChild(d);
+    });
+    var list = $('fthpCheckList'); list.textContent = '';
+    r.checks.forEach(function (c) {
+      var x = C.checkText(c, LANG), li = el('li', 'fthp-check is-' + c.level);
+      var icon = el('span', 'fthp-check-icon', { ok: '✓', warn: '!', error: '×', info: 'i' }[c.level]); icon.setAttribute('aria-hidden', 'true'); li.appendChild(icon);
+      var body = el('div'); body.appendChild(el('strong', '', x.title)); body.appendChild(el('p', '', x.text)); li.appendChild(body);
+      list.appendChild(li);
+    });
+  }
+
+  function categoryOptions(sel, a) {
+    sel.appendChild(new Option(T.none, ''));
+    var lines = a.statement === 'bs' ? M.balanceLines : M.pnlLines;
+    var cats = [].concat.apply([], lines.map(function (l) { return l.categories; }));
+    if (a.category && cats.indexOf(a.category) < 0) sel.appendChild(new Option(C.catLabel(M, a.category, LANG) + T.noLine, a.category));
+    lines.forEach(function (l) {
+      var g = el('optgroup'); g.label = C.lineLabel(l, LANG);
+      l.categories.forEach(function (c) { g.appendChild(new Option(C.catLabel(M, c, LANG), c)); });
+      sel.appendChild(g);
+    });
+    sel.value = a.category;
+  }
+
+  function renderMapping() {
+    var r = state.res, wrap = $('fthpAccounts'); wrap.textContent = '';
+    var q = state.query.trim().toLowerCase();
+    var rows = r.accounts.filter(function (a) {
       var flagged = a.status === 'unknown' || a.status === 'unplaced';
-      if (flagged) todo++;
-      var codeCell = th(a.code);
+      if (state.filter === 'attention' && !flagged) return false;
+      if (state.filter === 'changed' && a.status !== 'manual') return false;
+      return !q || a.code.indexOf(q) === 0 || (a.name || '').toLowerCase().indexOf(q) >= 0;
+    });
+    var table = el('table', 'ifrs-table ifrs-accounts');
+    table.appendChild(head([T.account, T.opening, T.movement, T.closing, T.category]));
+    var body = el('tbody');
+    rows.forEach(function (a) {
+      var flagged = a.status === 'unknown' || a.status === 'unplaced';
+      var codeCell = rowTh(a.code);
       if (a.name) codeCell.appendChild(el('span', 'ifrs-acc-name', a.name));
       var catCell = el('td', 'ifrs-cat');
       if (a.status === 'closingAcc') catCell.appendChild(el('span', 'ifrs-status', T.closingAcc));
       else {
         var sel = el('select'); sel.setAttribute('aria-label', T.category + ' — ' + a.code); sel.setAttribute('data-code', a.code);
-        sel.appendChild(new Option(T.none, ''));
-        var cats = (a.statement === 'bs' ? D.balanceLines : D.pnlLines).reduce(function (l, x) { return l.concat(x.categories); }, []);
-        if (a.category && cats.indexOf(a.category) < 0) sel.appendChild(new Option(catLabel(a.category) + T.noLine, a.category));
-        cats.forEach(function (c) { sel.appendChild(new Option(catLabel(c), c)); });
-        sel.value = a.category;
+        categoryOptions(sel, a);
         sel.addEventListener('change', function () {
-          overrides[a.code] = sel.value;
+          state.overrides[a.code] = sel.value;
           var res = run();
-          // The table is rebuilt: give the focus back to this account's list, and read out the new totals.
-          var again = $('ifrsAccounts').querySelector('select[data-code="' + a.code + '"]');
+          var again = $('fthpAccounts').querySelector('select[data-code="' + a.code + '"]');
           if (again) again.focus();
-          $('ifrsLive').textContent = T.totalAssets + ' ' + money(res.assets[1]) + '; ' + T.totalEquity + ' ' + money(res.equity[1]) + '; ' + T.totalLiab + ' ' + money(res.liabilities[1]) + '. ' + $('ifrsCheck').textContent;
+          $('fthpLive').textContent = T.totalAssets + ' ' + money(res.assets[1]) + '. ' + (res.balanced ? T.balancedYes : T.balancedNo) + '.';
         });
         catCell.appendChild(sel);
-        var st = { exact: T.exact, via: T.viaPrefix + a.via, manual: T.manual, unknown: T.unknown, unplaced: T.unplaced }[a.status];
-        catCell.appendChild(el('span', 'ifrs-status' + (flagged ? ' is-flagged' : ''), st));
+        catCell.appendChild(el('span', 'ifrs-status' + (flagged ? ' is-flagged' : ''), a.status === 'via' ? T.st.via + a.via : T.st[a.status]));
       }
       body.appendChild(tr([codeCell, numCell('td', a.opening), numCell('td', a.movement), numCell('td', a.closing), catCell], flagged ? 'is-flagged' : ''));
     });
     table.appendChild(body); wrap.appendChild(table);
-    $('ifrsClassSummary').textContent = T.summary(res.accounts.length, todo);
-    var w = $('ifrsWarnings'); w.textContent = '';
-    res.warnings.forEach(function (m) { w.appendChild(el('li', '', m)); });
-    w.hidden = !res.warnings.length;
+    $('fthpShown').textContent = T.shown(rows.length, r.accounts.length);
+    var att = r.accounts.filter(function (a) { return a.status === 'unknown' || a.status === 'unplaced'; }).length;
+    $('fthpAttCount').textContent = att ? ' (' + att + ')' : '';
   }
+  document.querySelectorAll('[data-filter]').forEach(function (b) {
+    b.addEventListener('click', function () {
+      state.filter = b.getAttribute('data-filter');
+      document.querySelectorAll('[data-filter]').forEach(function (x) { x.setAttribute('aria-pressed', String(x === b)); });
+      renderMapping();
+    });
+  });
+  $('fthpSearch').addEventListener('input', function () { state.query = this.value; renderMapping(); });
 
-  function renderBalance(res) {
-    var table = $('ifrsBalance'); table.textContent = '';
-    table.appendChild(head([T.item, T.opening, T.closing]));
+  /* Statements from a snapshot (also used for results released by FTH). opts.split: local / adjustments / IFRS. */
+  function renderBalance(table, snap, opts) {
+    opts = opts || {};
+    table.textContent = '';
+    var split = !!opts.split && snap.balance.some(function (l) { return l.local; });
+    table.appendChild(head(split ? [T.item, T.local, T.adj, T.ifrs, T.opening] : [T.item, T.opening, T.closing]));
     var body = el('tbody');
-    var sub = function (text) { var c = el('th', '', text); c.colSpan = 3; c.scope = 'colgroup'; return tr([c], 'ifrs-sub'); };
-    var total = function (text, v, key, cls) { return tr([th(text), numCell('td', v[0], key + '-open'), numCell('td', v[1], key + '-close')], cls || 'ifrs-total'); };
-    [['nca', 'ca', T.totalAssets, res.assets, 'assets'], ['eq', null, T.totalEquity, res.equity, 'equity'], ['ncl', 'cl', T.totalLiab, res.liabilities, 'liabilities']].forEach(function (g) {
+    var sub = function (text) { var c = el('th', '', text); c.colSpan = split ? 5 : 3; c.scope = 'colgroup'; return tr([c], 'ifrs-sub'); };
+    var vals = function (l) { return split ? [l.local[1], l.adj[1], l.ifrs[1], l.ifrs[0]] : [l.ifrs[0], l.ifrs[1]]; };
+    var total = function (text, v, key, cls) {
+      var cells = split ? [el('td'), el('td'), numCell('td', v[1], key + '-close'), numCell('td', v[0], key + '-open')] : [numCell('td', v[0], key + '-open'), numCell('td', v[1], key + '-close')];
+      return tr([rowTh(text)].concat(cells), cls || 'ifrs-total');
+    };
+    var t = snap.totals;
+    [['nca', 'ca', T.totalAssets, t.assets, 'assets'], ['eq', null, T.totalEquity, t.equity, 'equity'], ['ncl', 'cl', T.totalLiab, t.liabilities, 'liabilities']].forEach(function (g) {
       [g[0], g[1]].forEach(function (s) {
         if (!s) return;
-        var rows = res.balance.filter(function (l) { return l.section === s && (Math.abs(l.values[0]) > EPS || Math.abs(l.values[1]) > EPS); });
-        if (rows.length) body.appendChild(sub(SECTIONS[s]));
-        rows.forEach(function (l) { body.appendChild(tr([th(l.label), numCell('td', l.values[0]), numCell('td', l.values[1])])); });
+        var rows = snap.balance.filter(function (l) { return l.section === s; });
+        if (rows.length) body.appendChild(sub(SECTION[s]));
+        rows.forEach(function (l) { body.appendChild(tr([rowTh(C.lineLabel(bsLine[l.id], LANG))].concat(vals(l).map(function (v) { return numCell('td', v); })))); });
       });
       body.appendChild(total(g[2], g[3], g[4]));
     });
-    body.appendChild(total(T.totalEqLiab, [res.equity[0] + res.liabilities[0], res.equity[1] + res.liabilities[1]], 'equity-liabilities', 'ifrs-total ifrs-grand'));
-    if (Math.abs(res.unplacedBs[0]) > EPS || Math.abs(res.unplacedBs[1]) > EPS) body.appendChild(total(T.unplacedBs, res.unplacedBs, 'unplaced', 'ifrs-unplaced'));
+    body.appendChild(total(T.totalEqLiab, [t.equity[0] + t.liabilities[0], t.equity[1] + t.liabilities[1]], 'equity-liabilities', 'ifrs-total ifrs-grand'));
+    if (opts.unplaced && (Math.abs(opts.unplaced[0]) > C.EPS || Math.abs(opts.unplaced[1]) > C.EPS)) body.appendChild(total(T.unplacedBs, opts.unplaced, 'unplaced', 'ifrs-unplaced'));
     table.appendChild(body);
-    var ok = res.checkOk, check = $('ifrsCheck');
-    check.className = 'ifrs-check ' + (ok ? 'is-ok' : 'is-ko');
-    check.textContent = ok ? T.checkOk : T.checkKo + money(res.diff[0]) + ' / ' + money(res.diff[1]) + T.checkKoUnplaced + res.unplacedBsCount + ' (' + money(res.unplacedBs[0]) + ' / ' + money(res.unplacedBs[1]) + ')';
-    var added = Math.abs(res.resultAdded[0]) > EPS || Math.abs(res.resultAdded[1]) > EPS;
-    $('ifrsResultNote').textContent = added ? T.resultAdded + T.opening.toLowerCase() + ' ' + money(res.resultAdded[0]) + ', ' + T.closing.toLowerCase() + ' ' + money(res.resultAdded[1]) + ' UAH' + T.resultAdded2 : T.resultClosed;
   }
-
-  function renderPnl(res) {
-    var table = $('ifrsPnl'); table.textContent = '';
-    table.appendChild(head([T.line, T.period]));
+  function renderPnl(table, snap, opts) {
+    opts = opts || {};
+    table.textContent = '';
+    var split = !!opts.split && snap.pnl.some(function (l) { return l.local !== undefined; });
+    table.appendChild(head(split ? [T.item, T.local, T.adj, T.ifrs] : [T.item, T.period]));
     var body = el('tbody');
-    var line = function (id) { var l = D.pnlLines.filter(function (x) { return x.id === id; })[0]; var v = res.pl[id] || 0; if (Math.abs(v) > EPS || id === 'revenue') body.appendChild(tr([th(label(l)), numCell('td', v, id === 'revenue' ? 'revenue' : '')])); };
-    var total = function (text, v, key, cls) { body.appendChild(tr([th(text), numCell('td', v, key)], cls || 'ifrs-total')); };
-    ['revenue', 'cost_of_sales', 'impairment'].forEach(line); total(T.gross, res.gross);
-    ['other_income', 'administrative', 'distribution', 'other_expenses'].forEach(line); total(T.operating, res.operating);
-    ['finance_income', 'finance_costs'].forEach(line); total(T.pbt, res.pbt);
-    line('tax');
-    if (Math.abs(res.unplacedPl) > EPS) body.appendChild(tr([th(T.unplacedPl), numCell('td', res.unplacedPl)], 'ifrs-unplaced'));
-    total(T.profit, res.profit, 'profit', 'ifrs-total ifrs-grand');
+    var pad = function (cell) { return split ? [el('td'), el('td'), cell] : [cell]; };
+    var line = function (l) { var cells = split ? [l.local, l.adj, l.ifrs] : [l.ifrs]; body.appendChild(tr([rowTh(C.lineLabel(plLine[l.id], LANG))].concat(cells.map(function (v, i) { return numCell('td', v, l.id === 'revenue' && i === cells.length - 1 ? 'revenue' : ''); })))); };
+    var total = function (text, v, key, cls) { body.appendChild(tr([rowTh(text)].concat(pad(numCell('td', v, key))), cls || 'ifrs-total')); };
+    var group = function (g) { snap.pnl.filter(function (l) { return l.group === g; }).forEach(line); };
+    group('gross'); total(T.gross, snap.totals.gross, 'gross');
+    group('operating'); total(T.operating, snap.totals.operating, 'operating');
+    group('finance'); total(T.pbt, snap.totals.pbt, 'pbt');
+    group('tax');
+    if (Math.abs(snap.totals.unplacedPl) > C.EPS) body.appendChild(tr([rowTh(T.unplacedPl)].concat(pad(numCell('td', snap.totals.unplacedPl))), 'ifrs-unplaced'));
+    total(T.profit, snap.totals.profit, 'profit', 'ifrs-total ifrs-grand');
     table.appendChild(body);
-    $('ifrsPnlNote').textContent = res.closed79 ? T.naturalSide : '';
-    $('ifrsPnlNote').hidden = !res.closed79;
+  }
+  function kpis(container, snap) {
+    container.textContent = '';
+    [[T.kpi[0], (snap.pnl.filter(function (l) { return l.id === 'revenue'; })[0] || { ifrs: 0 }).ifrs], [T.kpi[1], snap.totals.profit], [T.kpi[2], snap.totals.assets[1]], [T.kpi[3], snap.totals.equity[1]]].forEach(function (k) {
+      var d = el('div', 'fthp-kpi'); d.appendChild(el('span', '', k[0])); d.appendChild(el('strong', k[1] < -C.EPS ? 'is-negative' : '', money(k[1]))); container.appendChild(d);
+    });
   }
 
-  function run() {
-    var res = compute(tb, overrides);
-    renderAccounts(res); renderBalance(res); renderPnl(res);
-    ['ifrsStep3', 'ifrsStep4'].forEach(function (id) { $(id).hidden = false; });
-    return res;
+  function renderStatements() {
+    var r = state.res, snap = C.snapshot(r);
+    kpis($('fthpKpis'), snap);
+    renderBalance($('fthpBalance'), snap, { unplaced: r.unplacedBs });
+    renderPnl($('fthpPnl'), snap);
+    var sofp = r.checks.filter(function (c) { return c.id === 'sofp'; })[0], x = C.checkText(sofp, LANG);
+    var chk = $('fthpBalanceCheck'); chk.className = 'ifrs-check ' + (r.balanced ? 'is-ok' : 'is-ko'); chk.textContent = x.title + ': ' + x.text;
+    $('fthpResultNote').textContent = C.checkText(r.checks.filter(function (c) { return c.id === 'yearClosed'; })[0], LANG).text;
+    var rc = r.checks.filter(function (c) { return c.id === 'recon'; })[0], note = $('fthpPnlNote');
+    note.hidden = !rc;
+    if (rc) { var rt = C.checkText(rc, LANG); note.textContent = rt.title + ': ' + rt.text; note.className = 'ifrs-note' + (rc.level === 'warn' ? ' is-warn' : ''); }
   }
 
-  function status(message, isError) {
-    var st = $('ifrsStatus');
-    st.textContent = message;
-    st.className = 'ifrs-load-status' + (isError ? ' is-error' : '');
+  /* ---------- 5. readiness ---------- */
+  function renderReadiness() {
+    var inds = C.diagnose(state.res, state.answers), list = $('fthpIndicators'); list.textContent = '';
+    var h = 0, m = 0;
+    inds.forEach(function (d) {
+      if (d.level === 'high') h++; else if (d.level === 'medium') m++;
+      var x = C.indicatorText(d, LANG), li = el('li', 'fthp-ind is-' + d.level);
+      var top = el('div', 'fthp-ind-top'); top.appendChild(el('span', 'fthp-std', d.standard)); top.appendChild(el('span', 'fthp-level', T.levels[d.level]));
+      li.appendChild(top); li.appendChild(el('strong', '', x.title)); li.appendChild(el('p', '', x.text));
+      list.appendChild(li);
+    });
+    $('fthpReadinessSummary').textContent = T.readinessSummary(h, m);
   }
-
-  // Unreadable file or no accounts: no figures from a previous file stay on screen.
-  function fail(message) {
-    tb = null; overrides = {};
-    ['ifrsStep3', 'ifrsStep4'].forEach(function (id) { $(id).hidden = true; });
-    $('ifrsPeriod').textContent = '—';
-    $('ifrsCompany').textContent = '—';
-    status(message, true);
-  }
-
-  function load(data, message) {
-    tb = data; overrides = {};
-    $('ifrsPeriod').textContent = data.period || '—';
-    $('ifrsCompany').textContent = data.company || '—';
-    status(message, false);
-    run();
-  }
-
-  $('ifrsDemo').addEventListener('click', function () {
-    load(D.demo, T.demoLoaded);
-    $('ifrsFile').value = '';
-    $('ifrsStep3').scrollIntoView({ behavior: 'auto', block: 'start' });
+  document.querySelectorAll('.fthp-q input[type=radio]').forEach(function (inp) {
+    inp.addEventListener('change', function () { state.answers[inp.name.replace('q_', '')] = inp.value; if (state.res) renderReadiness(); });
   });
 
-  $('ifrsFile').addEventListener('change', function () {
-    var file = this.files && this.files[0];
-    if (!file) return;
-    status(T.loading, false);
-    file.arrayBuffer().then(function (buf) {
-      var wb = window.XLSX.read(buf, { type: 'array' });
-      var grid = window.XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]], { header: 1, raw: true, defval: '' });
-      var data = parseSheet(grid);
-      if (!data.rows.length) { fail(T.noRows); return; }
-      load(data, T.loaded(data.rows.length));
-    }).catch(function (e) { fail(T.readError + (e && e.message ? e.message : e)); });
+  /* ---------- exports ---------- */
+  $('fthpXlsx').addEventListener('click', function () {
+    var X = window.XLSX, r = state.res, snap = C.snapshot(r), wb = X.utils.book_new();
+    var meta = [[T.prelimTag], [state.tb.company], [state.tb.period], []];
+    var bs = meta.concat([[T.item, T.opening, T.closing]]);
+    ['nca', 'ca', 'eq', 'ncl', 'cl'].forEach(function (s) {
+      bs.push([SECTION[s]]);
+      snap.balance.filter(function (l) { return l.section === s; }).forEach(function (l) { bs.push([C.lineLabel(bsLine[l.id], LANG), l.ifrs[0], l.ifrs[1]]); });
+    });
+    bs.push([T.totalAssets, snap.totals.assets[0], snap.totals.assets[1]], [T.totalEquity, snap.totals.equity[0], snap.totals.equity[1]], [T.totalLiab, snap.totals.liabilities[0], snap.totals.liabilities[1]]);
+    var pl = meta.concat([[T.item, T.period]]);
+    snap.pnl.forEach(function (l) { pl.push([C.lineLabel(plLine[l.id], LANG), l.ifrs]); });
+    pl.push([T.profit, snap.totals.profit]);
+    var map = [[T.account, T.nameCol, T.opening, T.movement, T.closing, T.category, T.statusCol]];
+    r.accounts.forEach(function (a) { map.push([a.code, a.name || '', C.round2(a.opening), C.round2(a.movement), C.round2(a.closing), a.category ? C.catLabel(M, a.category, LANG) : '', a.status]); });
+    var chk = r.checks.map(function (c) { var x = C.checkText(c, LANG); return [c.level, x.title, x.text]; });
+    // aoa_to_sheet writes strings as text cells, never formulas: no spreadsheet injection from account names.
+    [[T.sheetBs, bs], [T.sheetPl, pl], [T.sheetMap, map], [T.sheetChecks, chk]].forEach(function (s) {
+      var ws = X.utils.aoa_to_sheet(s[1]); ws['!cols'] = [{ wch: 48 }, { wch: 18 }, { wch: 18 }, { wch: 18 }, { wch: 18 }, { wch: 40 }];
+      X.utils.book_append_sheet(wb, ws, s[0].slice(0, 31));
+    });
+    var out = X.write(wb, { bookType: 'xlsx', type: 'array' });
+    download(T.xlsxName + '-' + slug(state.tb.company) + '.xlsx', new Blob([out], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' }));
   });
+  $('fthpPrint').addEventListener('click', function () { window.print(); });
+
+  /* ---------- 6. secure hand-over ---------- */
+  if (KEYS) $('fthpKeyId').textContent = KEYS.keyId;
+  $('fthpSeal').addEventListener('click', function () {
+    var company = $('fthpSendCompany').value.trim(), contact = $('fthpSendContact').value.trim();
+    if (!KEYS || !V) { say('fthpSendStatus', T.noKeys, 'error'); return; }
+    if (!company || !contact) { say('fthpSendStatus', T.needName, 'error'); (company ? $('fthpSendContact') : $('fthpSendCompany')).focus(); return; }
+    if (!$('fthpConsent').checked) { say('fthpSendStatus', T.needConsent, 'error'); $('fthpConsent').focus(); return; }
+    say('fthpSendStatus', T.sealing, '');
+    var r = state.res, createdAt = new Date().toISOString();
+    var payload = {
+      kind: 'client-package', createdAt: createdAt, lang: LANG, tool: { core: C.version, model: M.version },
+      client: { company: company.slice(0, 200), contact: contact.slice(0, 200), email: $('fthpSendEmail').value.trim().slice(0, 200), message: $('fthpSendMessage').value.trim().slice(0, 4000) },
+      source: state.source, tb: { company: state.tb.company, period: state.tb.period, rows: state.tb.rows },
+      overrides: state.overrides, answers: state.answers,
+      summary: { balanced: r.balanced, revenue: C.round2(r.revenue), profit: C.round2(r.profit), assets: r.assets.map(C.round2), unknown: r.unknownCount, checks: r.checks.map(function (c) { return [c.id, c.level]; }) }
+    };
+    V.sealForFTH(payload, KEYS, 'client-package', { createdAt: createdAt }).then(function (env) {
+      download('FTH-' + slug(company) + '-' + createdAt.slice(0, 10) + '.fthpkg', JSON.stringify(env), 'application/json');
+      say('fthpSendStatus', T.sent(KEYS.keyId), 'ok');
+    }).catch(function (e) { say('fthpSendStatus', String(e && e.message || e), 'error'); });
+  });
+
+  /* ---------- results released by FTH ---------- */
+  $('fthpResOpen').addEventListener('click', function () {
+    var file = $('fthpResFile').files && $('fthpResFile').files[0], pass = $('fthpResPass').value;
+    $('fthpResView').hidden = true;
+    if (!file || !pass) { say('fthpResStatus', T.resBad, 'error'); return; }
+    if (file.size > 5 * 1024 * 1024) { say('fthpResStatus', T.resNot, 'error'); return; }
+    say('fthpResStatus', T.resOpening, '');
+    file.text().then(function (txt) {
+      var env; try { env = JSON.parse(txt); } catch (e) { throw new Error('notRelease'); }
+      return V.openRelease(env, pass, KEYS);
+    }).then(function (out) {
+      $('fthpResPass').value = '';
+      var p = out.payload;
+      say('fthpResStatus', out.verified ? T.resVerified : T.resUnverified, out.verified ? 'ok' : 'error');
+      if (!out.verified) return;
+      var meta = $('fthpResMeta'); meta.textContent = '';
+      [[T.engagement, (p.engagement.company || '') + ' · ' + (p.engagement.period || '')], [T.releasedBy, p.releasedBy || '—'], [T.releasedAt, (p.releasedAt || '').slice(0, 10)], [T.statusL, T.status[p.status] || p.status]].forEach(function (x) {
+        var d = el('div'); d.appendChild(el('dt', '', x[0])); d.appendChild(el('dd', '', x[1])); meta.appendChild(d);
+      });
+      $('fthpResNote').hidden = !p.note;
+      $('fthpResNote').textContent = p.note ? T.notesFTH + ': ' + p.note : '';
+      $('fthpResDisclaimer').textContent = (UK ? p.disclaimerUk : p.disclaimerEn) || '';
+      kpis($('fthpResKpis'), p.snapshot);
+      renderBalance($('fthpResBalance'), p.snapshot, { split: p.split });
+      renderPnl($('fthpResPnl'), p.snapshot, { split: p.split });
+      $('fthpResView').hidden = false;
+    }).catch(function (e) {
+      say('fthpResStatus', e && e.message === 'notRelease' ? T.resNot : T.resBad, 'error');
+    });
+  });
+
+  unlock(false);
 })();

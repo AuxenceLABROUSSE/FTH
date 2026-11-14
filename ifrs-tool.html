@@ -3,13 +3,13 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Preliminary IFRS Tool: trial balance to IFRS | FTH</title>
-  <meta name="description" content="Free preliminary tool: load a Ukrainian trial balance (ОСВ) and get a preliminary IFRS balance sheet and P&L, classified with the FTH mapping. Computed in your browser.">
+  <title>FTH Reporting Portal: trial balance to IFRS | FTH</title>
+  <meta name="description" content="Load a Ukrainian trial balance (ОСВ): automatic checks, IFRS mapping, preliminary balance sheet and P&amp;L, IFRS readiness map. Computed in your browser, sent to FTH only encrypted.">
   <link rel="canonical" href="https://www.fthadvisory.com/ifrs-tool">
   <link rel="alternate" hreflang="uk" href="https://www.fthadvisory.com/ifrs-tool-ua">
   <link rel="alternate" hreflang="en" href="https://www.fthadvisory.com/ifrs-tool">
-  <meta property="og:title" content="Preliminary IFRS Tool: trial balance to IFRS | FTH">
-  <meta property="og:description" content="Free preliminary tool: load a Ukrainian trial balance (ОСВ) and get a preliminary IFRS balance sheet and P&L, classified with the FTH mapping. Computed in your browser.">
+  <meta property="og:title" content="FTH Reporting Portal: trial balance to IFRS | FTH">
+  <meta property="og:description" content="Load a Ukrainian trial balance (ОСВ): automatic checks, IFRS mapping, preliminary balance sheet and P&amp;L, IFRS readiness map. Computed in your browser, sent to FTH only encrypted.">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://www.fthadvisory.com/ifrs-tool">
   <meta property="og:image" content="https://www.fthadvisory.com/img/og/home-en.jpg">
@@ -19,8 +19,8 @@
   <meta property="og:locale:alternate" content="uk_UA">
   <meta property="og:site_name" content="Financial Transformation Hub">
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="Preliminary IFRS Tool: trial balance to IFRS | FTH">
-  <meta name="twitter:description" content="Free preliminary tool: load a Ukrainian trial balance (ОСВ) and get a preliminary IFRS balance sheet and P&L, classified with the FTH mapping. Computed in your browser.">
+  <meta name="twitter:title" content="FTH Reporting Portal: trial balance to IFRS | FTH">
+  <meta name="twitter:description" content="Load a Ukrainian trial balance (ОСВ): automatic checks, IFRS mapping, preliminary balance sheet and P&amp;L, IFRS readiness map. Computed in your browser, sent to FTH only encrypted.">
   <meta name="twitter:image" content="https://www.fthadvisory.com/img/og/home-en.jpg">
   <link rel="stylesheet" href="/css/style.min.css?v=2">
   <link rel="icon" href="/favicon.ico" sizes="48x48">
@@ -28,7 +28,7 @@
   <link rel="icon" type="image/png" sizes="16x16" href="/img/favicon-16x16.png">
   <link rel="apple-touch-icon" sizes="180x180" href="/img/apple-touch-icon.png">
   <link rel="manifest" href="/site.webmanifest">
-  <link rel="stylesheet" href="/css/advisory.css?v=27">
+  <link rel="stylesheet" href="/css/advisory.css?v=29">
   <link rel="preload" as="font" type="font/woff2" crossorigin href="/fonts/playfair-display-latin-wght-normal.woff2">
 </head>
 <body class="advisory-home advisory-secondary">
@@ -66,70 +66,169 @@
 <!-- PAGE HEADER -->
 <section class="page-header">
   <div class="container">
-    <p class="section-overline">Free tool</p>
+    <p class="section-overline">FTH Reporting Portal</p>
     <h1 class="page-header-title">Your trial balance, read the <em>IFRS</em> way</h1>
-    <p class="ifrs-lead">Load a Ukrainian trial balance (ОСВ) and see a preliminary IFRS balance sheet and P&amp;L, classified with the FTH account mapping. Your file never leaves your computer: it is read and calculated in this page, nothing is sent.</p>
+    <p class="ifrs-lead">Load a Ukrainian trial balance (ОСВ): the portal checks it, maps every account to IFRS with the FTH model and builds a preliminary balance sheet and P&amp;L, then shows which IFRS adjustments your company is likely to need. When you are ready, hand it over to FTH in an encrypted package.</p>
+    <ul class="fthp-trust">
+      <li><strong>Processed in your browser</strong> Your file is read on your computer. This page sends nothing and keeps nothing.</li>
+      <li><strong>Encrypted for FTH only</strong> The package you send is sealed with the FTH public key: no one else can open it.</li>
+      <li><strong>Signed results</strong> What FTH releases to you is signed: the portal proves it comes from FTH, unaltered.</li>
+    </ul>
   </div>
 </section>
 
-<section class="ifrs-tool">
+<section class="ifrs-tool fthp">
   <div class="container">
 
-    <section class="ifrs-step" aria-labelledby="ifrsStep1Title">
-      <h2 id="ifrsStep1Title"><span class="ifrs-step-num">1</span> Parameters</h2>
-      <dl class="ifrs-params">
-        <div><dt>Chart of accounts</dt><dd>Ukrainian GAAP (П(С)БО)</dd></div>
-        <div><dt>Currency</dt><dd>UAH</dd></div>
-        <div><dt>Period</dt><dd id="ifrsPeriod">read from the file</dd></div>
-        <div><dt>Company</dt><dd id="ifrsCompany">&mdash;</dd></div>
-      </dl>
-    </section>
+    <nav class="fthp-steps" aria-label="Steps">
+      <ol>
+        <li><a href="#fthpUpload"><span>1</span>Upload</a></li>
+        <li><a href="#fthpChecks"><span>2</span>Data checks</a></li>
+        <li><a href="#fthpMapping"><span>3</span>Mapping</a></li>
+        <li><a href="#fthpStatements"><span>4</span>Statements</a></li>
+        <li><a href="#fthpReadiness"><span>5</span>IFRS readiness</a></li>
+        <li><a href="#fthpSend"><span>6</span>Send to FTH</a></li>
+        <li class="fthp-steps-alt"><a href="#fthpResults">Results from FTH</a></li>
+      </ol>
+    </nav>
 
-    <section class="ifrs-step" aria-labelledby="ifrsStep2Title">
-      <h2 id="ifrsStep2Title"><span class="ifrs-step-num">2</span> Trial balance</h2>
-      <div class="ifrs-load">
-        <button type="button" class="btn btn-green" id="ifrsDemo">Try with the sample</button>
-        <span class="ifrs-or">or</span>
-        <label class="ifrs-file"><span>Choose your ОСВ (.xls, .xlsx)</span><input type="file" id="ifrsFile" accept=".xls,.xlsx,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"></label>
+    <section class="ifrs-step" id="fthpUpload" aria-labelledby="fthpUploadTitle">
+      <h2 id="fthpUploadTitle"><span class="ifrs-step-num">1</span> Upload your trial balance</h2>
+      <div class="fthp-upload">
+        <label class="fthp-drop" id="fthpDrop">
+          <span class="fthp-drop-title">Drop your ОСВ here, or choose a file</span>
+          <span class="fthp-drop-hint">Excel .xls or .xlsx, up to 15 MB: an export from 1C, BAS, M.E.Doc&hellip; with the account in column A, then opening balance, turnovers and closing balance (debit / credit).</span>
+          <input type="file" id="fthpFile" accept=".xls,.xlsx,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet">
+        </label>
+        <div class="fthp-samples">
+          <p>No file at hand? Try a sample:</p>
+          <button type="button" class="btn btn-green" id="fthpDemo1">&ldquo;Добро&rdquo;, 2015 (simple)</button>
+          <button type="button" class="btn btn-outline" id="fthpDemo2">IT company, 2025 (realistic)</button>
+        </div>
       </div>
-      <p class="ifrs-hint">Sample: trial balance of &ldquo;Добро&rdquo;, a fictitious company, 2015. Your own file: a trial balance export (1C, BAS, M.E.Doc&hellip;) with the account in column A, then opening balance, turnovers and closing balance, debit and credit.</p>
-      <p class="ifrs-privacy"><strong>Your file does not leave your computer.</strong> It is read and calculated in your browser; this page sends nothing, and keeps nothing once you close it.</p>
-      <p class="ifrs-load-status" id="ifrsStatus" role="status" aria-live="polite"></p>
+      <p class="fthp-status" id="fthpStatus" role="status" aria-live="polite"></p>
+      <dl class="ifrs-params">
+        <div><dt>Company</dt><dd id="fthpCompany">&mdash;</dd></div>
+        <div><dt>Period</dt><dd id="fthpPeriod">&mdash;</dd></div>
+        <div><dt>Chart of accounts</dt><dd>Ukrainian GAAP (П(С)БО), UAH</dd></div>
+        <div><dt>File</dt><dd id="fthpFileName">&mdash;</dd></div>
+        <div><dt>SHA-256 fingerprint</dt><dd id="fthpSha" class="fthp-mono">&mdash;</dd></div>
+      </dl>
+      <p class="fthp-results-link">Already received results from FTH? <a href="#fthpResults">Open them</a>.</p>
     </section>
 
-    <section class="ifrs-step" id="ifrsStep3" aria-labelledby="ifrsStep3Title" hidden>
-      <h2 id="ifrsStep3Title"><span class="ifrs-step-num">3</span> Classification</h2>
-      <p id="ifrsClassSummary"></p>
-      <ul class="ifrs-warnings" id="ifrsWarnings" hidden></ul>
-      <p class="ifrs-hint">Each account gets the IFRS category of the FTH mapping (the account itself, or its group). Change a category in the list: the statements below follow. A parent account is used only when its sub-accounts carry no amount, so nothing is counted twice. Amounts are net, debit minus credit: credit balances show in red.</p>
-      <div class="ifrs-scroll" id="ifrsAccounts" tabindex="0" role="region" aria-label="Accounts and IFRS categories"></div>
-      <p class="sr-only" id="ifrsLive" role="status" aria-live="polite"></p>
+    <section class="ifrs-step" id="fthpChecks" aria-labelledby="fthpChecksTitle" hidden>
+      <h2 id="fthpChecksTitle"><span class="ifrs-step-num">2</span> Data checks</h2>
+      <div class="fthp-tiles" id="fthpTiles"></div>
+      <ul class="fthp-checks" id="fthpCheckList"></ul>
     </section>
 
-    <section class="ifrs-step" id="ifrsStep4" aria-labelledby="ifrsStep4Title" hidden>
-      <h2 id="ifrsStep4Title"><span class="ifrs-step-num">4</span> Preliminary statements</h2>
-      <p class="ifrs-banner"><strong>Preliminary:</strong> a classification of П(С)БО data, without IFRS adjustments (IFRS 15, IFRS 16, IAS 21, IAS 38, IAS 12). This is not a set of IFRS financial statements.</p>
+    <section class="ifrs-step" id="fthpMapping" aria-labelledby="fthpMappingTitle" hidden>
+      <h2 id="fthpMappingTitle"><span class="ifrs-step-num">3</span> Account mapping</h2>
+      <p class="ifrs-hint">Each account gets the IFRS category of the FTH model (the account itself or its group). Change a category and every statement follows. A parent account is used only when its sub-accounts carry no amount. Amounts are net, debit minus credit: credit balances in red.</p>
+      <div class="fthp-toolbar">
+        <div class="fthp-chips" role="group" aria-label="Filter">
+          <button type="button" data-filter="all" aria-pressed="true">All</button>
+          <button type="button" data-filter="attention" aria-pressed="false">Needs attention<span id="fthpAttCount"></span></button>
+          <button type="button" data-filter="changed" aria-pressed="false">Changed</button>
+        </div>
+        <label class="fthp-search"><span class="sr-only">Search an account or name</span><input type="search" id="fthpSearch" placeholder="Search an account or name" autocomplete="off"></label>
+        <span class="fthp-shown" id="fthpShown" aria-live="polite"></span>
+      </div>
+      <div class="ifrs-scroll fthp-accounts" id="fthpAccounts" tabindex="0" role="region" aria-label="Accounts and IFRS categories"></div>
+      <p class="sr-only" id="fthpLive" role="status" aria-live="polite"></p>
+    </section>
+
+    <section class="ifrs-step" id="fthpStatements" aria-labelledby="fthpStatementsTitle" hidden>
+      <h2 id="fthpStatementsTitle"><span class="ifrs-step-num">4</span> Preliminary statements</h2>
+      <p class="ifrs-banner"><strong>Preliminary, not IFRS financial statements.</strong> Your Ukrainian GAAP figures, reclassified into IFRS line items. IFRS recognition and measurement adjustments (revenue, leases, foreign currency, credit losses, deferred tax&hellip;) are not made here: step 5 shows which ones apply to you.</p>
+      <div class="fthp-kpis" id="fthpKpis"></div>
       <div class="ifrs-statements">
         <div class="ifrs-card">
-          <h3>Balance sheet <span>UAH</span></h3>
-          <div class="ifrs-scroll"><table class="ifrs-table" id="ifrsBalance"></table></div>
-          <p class="ifrs-check" id="ifrsCheck"></p>
-          <p class="ifrs-note" id="ifrsResultNote"></p>
+          <h3>Statement of financial position <span>UAH</span></h3>
+          <div class="ifrs-scroll"><table class="ifrs-table" id="fthpBalance"></table></div>
+          <p class="ifrs-check" id="fthpBalanceCheck"></p>
+          <p class="ifrs-note" id="fthpResultNote"></p>
         </div>
         <div class="ifrs-card">
           <h3>Profit or loss <span>UAH</span></h3>
-          <div class="ifrs-scroll"><table class="ifrs-table" id="ifrsPnl"></table></div>
-          <p class="ifrs-note" id="ifrsPnlNote" hidden></p>
-          <p class="ifrs-note">Period movements of classes 7&ndash;9 (account 79 excluded). No tax is calculated: the tax line shows only what the trial balance holds.</p>
+          <div class="ifrs-scroll"><table class="ifrs-table" id="fthpPnl"></table></div>
+          <p class="ifrs-note" id="fthpPnlNote" hidden></p>
+          <p class="ifrs-note">From period turnovers of classes 7&ndash;9 (closing account 79 excluded). No tax is calculated: the tax line shows only what the trial balance holds.</p>
+        </div>
+      </div>
+      <div class="fthp-actions">
+        <button type="button" class="btn btn-outline" id="fthpXlsx">Download Excel</button>
+        <button type="button" class="btn btn-outline" id="fthpPrint">Print or save as PDF</button>
+      </div>
+    </section>
+
+    <section class="ifrs-step" id="fthpReadiness" aria-labelledby="fthpReadinessTitle" hidden>
+      <h2 id="fthpReadinessTitle"><span class="ifrs-step-num">5</span> IFRS readiness</h2>
+      <p>The trial balance shows part of the picture. Seven quick questions complete it; the map on the right updates as you answer.</p>
+      <div class="fthp-readiness">
+        <fieldset class="fthp-questions">
+          <legend class="sr-only">Questions about your company</legend>
+          <div class="fthp-q"><p>Do you rent offices or equipment for more than 12 months?</p><label><input type="radio" name="q_leases" value="yes"> Yes</label><label><input type="radio" name="q_leases" value="no"> No</label><label><input type="radio" name="q_leases" value="unsure"> Not sure</label></div>
+          <div class="fthp-q"><p>Do you invoice or pay in foreign currency?</p><label><input type="radio" name="q_fx" value="yes"> Yes</label><label><input type="radio" name="q_fx" value="no"> No</label><label><input type="radio" name="q_fx" value="unsure"> Not sure</label></div>
+          <div class="fthp-q"><p>Do you develop software you own (products, platforms)?</p><label><input type="radio" name="q_development" value="yes"> Yes</label><label><input type="radio" name="q_development" value="no"> No</label><label><input type="radio" name="q_development" value="unsure"> Not sure</label></div>
+          <div class="fthp-q"><p>Do employees hold share options (ESOP, phantom shares)?</p><label><input type="radio" name="q_esop" value="yes"> Yes</label><label><input type="radio" name="q_esop" value="no"> No</label><label><input type="radio" name="q_esop" value="unsure"> Not sure</label></div>
+          <div class="fthp-q"><p>Do you have subscriptions, milestones or prepaid multi-period contracts?</p><label><input type="radio" name="q_contracts" value="yes"> Yes</label><label><input type="radio" name="q_contracts" value="no"> No</label><label><input type="radio" name="q_contracts" value="unsure"> Not sure</label></div>
+          <div class="fthp-q"><p>Are there loans from or to owners or group companies?</p><label><input type="radio" name="q_related" value="yes"> Yes</label><label><input type="radio" name="q_related" value="no"> No</label><label><input type="radio" name="q_related" value="unsure"> Not sure</label></div>
+          <div class="fthp-q"><p>Is the company part of a group (foreign parent, subsidiaries)?</p><label><input type="radio" name="q_group" value="yes"> Yes</label><label><input type="radio" name="q_group" value="no"> No</label><label><input type="radio" name="q_group" value="unsure"> Not sure</label></div>
+        </fieldset>
+        <div class="fthp-map">
+          <h3>Your IFRS adjustment map</h3>
+          <p class="fthp-summary" id="fthpReadinessSummary" aria-live="polite"></p>
+          <ul class="fthp-indicators" id="fthpIndicators"></ul>
+          <p class="ifrs-note">Indicators, not conclusions: each area is confirmed or set aside by an FTH specialist on your full data.</p>
         </div>
       </div>
     </section>
 
-    <section class="ifrs-step ifrs-cta" aria-labelledby="ifrsStep5Title">
-      <h2 id="ifrsStep5Title"><span class="ifrs-step-num">5</span> From preliminary to IFRS</h2>
-      <p>The real gap with IFRS sits in the adjustments: revenue, leases, foreign currency, development costs, deferred tax. Tell us about your company and we will tell you what an IFRS transformation involves for it.</p>
-      <a href="/en#contact" class="btn btn-green">Request an IFRS diagnostic</a>
-      <p class="ifrs-hint">The contact form takes a short message only: do not attach your trial balance.</p>
+    <section class="ifrs-step" id="fthpSend" aria-labelledby="fthpSendTitle" hidden>
+      <h2 id="fthpSendTitle"><span class="ifrs-step-num">6</span> Send to FTH, securely</h2>
+      <p>The portal seals your trial balance, your mapping choices and your answers into one file encrypted with the FTH public key. Send that file by e-mail or any file share: without the FTH private key, which never leaves FTH, it is unreadable.</p>
+      <div class="fthp-form">
+        <label>Company name<input type="text" id="fthpSendCompany" autocomplete="organization" maxlength="200"></label>
+        <label>Contact person<input type="text" id="fthpSendContact" autocomplete="name" maxlength="200"></label>
+        <label>E-mail <span>(optional)</span><input type="email" id="fthpSendEmail" autocomplete="email" maxlength="200"></label>
+        <label class="fthp-wide">What do you need? <span>(optional)</span><textarea id="fthpSendMessage" rows="3" maxlength="4000" placeholder="Audit deadline, investor request, reporting date…"></textarea></label>
+        <label class="fthp-consent fthp-wide"><input type="checkbox" id="fthpConsent"> I am authorised to share this financial data with FTH, which processes it under its <a href="/privacy">privacy policy</a>.</label>
+      </div>
+      <div class="fthp-actions">
+        <button type="button" class="btn btn-green" id="fthpSeal">Create the encrypted package</button>
+        <span class="fthp-key">FTH key <span class="fthp-mono" id="fthpKeyId">&mdash;</span></span>
+      </div>
+      <p class="fthp-status" id="fthpSendStatus" role="status" aria-live="polite"></p>
+      <p class="ifrs-hint">Prefer to talk first? <a href="/en#contact">Request an IFRS diagnostic</a>; the contact form takes a short message only, never attach your trial balance to it.</p>
+    </section>
+
+    <section class="ifrs-step" id="fthpResults" aria-labelledby="fthpResultsTitle">
+      <h2 id="fthpResultsTitle"><span class="ifrs-step-num">&check;</span> Results from FTH</h2>
+      <p>FTH sends you a <span class="fthp-mono">.fthres</span> file, and the passphrase by another channel (phone, messenger). The portal decrypts the file here and checks the FTH signature.</p>
+      <div class="fthp-form">
+        <label>Results file<input type="file" id="fthpResFile" accept=".fthres,application/json"></label>
+        <label>Passphrase<input type="password" id="fthpResPass" autocomplete="off" spellcheck="false"></label>
+      </div>
+      <div class="fthp-actions"><button type="button" class="btn btn-green" id="fthpResOpen">Open the results</button></div>
+      <p class="fthp-status" id="fthpResStatus" role="status" aria-live="polite"></p>
+      <div id="fthpResView" hidden>
+        <dl class="ifrs-params" id="fthpResMeta"></dl>
+        <p class="ifrs-banner" id="fthpResNote" hidden></p>
+        <div class="fthp-kpis" id="fthpResKpis"></div>
+        <div class="ifrs-statements fthp-stack">
+          <div class="ifrs-card">
+            <h3>Statement of financial position <span>UAH</span></h3>
+            <div class="ifrs-scroll"><table class="ifrs-table" id="fthpResBalance"></table></div>
+          </div>
+          <div class="ifrs-card">
+            <h3>Profit or loss <span>UAH</span></h3>
+            <div class="ifrs-scroll"><table class="ifrs-table" id="fthpResPnl"></table></div>
+          </div>
+        </div>
+        <p class="ifrs-note" id="fthpResDisclaimer"></p>
+      </div>
     </section>
 
   </div>
@@ -194,6 +293,11 @@
 <script src="/js/main.js?v=18"></script>
 <script src="/js/vendor/xlsx-0.20.3.full.min.js"></script>
 <script src="/data/ifrs-data.js?v=1"></script>
-<script src="/js/ifrs-tool.js?v=1"></script>
+<script src="/data/ifrs-model.js?v=1"></script>
+<script src="/data/ifrs-demo-it.js?v=1"></script>
+<script src="/data/fth-keys.js?v=1"></script>
+<script src="/js/fth/core.js?v=1"></script>
+<script src="/js/fth/vault.js?v=1"></script>
+<script src="/js/ifrs-tool.js?v=2"></script>
 </body>
 </html>

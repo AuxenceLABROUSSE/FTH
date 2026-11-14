@@ -22,6 +22,7 @@ Static website for FTH Advisory: transformation of financial reporting from Ukra
   fonts/              # self-hosted woff2 (Playfair Display latin+cyrillic, DM Sans latin)
   img/og/             # 1200x630 share images, one per page (<slug>.jpg)
   rss.xml, rss-ua.xml, sitemap.xml, robots.txt, llms.txt
+  ifrs-tool(-ua).html, workspace(-ua).html, js/fth/, js/ifrs-tool.js, js/workspace.js, data/, tools/   # reporting platform (see below)
 ```
 
 ## Design System - "Advisory" (since 22/09/2026)
@@ -62,12 +63,21 @@ Editorial consulting-firm look: paper background, forest green, serif headings, 
 ### Cache busting
 - CSS/JS are cached 1 year (`immutable`): every page references them with `?v=N`.
 - After ANY change to `advisory.css` or `main.js`, bump the version in ALL 41 HTML files (e.g. `sed -i 's/advisory\.css?v=18/advisory.css?v=19/'` on `*.html blog/*.html`).
-- Current: `style.min.css?v=2`, `advisory.css?v=26`, `main.js?v=18`.
+- Current: `style.min.css?v=2`, `advisory.css?v=29`, `main.js?v=18`; platform scripts `js/fth/core.js?v=1`, `js/fth/vault.js?v=1`, `js/ifrs-tool.js?v=2`, `js/workspace.js?v=1`, `data/*.js?v=1` (only the tool/workspace pages load them).
 - No scroll-reveal classes any more (`reveal*`, `stagger-children`): content is visible at once. If a page uses a new class of the legacy layer, check it is still in `style.min.css` (it was purged against the pages of 23/09).
 - Images/fonts are cached 30 days and not versioned: give a new file name when replacing one.
 
 ### Shared template (secondary pages)
 The 39 secondary pages reuse the homepage `<nav>` and `<footer>` of their language (links made absolute, UA/EN pointing to the hreflang twin), a skip link and `<main id="main" tabindex="-1">`. Articles mark the Blog menu link `aria-current="true"` (the blog index uses `"page"`). When the homepage nav or footer changes, apply the same change to all pages of that language.
+
+## FTH Reporting Platform (since 14/11/2026) — details in `tools/PLATFORM.md`
+- Client portal `/ifrs-tool` + `/ifrs-tool-ua` (footer link "IFRS Tool"): upload ОСВ → checks → mapping → preliminary SoFP/P&L → IFRS readiness map → encrypted package for FTH (.fthpkg); also opens results released by FTH (.fthres, passphrase, signature checked).
+- Specialist workspace `/workspace` + `/workspace-ua`: noindex, NOT linked anywhere, not in the sitemap. Needs the FTH key file (.fthkey) + passphrase. Mapping review, adjustment journals, IFRS 16 / IFRS 9 / IAS 21 / IAS 12 calculators, worksheet, review notes, status, signed release, encrypted working file (.fthwork), Excel working papers, audit trail.
+- Engine `js/fth/core.js`, crypto `js/fth/vault.js` (WebCrypto only). No request after page load and no browser storage: keep it that way (tests check it).
+- Model: `data/ifrs-data.js` (generated from the Excel workbook, do not edit) + `data/ifrs-model.js` (FTH model 2.0: lines, mapping corrections, findings; bump its `version` on change).
+- Keys: public `data/fth-keys.js`; private key file + passphrase in `/home/vadim/fth-keys/` (never under /var/www, never in git: `.gitignore` blocks *.fthkey, *.fthpkg, *.fthwork, *.fthres).
+- Never present output as IFRS-compliant: portal = "preliminary"; releases carry a disclaimer.
+- Tests: `PLAYWRIGHT_CORE=/var/www/aixo/node_modules/playwright-core node tools/test-platform.mjs` (must print "all passed").
 
 ## Two Language Versions
 - `index.html` = Ukrainian (lang="uk", deliberate: main audience), `en.html` = English (lang="en")

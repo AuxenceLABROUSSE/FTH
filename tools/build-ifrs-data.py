@@ -3,6 +3,7 @@
 
 Usage: python3 tools/build-ifrs-data.py <Звіти.xlsx> <ОСВ demo .xls>
 
+(Base layer of the reporting model: corrections and statement lines are in data/ifrs-model.js.)
 Reads the FTH workbook (sheet Mapping: col A account, B description, C IFRS category)
 and the demo trial balance (ОСВ "Добро", 2015), and writes them, with the category ->
 statement-line table below, as one static script (window.FTH_IFRS_DATA). A script and not

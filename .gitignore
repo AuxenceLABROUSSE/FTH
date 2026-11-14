@@ -3,3 +3,10 @@
 *.log
 *.tmp
 node_modules/
+
+# FTH platform: private keys, client packages, working files and releases never go in the repo (served folder)
+*.fthkey
+*.fthpkg
+*.fthwork
+*.fthres
+*.passphrase.txt

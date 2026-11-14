@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FTH Workspace</title>
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="referrer" content="no-referrer">
+  <link rel="stylesheet" href="/css/style.min.css?v=2">
+  <link rel="icon" href="/favicon.ico" sizes="48x48">
+  <link rel="stylesheet" href="/css/advisory.css?v=29">
+</head>
+<body class="advisory-home advisory-secondary fthw-body">
+
+<a href="#main" class="skip-link">Skip to content</a>
+
+<header class="fthw-bar">
+  <div class="fthw-bar-in">
+    <a href="/en" class="fthw-brand"><img src="/img/logo-fth-glyph-100.webp" alt="FTH" width="100" height="65"><span>Workspace</span></a>
+    <span class="fthw-key" id="fthwKeyBadge" title="Unlocked key"></span>
+    <nav class="fthw-lang" aria-label="Language"><a href="/workspace-ua" hreflang="uk" lang="uk">UA</a><a href="/workspace" hreflang="en" lang="en" aria-current="page">EN</a></nav>
+    <button type="button" class="btn btn-outline fthw-lockbtn" id="fthwLockBtn" hidden>Lock</button>
+  </div>
+</header>
+
+<main id="main" tabindex="-1" class="ifrs-tool fthp fthw">
+
+  <section id="fthwLock" class="fthw-gate" aria-labelledby="fthwLockTitle">
+    <p class="section-overline">FTH specialists only</p>
+    <h1 id="fthwLockTitle" class="fthw-h1">Specialist workspace</h1>
+    <p>Open your FTH key file to work on client engagements: mapping review, IFRS adjustments, review and release.</p>
+    <div class="fthp-form">
+      <label class="fthp-wide">FTH key file (.fthkey)<input type="file" id="fthwKeyFile" accept=".fthkey,application/json"></label>
+      <label class="fthp-wide">Passphrase<input type="password" id="fthwPass" autocomplete="current-password" spellcheck="false"></label>
+    </div>
+    <div class="fthp-actions"><button type="button" class="btn btn-green" id="fthwUnlock">Unlock</button></div>
+    <p class="fthp-status" id="fthwLockStatus" role="status" aria-live="polite"></p>
+    <ul class="fthw-facts"><li>The key file and its passphrase never leave this computer; this page sends nothing and keeps nothing.</li><li>Without the key, client packages and working files are unreadable, here or anywhere else.</li><li>Work is saved as an encrypted working file (.fthwork) on your computer or your firm’s drive.</li></ul>
+    <details class="fthw-details">
+      <summary>New key set (administrator)</summary>
+      <p>Creates a new pair of FTH keys. Keep the .fthkey file in a safe place (two copies), then publish the downloaded fth-keys.js as data/fth-keys.js. Keep old key files: they still open packages sealed before the rotation.</p>
+      <div class="fthp-form">
+        <label>Passphrase (12 characters or more)<input type="password" id="fthwKgPass" autocomplete="new-password"></label>
+        <label>Repeat the passphrase<input type="password" id="fthwKgPass2" autocomplete="new-password"></label>
+      </div>
+      <div class="fthp-actions"><button type="button" class="btn btn-outline" id="fthwKeygen">Generate and download</button></div>
+      <p class="fthp-status" id="fthwKgStatus" role="status" aria-live="polite"></p>
+    </details>
+  </section>
+
+  <section id="fthwStart" class="fthw-gate" aria-labelledby="fthwStartTitle" hidden>
+    <h1 id="fthwStartTitle" class="fthw-h1">Open an engagement</h1>
+    <p class="fthp-status" id="fthwStartStatus" role="status" aria-live="polite"></p>
+    <div class="fthp-form"><label class="fthp-wide">Your name (audit trail)<input type="text" id="fthwUser" autocomplete="name" maxlength="80"></label></div>
+    <div class="fthw-starts">
+      <label class="fthw-start"><strong>Client package</strong><span>.fthpkg sent by a client from the portal</span><input type="file" id="fthwOpenPkg" accept=".fthpkg,application/json"></label>
+      <label class="fthw-start"><strong>Working file</strong><span>.fthwork saved from this workspace</span><input type="file" id="fthwOpenWork" accept=".fthwork,application/json"></label>
+      <label class="fthw-start"><strong>New from an ОСВ</strong><span>.xls / .xlsx received directly</span><input type="file" id="fthwOpenTb" accept=".xls,.xlsx"></label>
+      <div class="fthw-start"><strong>Sample</strong><span>IT company, 2025, with client answers</span><button type="button" class="btn btn-outline" id="fthwSample">Open the sample</button></div>
+    </div>
+  </section>
+
+  <section id="fthwApp" aria-labelledby="fthwHead" hidden>
+    <div class="fthw-apphead">
+      <p id="fthwHead" class="fthw-eng"></p>
+      <span class="fthw-pill" id="fthwStatusPill"></span>
+      <span class="fthw-dirty" id="fthwDirty" hidden>Unsaved changes</span>
+      <div class="fthw-appacts">
+        <button type="button" class="btn btn-green" id="fthwSave">Save (.fthwork)</button>
+        <button type="button" class="btn btn-outline" id="fthwClose">Close</button>
+      </div>
+    </div>
+    <p class="fthp-status is-error" id="fthwIdle" hidden>30 minutes without activity: save your work, the workspace then locks.</p>
+    <p class="fthp-status" id="fthwAppStatus" role="status" aria-live="polite"></p>
+    <div class="fthw-layout">
+      <nav class="fthw-nav" id="fthwNav" aria-label="Engagement sections"></nav>
+      <section class="fthw-main" id="fthwMain" tabindex="-1" aria-live="off"></section>
+    </div>
+  </section>
+
+</main>
+
+<script src="/js/vendor/xlsx-0.20.3.full.min.js"></script>
+<script src="/data/ifrs-data.js?v=1"></script>
+<script src="/data/ifrs-model.js?v=1"></script>
+<script src="/data/ifrs-demo-it.js?v=1"></script>
+<script src="/data/fth-keys.js?v=1"></script>
+<script src="/js/fth/core.js?v=1"></script>
+<script src="/js/fth/vault.js?v=1"></script>
+<script src="/js/workspace.js?v=1"></script>
+</body>
+</html>
