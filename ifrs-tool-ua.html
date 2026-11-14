@@ -94,7 +94,7 @@
       </div>
       <p class="ifrs-hint">Приклад: ОСВ вигаданої компанії «Добро» за 2015 рік. Ваш файл: вивантаження ОСВ (1С, BAS, M.E.Doc&hellip;) з рахунком у колонці A, далі сальдо на початок, обороти та сальдо на кінець, дебет і кредит.</p>
       <p class="ifrs-privacy"><strong>Ваш файл не залишає вашого комп&rsquo;ютера.</strong> Він читається й розраховується у вашому браузері; сторінка нічого не надсилає і нічого не зберігає після закриття.</p>
-      <p class="ifrs-status" id="ifrsStatus" role="status" aria-live="polite"></p>
+      <p class="ifrs-load-status" id="ifrsStatus" role="status" aria-live="polite"></p>
     </section>
 
     <section class="ifrs-step" id="ifrsStep3" aria-labelledby="ifrsStep3Title" hidden>
@@ -103,6 +103,7 @@
       <ul class="ifrs-warnings" id="ifrsWarnings" hidden></ul>
       <p class="ifrs-hint">Кожен рахунок отримує категорію МСФЗ з мапінгу FTH (сам рахунок або його група). Змініть категорію у списку, і звіти нижче оновляться. Синтетичний рахунок враховується лише тоді, коли його субрахунки не мають сум, тож нічого не рахується двічі. Суми показано нетто, дебет мінус кредит: кредитові сальдо виділено червоним.</p>
       <div class="ifrs-scroll" id="ifrsAccounts" tabindex="0" role="region" aria-label="Рахунки та категорії МСФЗ"></div>
+      <p class="sr-only" id="ifrsLive" role="status" aria-live="polite"></p>
     </section>
 
     <section class="ifrs-step" id="ifrsStep4" aria-labelledby="ifrsStep4Title" hidden>

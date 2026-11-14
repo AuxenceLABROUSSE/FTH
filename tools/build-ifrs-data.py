@@ -11,6 +11,7 @@ Needs openpyxl and xlrd.
 """
 import json
 import math
+import re
 import sys
 from pathlib import Path
 
@@ -18,8 +19,12 @@ import openpyxl
 import xlrd
 
 OUT = Path(__file__).resolve().parent.parent / "data" / "ifrs-data.js"
-# Mapping rows 2-210 only: the rows below are FTH's internal IFRS adjustment accounts (48xx, 49xx).
-MAPPING_LAST_ROW = 210
+# FTH's own IFRS adjustment accounts (48xx, 49xx: contracts, leases, FX, derivatives, reserves)
+# are not part of the Ukrainian chart: they are left out of the published mapping.
+INTERNAL_PREFIXES = ("48", "49")
+# An account of the chart: 1-4 digits, optionally a short suffix (36Р, 4800.2). Longer numbers in
+# column A of a TB (analytic codes, tax IDs, item numbers) are analytic lines, ignored.
+ACCOUNT = re.compile(r"\d{1,4}(?:[.A-Za-z\u0400-\u04ff][0-9A-Za-z\u0400-\u04ff]{0,3})?")
 
 # Accounts with no category in the Mapping sheet that script 7 nets into revenue
 # (revenue deductions); they are debit-side accounts (used when the TB is closed through 79).
@@ -228,7 +233,14 @@ def num(v):
         return 0.0
     if isinstance(v, (int, float)):
         return float(v)
-    s = str(v).replace(" ", "").replace(" ", "").replace(",", ".")
+    # same rule as num() in js/ifrs-tool.js: "1 234,56", "1,234.56", "1.234,56"
+    s = re.sub(r"[\s\u00a0\u202f']", "", str(v))
+    if "," in s and "." in s:
+        s = s.replace(".", "").replace(",", ".") if s.rfind(",") > s.rfind(".") else s.replace(",", "")
+    elif "," in s:
+        s = s.replace(",", "") if s.count(",") > 1 else s.replace(",", ".")
+    elif s.count(".") > 1:
+        s = s.replace(".", "")
     try:
         return float(s)
     except ValueError:
@@ -238,9 +250,9 @@ def num(v):
 def read_mapping(xlsx):
     ws = openpyxl.load_workbook(xlsx, data_only=True)["Mapping"]
     out = {}
-    for row in ws.iter_rows(min_row=2, max_row=MAPPING_LAST_ROW, values_only=True):
+    for row in ws.iter_rows(min_row=2, max_row=ws.max_row, values_only=True):
         code = norm_code(row[0])
-        if not code or not code[0].isdigit():
+        if not code or not code[0].isdigit() or code.startswith(INTERNAL_PREFIXES):
             continue
         cat = (row[2] or "").strip() if isinstance(row[2], str) else ""
         if code in REVENUE_DEDUCTIONS and not cat:
@@ -259,8 +271,9 @@ def read_osv(xls):
     rows = []
     for r in range(7, sh.nrows):
         v = sh.row_values(r)
-        code = norm_code(v[0])
-        if not code or not code[0].isdigit():
+        # off-balance 01-09 typed as numbers arrive as 1..9: keep them in class 0
+        code = "0" + str(int(v[0])) if isinstance(v[0], float) and v[0].is_integer() and 1 <= v[0] <= 9 else norm_code(v[0])
+        if not code or not ACCOUNT.fullmatch(code):
             continue
         rows.append([code, num(v[1]) + num(v[2]), num(v[3]), num(v[4]), num(v[5]), num(v[6]), num(v[7])])
     return {"company": company, "period": period, "rows": rows}

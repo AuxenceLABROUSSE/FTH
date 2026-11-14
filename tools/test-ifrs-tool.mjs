@@ -119,8 +119,12 @@ try {
         // Re-classification: move 361 to "Other receivables" -> totals unchanged, then to none -> check fails visibly.
         const sel = page.locator('.ifrs-accounts tbody tr', { hasText: '361' }).locator('select');
         await sel.selectOption('Other receivables');
+        ok(await page.evaluate(() => document.activeElement && document.activeElement.getAttribute('data-code') === '361'), `${tag} after changing 361: focus stays on the 361 list`);
+        ok(/1[\s\u00a0\u202f,.]?770[\s\u00a0\u202f,.]?000/.test(await page.locator('#ifrsLive').textContent()), `${tag} after changing 361: new totals announced (aria-live)`);
+        ok(await page.locator('#ifrsStatus.ifrs-load-status:not(.is-error):not(.ifrs-status)').count() === 1 && await page.locator('.ifrs-accounts .ifrs-status').count() > 0, `${tag}: file status has its own class, distinct from the per-account status`);
         compare(await totals(page, lang), `${tag} after re-classifying 361`);
         await sel.selectOption('');
+        ok(await page.evaluate(() => document.activeElement && document.activeElement.getAttribute('data-code') === '361'), `${tag} after un-classifying 361: focus stays on the 361 list`);
         ok(await page.locator('#ifrsCheck.is-ko').count() === 1, `${tag} unclassified 361: check shows the gap`);
 
         // Compute cases: closed year (closing entries through 79) and a parent account next to its sub-account.
@@ -134,17 +138,41 @@ try {
           const demo = window.FTH_IFRS_DATA.demo.rows;
           const parent = window.FTHIFRS.compute({ rows: demo.concat([['36', 200000, 0, 1200000, 900000, 500000, 0]]) });
           const one = window.FTHIFRS.compute({ rows: [['311', 100, 0, 0, 0, 100, 0], ['6', 0, 100, 0, 0, 0, 100]] });
+          // two unclassified balance accounts that offset each other: difference 0, check still not green
+          const offset = window.FTHIFRS.compute({ rows: [['311', 0, 0, 0, 0, 100, 0], ['401', 0, 0, 0, 0, 0, 100], ['19', 0, 0, 0, 0, 50, 0], ['29', 0, 0, 0, 0, 0, 50]] });
+          // parent differing from its sub-accounts at opening AND closing: one warning, not two
+          const dup = window.FTHIFRS.compute({ rows: demo.concat([['36', 1, 0, 0, 0, 2, 0]]) });
+          // uploaded layout: 7 columns (no doubled debit), text amounts in three notations, off-balance 01 typed as a number, a 5-digit analytic line
+          const grid = [['Тест'], ['Оборотно-сальдова відомість за 2024 р.'], [], ['Рахунок', 'Сальдо на початок', '', 'Обороти', '', 'Сальдо на кінець', ''],
+            ['', 'Дебет', 'Кредит', 'Дебет', 'Кредит', 'Дебет', 'Кредит'],
+            ['311', '1 234,56', '', '', '', '1,234.56', ''], ['401', '', '1.234,56', '', '', '', '1234.56'],
+            [1, 500, '', '', '', 500, ''], ['12345', 999, '', '', '', 999, '']];
+          const parsed = window.FTHIFRS.parseSheet(grid), pr = window.FTHIFRS.compute(parsed);
           return {
             closed: { assets: closed.assets[1], equity: closed.equity[1], liabilities: closed.liabilities[1], revenue: closed.revenue, profit: closed.profit, added: closed.resultAdded[1], closed79: closed.closed79, diff: closed.diff[1] },
             parent: { assets: parent.assets, equity: parent.equity, warnings: parent.warnings.length },
             one: { liabilities: one.liabilities[1], diff: one.diff[1] },
+            offset: { diff: offset.diff[1], count: offset.unplacedBsCount, checkOk: offset.checkOk },
+            dup: dup.warnings.length,
+            parsed: { period: parsed.period, codes: pr.accounts.map((a) => a.code).join(','), assets: pr.assets, equity: pr.equity, checkOk: pr.checkOk },
           };
         });
         const c = cases.closed;
         ok(c.closed79 && Math.abs(c.added) < 0.01, `${tag} closed year: nothing added to retained earnings (${c.added})`);
         ok(c.assets === 1770000 && c.equity === 1400000 && c.liabilities === 370000 && Math.abs(c.diff) < 0.01, `${tag} closed year: balance sheet 1 770 000 = 1 400 000 + 370 000`);
         ok(c.revenue === 1200000 && c.profit === 250000, `${tag} closed year: P&L from turnovers, revenue ${c.revenue}, profit ${c.profit}`);
+        ok(Math.abs(cases.offset.diff) < 0.01 && cases.offset.count === 2 && cases.offset.checkOk === false, `${tag} unclassified amounts that offset: check not green`);
+        ok(cases.dup === 1, `${tag} parent warning listed once per account (${cases.dup})`);
+        const ps = cases.parsed;
+        ok(ps.codes === '311,401' && ps.period === '2024 р.', `${tag} parse: off-balance 01 and analytic 12345 ignored, period read (${ps.codes}, ${ps.period})`);
+        ok(ps.assets.every((v) => Math.abs(v - 1234.56) < 0.001) && ps.equity.every((v) => Math.abs(v - 1234.56) < 0.001) && ps.checkOk, `${tag} parse: 1 234,56 / 1,234.56 / 1.234,56 read alike`);
         ok(cases.one.liabilities === 100 && cases.one.diff === 0, `${tag} one-digit account 6 found by exact match`);
+        // Unreadable file: previous figures hidden, period/company reset, error status.
+        await page.setInputFiles('#ifrsFile', { name: 'bad.xlsx', mimeType: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', buffer: Buffer.from('PK\u0003\u0004 not really a workbook') });
+        await page.locator('#ifrsStatus.is-error').waitFor({ timeout: 15000 });
+        ok(await page.evaluate(() => document.getElementById('ifrsStep3').hidden && document.getElementById('ifrsStep4').hidden
+          && document.getElementById('ifrsPeriod').textContent === '\u2014' && document.getElementById('ifrsCompany').textContent === '\u2014'), `${tag} unreadable file: steps 3-4 hidden, period and company reset`);
+        ok(await page.locator('#ifrsStatus.is-error').evaluate((e) => getComputedStyle(e).backgroundColor !== 'rgba(0, 0, 0, 0)'), `${tag} unreadable file: error status styled apart`);
         ok(cases.parent.assets[1] === ref.closing.total_assets && cases.parent.assets[0] === ref.opening.total_assets && cases.parent.warnings === 0, `${tag} parent 36 next to 361: counted once`);
       }
 

@@ -94,7 +94,7 @@
       </div>
       <p class="ifrs-hint">Sample: trial balance of &ldquo;Добро&rdquo;, a fictitious company, 2015. Your own file: a trial balance export (1C, BAS, M.E.Doc&hellip;) with the account in column A, then opening balance, turnovers and closing balance, debit and credit.</p>
       <p class="ifrs-privacy"><strong>Your file does not leave your computer.</strong> It is read and calculated in your browser; this page sends nothing, and keeps nothing once you close it.</p>
-      <p class="ifrs-status" id="ifrsStatus" role="status" aria-live="polite"></p>
+      <p class="ifrs-load-status" id="ifrsStatus" role="status" aria-live="polite"></p>
     </section>
 
     <section class="ifrs-step" id="ifrsStep3" aria-labelledby="ifrsStep3Title" hidden>
@@ -103,6 +103,7 @@
       <ul class="ifrs-warnings" id="ifrsWarnings" hidden></ul>
       <p class="ifrs-hint">Each account gets the IFRS category of the FTH mapping (the account itself, or its group). Change a category in the list: the statements below follow. A parent account is used only when its sub-accounts carry no amount, so nothing is counted twice. Amounts are net, debit minus credit: credit balances show in red.</p>
       <div class="ifrs-scroll" id="ifrsAccounts" tabindex="0" role="region" aria-label="Accounts and IFRS categories"></div>
+      <p class="sr-only" id="ifrsLive" role="status" aria-live="polite"></p>
     </section>
 
     <section class="ifrs-step" id="ifrsStep4" aria-labelledby="ifrsStep4Title" hidden>

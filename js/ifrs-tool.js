@@ -35,7 +35,7 @@
     none: '— не класифіковано —', noLine: ' (без статті у звітах)',
     checkOk: 'Контроль: активи = капітал + зобов’язання (різниця 0,00 на початок і на кінець).',
     checkKo: 'Контроль не пройдено: активи − (капітал + зобов’язання) = ',
-    checkKoUnplaced: '. Некласифіковані рахунки 1–6: ',
+    checkKoUnplaced: '. Некласифіковані рахунки 1–6 із сумами: ',
     resultAdded: 'Рік не закрито в обліку: результат, ще не перенесений на рахунок 44 (', resultAdded2: '), додано до нерозподіленого прибутку.',
     resultClosed: 'Рік уже закрито через рахунок 79: результат вже у нерозподіленому прибутку, нічого не додано.',
     naturalSide: 'Доходи й витрати закрито через рахунок 79 протягом періоду: звіт про прибутки та збитки складено за оборотами (кредит класу 7, дебет класу 9), без урахування сторнувань. Перевірте.',
@@ -59,7 +59,7 @@
     none: '— not classified —', noLine: ' (no statement line)',
     checkOk: 'Check: assets = equity + liabilities (difference 0.00 at opening and closing).',
     checkKo: 'Check failed: assets − (equity + liabilities) = ',
-    checkKoUnplaced: '. Unclassified accounts 1–6: ',
+    checkKoUnplaced: '. Unclassified accounts 1–6 with amounts: ',
     resultAdded: 'The year is not closed in the books: the result not yet transferred to account 44 (', resultAdded2: ') is added to retained earnings.',
     resultClosed: 'The year is already closed through account 79: the result is in retained earnings, nothing added.',
     naturalSide: 'Income and expenses were closed through account 79 during the period: the P&L is built from turnovers (credit of class 7, debit of class 9), reversals not netted. Please check.',
@@ -87,13 +87,25 @@
     var s = String(v).trim();
     return /^\d+\.0$/.test(s) ? s.slice(0, -2) : s;
   }
+  /* Amount cell: a number, or text such as "1 234,56", "1,234.56", "1.234,56", "-1234.5".
+     Spaces are dropped; with both "," and "." the last one is the decimal mark; with only one
+     kind, several occurrences are thousands separators and a single one is the decimal mark. */
   function num(v) {
     if (typeof v === 'number') return isFinite(v) ? v : 0;
-    if (v === null || v === undefined || v === '') return 0;
-    var n = parseFloat(String(v).replace(/[\s  ]/g, '').replace(',', '.'));
+    if (v === null || v === undefined) return 0;
+    var t = String(v).replace(/[\s  ']/g, '');
+    if (!t) return 0;
+    var c = t.lastIndexOf(','), d = t.lastIndexOf('.');
+    if (c >= 0 && d >= 0) t = c > d ? t.replace(/\./g, '').replace(',', '.') : t.replace(/,/g, '');
+    else if (c >= 0) t = t.split(',').length > 2 ? t.replace(/,/g, '') : t.replace(',', '.');
+    else if (d >= 0 && t.split('.').length > 2) t = t.replace(/\./g, '');
+    var n = Number(t);
     return isFinite(n) ? n : 0;
   }
-  var isAccount = function (code) { return /^\d[\d.A-Za-zЀ-ӿ]*$/.test(code) && code.length <= 12; };
+  /* An account of the Ukrainian chart: 1 to 4 digits (class, account, sub-account, 1C/BAS
+     sub-sub-account), optionally with a short suffix (36Р, 4800.2). A longer number in column A
+     (5 digits or more: analytic codes, tax IDs, item numbers) is an analytic line, ignored. */
+  var isAccount = function (code) { return /^\d{1,4}(?:[.A-Za-zЀ-ӿ][0-9A-Za-zЀ-ӿ]{0,3})?$/.test(code); };
   var classOf = function (code) { return code.charAt(0); };
   var isRevenueDeduction = function (code) { return D.revenueDeductions.some(function (d) { return code.indexOf(d) === 0; }); };
 
@@ -124,19 +136,19 @@
     var codes = Object.keys(acc).filter(function (c) { return amounts(acc[c]); }).sort();
     var hasSub = function (p) { return codes.some(function (c) { return c !== p && c.indexOf(p) === 0; }); };
     var leaves = codes.filter(function (c) { return !hasSub(c); });
-    var warnings = [];
+    var warnings = [], warned = {};
     codes.forEach(function (p) {
       if (!hasSub(p)) return;
       var subs = leaves.filter(function (c) { return c.indexOf(p) === 0; });
       ['o', 'c'].forEach(function (k) {
         var d = acc[p][k] - subs.reduce(function (s, c) { return s + acc[c][k]; }, 0);
-        if (Math.abs(d) > 0.5 && Math.abs(acc[p][k]) > EPS && warnings.indexOf(p) < 0) warnings.push(T.parentKo(p, money(d)));
+        if (Math.abs(d) > 0.5 && Math.abs(acc[p][k]) > EPS && !warned[p]) { warned[p] = true; warnings.push(T.parentKo(p, money(d))); }
       });
     });
 
     var closed79 = codes.some(function (c) { return c.indexOf('79') === 0 && (acc[c].td || acc[c].tc); });
     var turnover9 = leaves.some(function (c) { return classOf(c) === '9' && (acc[c].td || acc[c].tc); });
-    var bs = {}, pl = {}, unplacedBs = [0, 0], unplacedPl = 0, plBal = [0, 0], tbSum = [0, 0];
+    var unplacedBsCount = 0, bs = {}, pl = {}, unplacedBs = [0, 0], unplacedPl = 0, plBal = [0, 0], tbSum = [0, 0];
     var accounts = leaves.map(function (code) {
       var a = acc[code], m = mappedCategory(code);
       var manual = Object.prototype.hasOwnProperty.call(overrides, code);
@@ -147,7 +159,7 @@
       tbSum[0] += a.o; tbSum[1] += a.c;
       if (st === 'bs') {
         if (where) { var b = bs[where.id] || (bs[where.id] = [0, 0]); b[0] += a.o; b[1] += a.c; }
-        else { unplacedBs[0] += a.o; unplacedBs[1] += a.c; }
+        else { unplacedBs[0] += a.o; unplacedBs[1] += a.c; if (Math.abs(a.o) > EPS || Math.abs(a.c) > EPS) unplacedBsCount++; }
       } else {
         plBal[0] += a.o; plBal[1] += a.c;
         if (code.indexOf('79') !== 0) {
@@ -185,7 +197,8 @@
     var pbt = operating + p('finance_income') + p('finance_costs');
     var profit = pbt + p('tax') + unplacedPl;
     if (Math.abs(tbSum[0]) > 0.5 || Math.abs(tbSum[1]) > 0.5) warnings.unshift(T.tbKo + money(Math.abs(tbSum[0]) > 0.5 ? tbSum[0] : tbSum[1]) + T.tbKo2);
-    return { accounts: accounts, balance: balance, sections: sections, assets: assets, equity: equity, liabilities: liabilities,
+    var checkOk = Math.abs(diff[0]) < EPS && Math.abs(diff[1]) < EPS && unplacedBsCount === 0;
+    return { checkOk: checkOk, unplacedBsCount: unplacedBsCount, accounts: accounts, balance: balance, sections: sections, assets: assets, equity: equity, liabilities: liabilities,
       diff: diff, unplacedBs: unplacedBs, resultAdded: resultAdded, closed79: closed79, pl: pl, unplacedPl: unplacedPl,
       gross: gross, operating: operating, pbt: pbt, profit: profit, revenue: p('revenue'), warnings: warnings };
   }
@@ -221,7 +234,9 @@
     groups = groups || [[1, 2], [3], [4], [5], [6], [7]];
     var rows = [];
     for (var i = start; i < grid.length; i++) {
-      var g = grid[i] || [], code = normCode(g[0]);
+      var g = grid[i] || [];
+      // Off-balance accounts 01-09 typed as numbers arrive as 1..9: keep them in class 0 (ignored).
+      var code = typeof g[0] === 'number' && g[0] >= 1 && g[0] <= 9 && Number.isInteger(g[0]) ? '0' + g[0] : normCode(g[0]);
       if (!isAccount(code)) continue;
       rows.push([code].concat(groups.map(function (cols) { return cols.reduce(function (s, c) { return s + num(g[c]); }, 0); })));
     }
@@ -267,13 +282,20 @@
       var catCell = el('td', 'ifrs-cat');
       if (a.status === 'closingAcc') catCell.appendChild(el('span', 'ifrs-status', T.closingAcc));
       else {
-        var sel = el('select'); sel.setAttribute('aria-label', T.category + ' — ' + a.code);
+        var sel = el('select'); sel.setAttribute('aria-label', T.category + ' — ' + a.code); sel.setAttribute('data-code', a.code);
         sel.appendChild(new Option(T.none, ''));
         var cats = (a.statement === 'bs' ? D.balanceLines : D.pnlLines).reduce(function (l, x) { return l.concat(x.categories); }, []);
         if (a.category && cats.indexOf(a.category) < 0) sel.appendChild(new Option(catLabel(a.category) + T.noLine, a.category));
         cats.forEach(function (c) { sel.appendChild(new Option(catLabel(c), c)); });
         sel.value = a.category;
-        sel.addEventListener('change', function () { overrides[a.code] = sel.value; run(); });
+        sel.addEventListener('change', function () {
+          overrides[a.code] = sel.value;
+          var res = run();
+          // The table is rebuilt: give the focus back to this account's list, and read out the new totals.
+          var again = $('ifrsAccounts').querySelector('select[data-code="' + a.code + '"]');
+          if (again) again.focus();
+          $('ifrsLive').textContent = T.totalAssets + ' ' + money(res.assets[1]) + '; ' + T.totalEquity + ' ' + money(res.equity[1]) + '; ' + T.totalLiab + ' ' + money(res.liabilities[1]) + '. ' + $('ifrsCheck').textContent;
+        });
         catCell.appendChild(sel);
         var st = { exact: T.exact, via: T.viaPrefix + a.via, manual: T.manual, unknown: T.unknown, unplaced: T.unplaced }[a.status];
         catCell.appendChild(el('span', 'ifrs-status' + (flagged ? ' is-flagged' : ''), st));
@@ -305,9 +327,9 @@
     body.appendChild(total(T.totalEqLiab, [res.equity[0] + res.liabilities[0], res.equity[1] + res.liabilities[1]], 'equity-liabilities', 'ifrs-total ifrs-grand'));
     if (Math.abs(res.unplacedBs[0]) > EPS || Math.abs(res.unplacedBs[1]) > EPS) body.appendChild(total(T.unplacedBs, res.unplacedBs, 'unplaced', 'ifrs-unplaced'));
     table.appendChild(body);
-    var ok = Math.abs(res.diff[0]) < EPS && Math.abs(res.diff[1]) < EPS, check = $('ifrsCheck');
+    var ok = res.checkOk, check = $('ifrsCheck');
     check.className = 'ifrs-check ' + (ok ? 'is-ok' : 'is-ko');
-    check.textContent = ok ? T.checkOk : T.checkKo + money(res.diff[0]) + ' / ' + money(res.diff[1]) + T.checkKoUnplaced + money(res.unplacedBs[0]) + ' / ' + money(res.unplacedBs[1]);
+    check.textContent = ok ? T.checkOk : T.checkKo + money(res.diff[0]) + ' / ' + money(res.diff[1]) + T.checkKoUnplaced + res.unplacedBsCount + ' (' + money(res.unplacedBs[0]) + ' / ' + money(res.unplacedBs[1]) + ')';
     var added = Math.abs(res.resultAdded[0]) > EPS || Math.abs(res.resultAdded[1]) > EPS;
     $('ifrsResultNote').textContent = added ? T.resultAdded + T.opening.toLowerCase() + ' ' + money(res.resultAdded[0]) + ', ' + T.closing.toLowerCase() + ' ' + money(res.resultAdded[1]) + ' UAH' + T.resultAdded2 : T.resultClosed;
   }
@@ -333,13 +355,29 @@
     var res = compute(tb, overrides);
     renderAccounts(res); renderBalance(res); renderPnl(res);
     ['ifrsStep3', 'ifrsStep4'].forEach(function (id) { $(id).hidden = false; });
+    return res;
+  }
+
+  function status(message, isError) {
+    var st = $('ifrsStatus');
+    st.textContent = message;
+    st.className = 'ifrs-load-status' + (isError ? ' is-error' : '');
+  }
+
+  // Unreadable file or no accounts: no figures from a previous file stay on screen.
+  function fail(message) {
+    tb = null; overrides = {};
+    ['ifrsStep3', 'ifrsStep4'].forEach(function (id) { $(id).hidden = true; });
+    $('ifrsPeriod').textContent = '—';
+    $('ifrsCompany').textContent = '—';
+    status(message, true);
   }
 
   function load(data, message) {
     tb = data; overrides = {};
     $('ifrsPeriod').textContent = data.period || '—';
     $('ifrsCompany').textContent = data.company || '—';
-    $('ifrsStatus').textContent = message;
+    status(message, false);
     run();
   }
 
@@ -352,13 +390,13 @@
   $('ifrsFile').addEventListener('change', function () {
     var file = this.files && this.files[0];
     if (!file) return;
-    $('ifrsStatus').textContent = T.loading;
+    status(T.loading, false);
     file.arrayBuffer().then(function (buf) {
       var wb = window.XLSX.read(buf, { type: 'array' });
       var grid = window.XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]], { header: 1, raw: true, defval: '' });
       var data = parseSheet(grid);
-      if (!data.rows.length) { $('ifrsStatus').textContent = T.noRows; return; }
+      if (!data.rows.length) { fail(T.noRows); return; }
       load(data, T.loaded(data.rows.length));
-    }).catch(function (e) { $('ifrsStatus').textContent = T.readError + (e && e.message ? e.message : e); });
+    }).catch(function (e) { fail(T.readError + (e && e.message ? e.message : e)); });
   });
 })();
