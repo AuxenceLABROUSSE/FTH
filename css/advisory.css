@@ -399,3 +399,66 @@ html { scroll-padding-top: 6.5rem; }
 .advisory-home .service-card:hover { background: #fff; border-color: #bbf7d0; }
 .advisory-home .sys-card-hero-icon { margin: 0 auto 1.1rem; }
 @media (max-width:768px) { .advisory-home .services-track { gap: .75rem; } .advisory-home .services-track .service-card { padding: 1.25rem; } }
+
+/* ===== Preliminary IFRS tool (/ifrs-tool, /ifrs-tool-ua), 14/11: steps as white cards, statements as ruled ledgers ===== */
+.advisory-secondary .page-header-title em { font-style: italic; color: #2fa35a; }
+.advisory-secondary .ifrs-lead { max-width: 46rem; margin: 1.25rem 0 0; color: #52634f; font-size: 1.05rem; line-height: 1.65; }
+.ifrs-tool { padding: 3rem 0 5rem; }
+.ifrs-tool .ifrs-step { background: #fff; border: 1px solid #e4e4e7; border-radius: 16px; box-shadow: 0 1px 2px rgba(0,0,0,.04), 0 1px 3px rgba(0,0,0,.03); padding: 2rem; margin-bottom: 1.25rem; }
+.ifrs-tool .ifrs-step[hidden] { display: none; }
+.ifrs-tool h2 { font-family: var(--font-serif); font-weight: 400; font-size: 1.5rem; letter-spacing: -.01em; color: var(--g900); margin: 0 0 1.25rem; display: flex; align-items: center; gap: .75rem; }
+.ifrs-tool .ifrs-step-num { flex: none; width: 2rem; height: 2rem; border-radius: 50%; background: #f0fdf4; color: #166534; font-family: var(--font-sans); font-size: .95rem; font-weight: 600; display: inline-flex; align-items: center; justify-content: center; font-variant-numeric: tabular-nums lining-nums; }
+.ifrs-tool p { color: #3f4a40; line-height: 1.6; margin: 0 0 .9rem; }
+.ifrs-tool .ifrs-hint, .ifrs-tool .ifrs-note { color: #52634f; font-size: .92rem; }
+.ifrs-tool .ifrs-params { display: grid; grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr)); gap: 1px; background: #e4e4e7; border: 1px solid #e4e4e7; border-radius: 10px; overflow: hidden; margin: 0; }
+.ifrs-tool .ifrs-params div { background: #fafafa; padding: .9rem 1.1rem; }
+.ifrs-tool .ifrs-params dt { font-size: .8rem; letter-spacing: .04em; text-transform: uppercase; color: #52634f; margin-bottom: .25rem; }
+.ifrs-tool .ifrs-params dd { margin: 0; font-weight: 600; color: var(--g900); }
+.ifrs-tool .ifrs-load { display: flex; flex-wrap: wrap; align-items: center; gap: .9rem 1.1rem; margin-bottom: 1.1rem; }
+.ifrs-tool .ifrs-or { color: #52634f; }
+.ifrs-tool .ifrs-file { display: inline-flex; flex-direction: column; gap: .35rem; font-weight: 600; color: var(--g900); min-width: 0; max-width: 100%; }
+.ifrs-tool .ifrs-file input { font: inherit; font-weight: 400; width: 100%; min-width: 0; }
+.ifrs-tool .ifrs-file input::file-selector-button { font: inherit; font-weight: 600; color: #166534; background: #fff; border: 1px solid #166534; border-radius: 100px; padding: .55rem 1.1rem; margin-right: .75rem; cursor: pointer; }
+.ifrs-tool :is(button, input, select, .ifrs-scroll):focus-visible { outline: 3px solid #487941; outline-offset: 4px; }
+.ifrs-tool .ifrs-privacy { background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 10px; padding: .85rem 1.1rem; color: #14532d; }
+.ifrs-tool .ifrs-status:empty { display: none; }
+.ifrs-tool .ifrs-status { font-weight: 600; color: #166534; margin: 0; }
+.ifrs-tool .ifrs-warnings { margin: 0 0 1rem; padding: .85rem 1.1rem .85rem 2rem; background: #fffbeb; border: 1px solid #fde68a; border-radius: 10px; color: #713f12; }
+.ifrs-tool .ifrs-scroll { overflow-x: auto; }
+.ifrs-tool .ifrs-table { width: 100%; border-collapse: collapse; font-size: .92rem; }
+.ifrs-tool .ifrs-table :is(th, td) { padding: .55rem .6rem; border-bottom: 1px solid #f0f0f2; text-align: left; vertical-align: top; font-weight: 400; color: #27302a; }
+.ifrs-tool .ifrs-table thead th { font-size: .78rem; letter-spacing: .04em; text-transform: uppercase; color: #52634f; border-bottom-color: #e4e4e7; white-space: nowrap; }
+.ifrs-tool .ifrs-table .ifrs-num { text-align: right; white-space: nowrap; font-variant-numeric: tabular-nums lining-nums; }
+.ifrs-tool .ifrs-table .is-negative { color: #a32020; }
+.ifrs-tool .ifrs-sub th { padding-top: 1.1rem; font-weight: 600; color: #166534; }
+.ifrs-tool .ifrs-total :is(th, td) { font-weight: 600; color: var(--g900); border-top: 1px solid #c9cec4; }
+.ifrs-tool .ifrs-grand :is(th, td) { border-top: 0; border-bottom: 3px double #166534; }
+.ifrs-tool .ifrs-unplaced :is(th, td) { color: #713f12; background: #fffbeb; }
+.ifrs-tool .ifrs-accounts { min-width: 46rem; }
+.ifrs-tool .ifrs-accounts tbody th { font-weight: 600; white-space: nowrap; }
+.ifrs-tool .ifrs-acc-name { display: block; font-weight: 400; color: #52634f; font-size: .82rem; white-space: normal; max-width: 16rem; }
+.ifrs-tool .ifrs-accounts tr.is-flagged { background: #fffbeb; }
+.ifrs-tool .ifrs-cat select { font: inherit; width: 100%; min-width: 14rem; padding: .35rem .5rem; border: 1px solid #d4d4d8; border-radius: 4px; background: #fff; color: #27302a; }
+.ifrs-tool .ifrs-status { display: block; font-size: .78rem; color: #52634f; margin-top: .25rem; }
+.ifrs-tool .ifrs-status.is-flagged { color: #a16207; font-weight: 600; }
+.ifrs-tool .ifrs-banner { border-left: 3px solid #166534; background: #fafafa; padding: .9rem 1.1rem; border-radius: 0 10px 10px 0; }
+.ifrs-tool .ifrs-statements { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.25rem; align-items: start; }
+.ifrs-tool .ifrs-card { border: 1px solid #e4e4e7; border-radius: 12px; padding: 1.25rem 1.25rem .5rem; }
+.ifrs-tool .ifrs-card h3 { font-family: var(--font-serif); font-weight: 400; font-size: 1.25rem; color: var(--g900); margin: 0 0 .75rem; display: flex; justify-content: space-between; align-items: baseline; }
+.ifrs-tool .ifrs-card h3 span { font-family: var(--font-sans); font-size: .78rem; letter-spacing: .04em; color: #52634f; }
+.ifrs-tool .ifrs-check { margin-top: 1rem; font-weight: 600; }
+.ifrs-tool .ifrs-check.is-ok { color: #166534; }
+.ifrs-tool .ifrs-check.is-ko { color: #a32020; }
+.ifrs-tool .ifrs-cta .btn { margin: .25rem 0 1rem; }
+@media (max-width: 960px) { .ifrs-tool .ifrs-statements { grid-template-columns: minmax(0, 1fr); } }
+@media (max-width: 768px) {
+  .ifrs-tool { padding: 2rem 0 3rem; }
+  .ifrs-tool .ifrs-step { padding: 1.25rem .85rem; border-radius: 12px; }
+  .ifrs-tool h2 { font-size: 1.25rem; }
+  .ifrs-tool .ifrs-card { padding: .9rem .3rem .25rem; border-radius: 10px; }
+  .ifrs-tool .ifrs-table { font-size: .8rem; }
+  .ifrs-tool .ifrs-statements .ifrs-table { font-size: .76rem; }
+  .ifrs-tool .ifrs-table :is(th, td) { padding: .45rem .25rem; }
+  .ifrs-tool .ifrs-table thead th { white-space: normal; font-size: .7rem; }
+  .ifrs-tool .ifrs-statements .ifrs-table th[scope="row"] { hyphens: auto; }
+}
