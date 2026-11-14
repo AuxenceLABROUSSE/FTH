@@ -367,3 +367,33 @@ html { scroll-padding-top: 6.5rem; }
   .advisory-home .nav-menu li:not(.nav-menu-cta) a { font-family: var(--font-serif); font-weight: 400; font-size: 1.35rem; letter-spacing: -.005em; }
   .advisory-home .nav-menu .nav-menu-cta a { font-weight: 600; }
 }
+
+/* ===== Allure V3 (avril-septembre 2026), demandée par le client le 14/11 : fond blanc, vert vif, cartes blanches arrondies et ombrées, boutons pilule. Contenu, structure et référencement restent ceux de septembre. ===== */
+.advisory-home, .advisory-secondary { --green: #166534; --green-deep: #14532d; --green-accent: #22c55e; background: #fff; }
+.advisory-home .navbar, .advisory-home .navbar.scrolled { background: #fff; border-bottom-color: #eef0ee; }
+.advisory-home .hero { background: radial-gradient(60% 70% at 30% 60%, #22c55e14 0%, transparent 70%), radial-gradient(40% 50% at 95% 0%, #16653410 0%, transparent 70%), #fff; }
+.advisory-home .hero h1 em { color: #2fa35a; }
+.advisory-home .hero-desc { color: #6b6b74; }
+.advisory-home :is(.btn,.nav-cta) { border-radius: 100px; }
+.advisory-home .hero-widget { background: #fff; color: #18181b; border: 1px solid #e4e4e7; border-radius: 16px; box-shadow: 0 2px 8px rgba(0,0,0,.04), 0 8px 24px rgba(0,0,0,.05); }
+.advisory-home .hero-widget :is(.hw-header,.hw-badge) { color: #166534; border-color: #e4e4e7; }
+.advisory-home .hw-metric { background: #fafafa; border: 0; border-radius: 10px; }
+.advisory-home .hw-metric strong { color: #18181b; }
+.advisory-home .hw-metric span { color: #6b6b74; }
+.advisory-home .hw-ledger li { color: #3f3f46; border-bottom-color: #f0f0f2; }
+.advisory-home .hw-ref { color: #166534; }
+.advisory-home .hw-total { color: #166534; border-color: #e4e4e7; }
+.advisory-home .trust-bar { background: #fff; border-block: 0; border-bottom: 1px solid #eef0ee; }
+.advisory-home .trust-item { text-align: center; border-left: 0; padding-left: 0; }
+.advisory-home .trust-item strong { color: #166534; font-weight: 600; }
+.advisory-home .trust-item span { color: #6b6b74; }
+.advisory-home :is(.service-card,.pcard,.blog-card,.expert-card), .advisory-secondary .blog-card { background: #fff; border: 1px solid #e4e4e7; border-radius: 16px; box-shadow: 0 1px 2px rgba(0,0,0,.04), 0 1px 3px rgba(0,0,0,.03); }
+.advisory-home .sys-card-hero { background: linear-gradient(135deg, #166534 0%, #14532d 100%); border-radius: 16px; box-shadow: 0 8px 32px rgba(22,101,52,.18); text-align: center; }
+.advisory-home .section-light, .advisory-secondary .article-header { background: #fafafa; }
+.advisory-home .hw-header svg path { stroke: #166534; }
+.advisory-home .hw-total { border-top-color: #e4e4e7; border-bottom: 0; }
+.advisory-home .hw-total span:first-child { color: #166534; }
+.advisory-home .hw-total span:last-child { color: #18181b; }
+.advisory-home .services-track { gap: 1.25rem; background: none; border: 0; border-radius: 0; overflow: visible; }
+.advisory-home .services-track .service-card { border: 1px solid #e4e4e7; border-radius: 16px; padding: 2.5rem 2.25rem; box-shadow: 0 1px 2px rgba(0,0,0,.04), 0 1px 3px rgba(0,0,0,.03); }
+.advisory-home .service-card:hover { background: #fff; border-color: #bbf7d0; }
