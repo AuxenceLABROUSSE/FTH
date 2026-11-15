@@ -63,19 +63,19 @@ Editorial consulting-firm look: paper background, forest green, serif headings, 
 
 ### Cache busting
 - CSS/JS are cached 1 year (`immutable`): every page references them with `?v=N`.
-- After ANY change to `advisory.css` or `main.js`, bump the version in ALL 41 HTML files (e.g. `sed -i 's/advisory\.css?v=18/advisory.css?v=19/'` on `*.html blog/*.html`).
+- After ANY change to `advisory.css` or `main.js`, bump the version in ALL HTML files (47 on 15/11/2026: `*.html blog/*.html`) (e.g. `sed -i 's/advisory\.css?v=18/advisory.css?v=19/'` on `*.html blog/*.html`).
 - Current: `style.min.css?v=2`, `advisory.css?v=33`, `main.js?v=18`; platform scripts `js/fth/core.js?v=3`, `js/fth/vault.js?v=1`, `js/ifrs-tool.js?v=5`, `js/workspace.js?v=2`, `data/*.js?v=1` (only the tool/workspace pages load them).
 - No scroll-reveal classes any more (`reveal*`, `stagger-children`): content is visible at once. If a page uses a new class of the legacy layer, check it is still in `style.min.css` (it was purged against the pages of 23/09).
 - Images/fonts are cached 30 days and not versioned: give a new file name when replacing one.
 
 ### Reporting tool tab (since 15/11/2026)
-- Every page with the shared navbar (43 files; not `/workspace`) has `<li class="nav-tool">` as the FIRST menu item: "Інструмент МСФЗ" → `/ifrs-tool-ua` on UA pages, "IFRS Tool" → `/ifrs-tool` on EN pages (`aria-current="page"` on the tool pages). Styled as a green pill (`.nav-tool` at the end of `advisory.css`). The homepages also have a third hero button to the tool. Keep it when the nav is changed.
+- Every page with the shared navbar (45 files on 15/11/2026; not `/workspace`) has `<li class="nav-tool">` as the FIRST menu item: "Інструмент МСФЗ" → `/ifrs-tool-ua` on UA pages, "IFRS Tool" → `/ifrs-tool` on EN pages (`aria-current="page"` on the tool pages). Styled as a green pill (`.nav-tool` at the end of `advisory.css`). The homepages also have a third hero button to the tool. Keep it when the nav is changed.
 - Home page hero card = survey "Investor reporting readiness" (`#heroCalc`, `js/hero-calc.js`, content built by the script; markup only in `index.html` / `en.html`): intro → 6 questions one at a time (purpose [unscored, tailors the wording], standards, subsidiaries, prior years, audit, trial balance) → score /100 (points add up to 100; levels <35 / <60 / <80 / 80+) with up to 4 tips → two ways forward: the tool (`/ifrs-tool-ua?a=group` or `?n=group` from the subsidiaries answer; `js/ifrs-tool.js` pre-fills only the listed readiness questions) or "Discuss a project" (`#contact`, summary typed into `#message` when empty). Nothing is sent or stored. Indicative only: never state IFRS compliance or a quote. Questions, points and tips are in the two language dictionaries at the top of the script (keep UA and EN in sync).
 - File inputs (tool + workspace pages) are wrapped by `js/fth/fileui.js` so the "Choose file / No file chosen" text is Ukrainian or English instead of the browser's language (never remove the script from those pages).
 - Language: the site and the tool are Ukrainian and English only. No Russian text (the Excel workbook still holds one Russian description, translated by `tools/build-ifrs-data.py`).
 
 ### Shared template (secondary pages)
-The 39 secondary pages reuse the homepage `<nav>` and `<footer>` of their language (links made absolute, UA/EN pointing to the hreflang twin), a skip link and `<main id="main" tabindex="-1">`. Articles mark the Blog menu link `aria-current="true"` (the blog index uses `"page"`). When the homepage nav or footer changes, apply the same change to all pages of that language.
+The secondary pages (41 on 15/11/2026) reuse the homepage `<nav>` and `<footer>` of their language (links made absolute, UA/EN pointing to the hreflang twin), a skip link and `<main id="main" tabindex="-1">`. Articles mark the Blog menu link `aria-current="true"` (the blog index uses `"page"`). When the homepage nav or footer changes, apply the same change to all pages of that language.
 
 ## FTH Reporting Platform (since 14/11/2026) — details in `tools/PLATFORM.md`
 - Client portal `/ifrs-tool` + `/ifrs-tool-ua` (footer link "IFRS Tool"): upload ОСВ → checks → mapping → preliminary SoFP/P&L → IFRS readiness map → encrypted package for FTH (.fthpkg); also opens results released by FTH (.fthres, passphrase, signature checked).

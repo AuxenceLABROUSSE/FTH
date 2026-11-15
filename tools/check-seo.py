@@ -64,6 +64,11 @@ for f, p in pages.items():
 for k in ('title', 'desc'):
     for v, n in Counter(p[k] for p in pages.values()).items():
         if n > 1: errs.append(f'{k} en double ({n}) : {v}')
+pubs = {f[5:-5]: p['pub'] for f, p in pages.items() if 'pub' in p}
+for f in pages:  # cartes d'articles (listes du blog, « articles liés ») : date = publication de l'article visé
+    for m in re.finditer(r'blog-card-date">([^<]+)</span>(.{0,700}?)href="/blog/([a-z0-9-]+)"', open(f, encoding='utf-8').read(), re.S):
+        if 'blog-card-meta' in m.group(2): continue  # la date appartient à une autre carte
+        if visible_date(m.group(1)) != pubs.get(m.group(3)): errs.append(f'{f}: carte {m.group(3)} datée {m.group(1)} != {pubs.get(m.group(3))}')
 sm = set(re.findall(r'<loc>([^<]+)</loc>', open('sitemap.xml').read()))
 for f, p in pages.items():
     if p['can'] not in sm: errs.append(f'{f}: absent du sitemap')
