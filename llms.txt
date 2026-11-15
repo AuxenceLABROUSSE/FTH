@@ -41,6 +41,10 @@
 - /en              English homepage
 - /blog-ua         Ukrainian blog index
 - /blog            English blog index
+- /ifrs-kyiv-ua    Kyiv page (UA): in-person meetings in Kyiv, services, process
+- /ifrs-kyiv       Kyiv page (EN)
+- /ifrs-tool-ua    IFRS tool (UA): trial balance checks and preliminary IFRS mapping in the browser
+- /ifrs-tool       IFRS tool (EN)
 - /sitemap.xml     Full XML sitemap
 
 ## Blog topics covered
