@@ -102,7 +102,7 @@ The 39 secondary pages reuse the homepage `<nav>` and `<footer>` of their langua
 7. Process - 4 numbered steps with their output
 8. Experts - founder, IFRS expert, project team
 9. Latest insights - 3 blog articles
-10. Contact - introduction (former CTA band text), Formspree form, then hours / free consultation / e-mail (`.contact-details` sits AFTER the form in the markup so phones reach the form first; a grid area puts it back under the introduction from 769px) (visible labels, `#formStatus` live region for errors with a mailto fallback)
+10. Contact - introduction (former CTA band text), Formspree form, then location / hours / free consultation / e-mail (`.contact-details` sits AFTER the form in the markup so phones reach the form first; a grid area puts it back under the introduction from 769px) (visible labels, `#formStatus` live region for errors with a mailto fallback)
 11. Footer
 
 The text belongs to the client (content updates of 12/04 and 21/08/2026). Do not reintroduce "IT-фокус", "Big 4" positioning, the phone number or testimonials without the client's approval.
@@ -113,6 +113,7 @@ Current year is 2026. All copyright notices must say 2026.
 ## Business Info (as displayed on the homepage)
 - Company: Financial Transformation Hub (FTH)
 - Email: contact@fthadvisory.com
+- Location: Kyiv, Ukraine (contact block "Місто" / "Location", since 15/11/2026)
 - Hours: Mon-Sun, 9:00-18:00 (homepage value, pending client confirmation)
 - Phone: not displayed (removed by the client on 12/04)
 - Certifications shown: ACCA, DipIFR, CPA (CPA pending client confirmation)

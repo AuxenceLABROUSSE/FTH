@@ -16,7 +16,8 @@ for f in sorted(glob.glob('*.html') + glob.glob('blog/*.html')):
         lang=g(r'<html[^>]*lang="([^"]+)"'), title=g(r'<title>(.*?)</title>'),
         desc=g(r'<meta name="description" content="([^"]*)"'),
         can=g(r'<link rel="canonical" href="([^"]+)"'),
-        hl=dict(re.findall(r'<link rel="alternate" hreflang="([^"]+)" href="([^"]+)"', s)),
+        hl=dict(re.findall(r'<link (?=[^>]*rel="alternate")(?=[^>]*hreflang="([^"]+)")(?=[^>]*href="([^"]+)")[^>]*>', s)),
+        nxd=len(re.findall(r'<link [^>]*hreflang="x-default"', s)),
         h1=len(re.findall(r'<h1[\s>]', s)))
     for j in re.findall(r'<script type="application/ld\+json">(.*?)</script>', s, re.S):
         try: json.loads(j)
@@ -28,8 +29,9 @@ for f in sorted(glob.glob('*.html') + glob.glob('blog/*.html')):
     if p['lang'] != want: errs.append(f'{f}: lang={p["lang"]}, attendu {want}')
     if not p['can']: errs.append(f'{f}: pas de canonical')
     if p['hl'] and p['hl'].get(p['lang']) != p['can']: errs.append(f'{f}: hreflang {p["lang"]} != canonical')
-    if p['hl'] and 'x-default' not in p['hl']: errs.append(f'{f}: pas de x-default')
-    if want == 'uk' and re.search(r"(?<![\w'’ʼ])(даного|даної|даний|являється|являються)(?!\w)", re.sub(r'<[^>]+>', ' ', s)):
+    if p['hl'] and (p['nxd'] != 1 or p['hl'].get('x-default') != p['hl'].get('uk')):
+        errs.append(f'{f}: x-default absent, doublé ou différent de la page uk')
+    if want == 'uk' and re.search(r"(?<![\w'’ʼ])(даного|даної|даний|являється|являються)(?!\w)", re.sub(r'<[^>]+>', ' ', s), re.I):
         errs.append(f'{f}: calque du russe (даний / являється)')
 
 bycan = {p['can']: f for f, p in pages.items()}
@@ -44,7 +46,7 @@ for k in ('title', 'desc'):
         if n > 1: errs.append(f'{k} en double ({n}) : {v}')
 sm = set(re.findall(r'<loc>([^<]+)</loc>', open('sitemap.xml').read()))
 for f, p in pages.items():
-    if f != '404.html' and p['can'] not in sm: errs.append(f'{f}: absent du sitemap')
+    if p['can'] not in sm: errs.append(f'{f}: absent du sitemap')
 
 print('\n'.join(errs) or f'OK : {len(pages)} pages publiques')
 sys.exit(1 if errs else 0)
