@@ -5,6 +5,17 @@ import glob, html, json, re, sys
 from collections import Counter
 
 BASE = 'https://www.fthadvisory.com/'
+UA_MONTHS = 'січня лютого березня квітня травня червня липня серпня вересня жовтня листопада грудня'.split()
+EN_MONTHS = 'January February March April May June July August September October November December'.split()
+
+def visible_date(t):
+    """'5 квітня 2026' ou '5 April 2026' / 'April 5, 2026' -> '2026-04-05'."""
+    w = t.replace(',', '').split()
+    if len(w) == 3 and w[0].isdigit(): d, m, y = w
+    elif len(w) == 3: m, d, y = w
+    else: return t
+    months = UA_MONTHS if m in UA_MONTHS else EN_MONTHS
+    return f'{y}-{months.index(m) + 1:02d}-{int(d):02d}' if m in months else t
 errs = []
 pages = {}
 for f in sorted(glob.glob('*.html') + glob.glob('blog/*.html')):
@@ -33,6 +44,14 @@ for f in sorted(glob.glob('*.html') + glob.glob('blog/*.html')):
         errs.append(f'{f}: x-default absent, doublé ou différent de la page uk')
     if want == 'uk' and re.search(r"(?<![\w'’ʼ])(даного|даної|даний|являється|являються)(?!\w)", re.sub(r'<[^>]+>', ' ', s), re.I):
         errs.append(f'{f}: calque du russe (даний / являється)')
+    if f.startswith('blog/'):  # dates : JSON-LD = balises og = date affichée, modif >= publication
+        pub, mod = g(r'"datePublished": "([^"]+)"'), g(r'"dateModified": "([^"]+)"')
+        p['pub'] = pub
+        if g(r'article:published_time" content="([^"]+)"') != pub: errs.append(f'{f}: article:published_time != datePublished')
+        if g(r'article:modified_time" content="([^"]+)"') != mod: errs.append(f'{f}: article:modified_time != dateModified')
+        if not mod or mod < pub: errs.append(f'{f}: dateModified avant datePublished')
+        shown = g(r'blog-card-date">([^<]+)<')
+        if shown and visible_date(shown) != pub: errs.append(f'{f}: date affichée {shown} != {pub}')
 
 bycan = {p['can']: f for f, p in pages.items()}
 for f, p in pages.items():
@@ -41,6 +60,7 @@ for f, p in pages.items():
         t = pages.get(bycan.get(href))
         if not t: errs.append(f'{f}: hreflang {lang} vers page absente {href}')
         elif t['hl'].get(p['lang']) != p['can']: errs.append(f'{f}: hreflang {lang} sans retour')
+        elif 'pub' in p and t.get('pub') != p['pub']: errs.append(f'{f}: date de publication différente de la version {lang}')
 for k in ('title', 'desc'):
     for v, n in Counter(p[k] for p in pages.values()).items():
         if n > 1: errs.append(f'{k} en double ({n}) : {v}')
