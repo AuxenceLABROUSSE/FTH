@@ -51,7 +51,7 @@ for f in sorted(glob.glob('*.html') + glob.glob('blog/*.html')):
         if g(r'article:published_time" content="([^"]+)"') != pub: errs.append(f'{f}: article:published_time != datePublished')
         if g(r'article:modified_time" content="([^"]+)"') != mod: errs.append(f'{f}: article:modified_time != dateModified')
         if not mod or mod < pub: errs.append(f'{f}: dateModified avant datePublished')
-        shown = g(r'blog-card-date">([^<]+)<')
+        shown = g(r'class="article-meta">(?:(?!</div>).)*?blog-card-date">([^<]+)<')
         if not shown: errs.append(f'{f}: pas de date affichée')
         elif visible_date(shown) != pub: errs.append(f'{f}: date affichée {shown} != {pub}')
 
@@ -74,7 +74,7 @@ for f in pages:  # cartes d'articles (listes du blog, « articles liés ») : da
 sm = set(re.findall(r'<loc>([^<]+)</loc>', open('sitemap.xml').read()))
 for f, p in pages.items():
     if p['can'] not in sm: errs.append(f'{f}: absent du sitemap')
-for u in sm - {p['can'] for p in pages.values()}:  # sitemap -> page publique (ni noindex ni absente)
+for u in sorted(sm - {p['can'] for p in pages.values()}):  # sitemap -> page publique (ni noindex ni absente)
     errs.append(f'sitemap : {u} ne correspond à aucune page publique')
 
 print('\n'.join(errs) or f'OK : {len(pages)} pages publiques')

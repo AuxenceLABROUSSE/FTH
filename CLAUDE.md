@@ -85,7 +85,7 @@ The secondary pages (41 on 15/11/2026) reuse the homepage `<nav>` and `<footer>`
 - Keys: public `data/fth-keys.js`; private key file + passphrase in `/home/vadim/fth-keys/` (never under /var/www, never in git: `.gitignore` blocks *.fthkey, *.fthpkg, *.fthwork, *.fthres).
 - Never present output as IFRS-compliant: portal = "preliminary"; releases carry a disclaimer.
 - IndexNow (Bing, Yandex): key file `/2cf45cfbe4760795547ed2185aebd04d.txt` at the root (keep it). After publishing or changing pages: `curl -s -H "Content-Type: application/json" -d '{"host":"www.fthadvisory.com","key":"2cf45cfbe4760795547ed2185aebd04d","urlList":["https://www.fthadvisory.com/<page>"]}' https://api.indexnow.org/indexnow`
-- SEO probe: `python3 tools/check-seo.py` (must print "OK"): titles/descriptions length and uniqueness, one H1, lang, canonical, reciprocal hreflang + x-default (= the UA page), sitemap coverage, common Russian calques on UA pages. Run it after every new article or page.
+- SEO probe: `python3 tools/check-seo.py` (must print "OK"): titles/descriptions length and uniqueness, one H1, lang, canonical, reciprocal hreflang + x-default (= the UA page), blog dates (JSON-LD = og tags = header date = every card pointing to the article), sitemap coverage both ways, common Russian calques on UA pages. Run it after every new article or page.
 - Tests: `PLAYWRIGHT_CORE=/var/www/aixo/node_modules/playwright-core node tools/test-platform.mjs` (must print "all passed").
 
 ## Two Language Versions
