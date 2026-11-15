@@ -135,7 +135,7 @@
     var track = el('div', 'hc-track'), fill = el('span'); fill.setAttribute('data-level', String(sc.idx)); track.appendChild(fill);
     track.setAttribute('role', 'img'); track.setAttribute('aria-label', L.score + ': ' + sc.score + ' ' + L.of);
     meter.appendChild(num); meter.appendChild(track); box.appendChild(meter);
-    var h = el('h3', 'hc-head', L.head(f, sc.level)); h.setAttribute('tabindex', '-1'); box.appendChild(h);
+    var h = el('h2', 'hc-head', L.head(f, sc.level)); h.setAttribute('tabindex', '-1'); box.appendChild(h);
     box.appendChild(el('p', 'hc-sum', L.sum[sc.idx]));
     box.appendChild(el('p', 'hc-title', L.next));
     var ul = el('ul', 'hc-tips');
@@ -161,7 +161,7 @@
   }
 
   body.textContent = '';
-  body.appendChild(el('h3', 'hc-intro', uk ? 'Чи готова ваша звітність до розмови з інвестором?' : 'Is your reporting ready for a conversation with an investor?'));
+  body.appendChild(el('h2', 'hc-intro', uk ? 'Чи готова ваша звітність до розмови з інвестором?' : 'Is your reporting ready for a conversation with an investor?'));
   body.appendChild(el('p', 'hc-lead', L.lead));
   var facts = el('ul', 'hc-facts');
   (uk ? ['6 запитань', 'без реєстрації', 'результат одразу'] : ['6 questions', 'no sign-up', 'instant result']).forEach(function (t) { facts.appendChild(el('li', '', t)); });
