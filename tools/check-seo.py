@@ -71,6 +71,8 @@ for f in pages:  # cartes d'articles (listes du blog, « articles liés ») : da
     for m in re.finditer(r'blog-card-date">([^<]+)</span>(.{0,700}?)href="/blog/([a-z0-9-]+)"', open(f, encoding='utf-8').read(), re.S):
         if 'blog-card-meta' in m.group(2): continue  # la date appartient à une autre carte
         if visible_date(m.group(1)) != pubs.get(m.group(3)): errs.append(f'{f}: carte {m.group(3)} datée {m.group(1)} != {pubs.get(m.group(3))}')
+if re.search(r"el\('h[3-6]'", open('js/hero-calc.js', encoding='utf-8').read()):  # le questionnaire suit le h1 : ses titres sont des h2
+    errs.append('js/hero-calc.js: titre h3+ dans le questionnaire (saut de niveau après le h1)')
 sm = set(re.findall(r'<loc>([^<]+)</loc>', open('sitemap.xml').read()))
 for f, p in pages.items():
     if p['can'] not in sm: errs.append(f'{f}: absent du sitemap')
