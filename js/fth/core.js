@@ -328,6 +328,7 @@
     };
     res.balanced = z(diff[0]) && z(diff[1]) && !unplacedBsCodes.length;
     res.checkOk = res.balanced;
+    res.cashflow = cashFlow(res, journals);
     res.checks = checks(res);
     return res;
   }
@@ -347,6 +348,7 @@
     if (res.parentBreaks.length) out.push({ id: 'parents', level: 'warn', params: { items: res.parentBreaks.slice(0, 12) } });
     out.push({ id: 'mapping', level: res.unknownCount ? 'warn' : 'ok', params: { n: res.accountCount, u: res.unknownCount } });
     out.push({ id: 'sofp', level: res.balanced ? 'ok' : 'error', params: { d0: res.diff[0], d1: res.diff[1], codes: res.unplacedBsCodes.slice(0, 12) } });
+    if (res.cashflow) out.push({ id: 'cashflow', level: Math.abs(res.cashflow.gap) < 1 ? 'ok' : 'warn', params: { open: res.cashflow.cashOpen, net: res.cashflow.net, close: res.cashflow.cashClose, gap: res.cashflow.gap } });
     if (!z(res.unplacedPl)) out.push({ id: 'unplacedPl', level: 'warn', params: { v: res.unplacedPl, codes: res.unplacedPlCodes.slice(0, 12) } });
     out.push({ id: 'yearClosed', level: 'info', params: { closed: res.closed79, added: res.resultLocal } });
     if (res.recon) out.push({ id: 'recon', level: Math.abs(res.recon.gap) < 0.5 ? 'ok' : 'warn', params: res.recon });
@@ -407,6 +409,11 @@
 
     var hasDt = bal(['17', '54']) > 0.5;
     add('deferredTax', 'IAS 12', hasDt ? 'medium' : 'high', { has: hasDt });
+
+    /* a profit with no income tax expense at all (class 98 untouched): the trial balance is probably
+       pre-tax, so the preliminary profit is overstated by the current tax. */
+    var pbt = res.totals && res.totals.local ? res.totals.local.pbt : 0;
+    if (pbt > 0.5 && turn(['98']) < 0.5) add('incomeTax', 'IAS 12', 'high', { pbt: pbt, est: Math.round(pbt * 0.18) });
 
     if (bal(['91'], 'debit') > 0.5 || turn(['23']) > 0.5) add('inventoryCost', 'IAS 2', 'info');
     if (bal(['352', '35']) > 0.5) add('cashEquivalents', 'IAS 7', 'info', { v: bal(['352', '35']) });
@@ -521,6 +528,140 @@
     return { plImpact: pl, openImpact: open, taxPl: taxPl, taxOpen: taxOpen, journal: lines.length ? { scope: 'current', type: 'adjust', standard: 'IAS 12', lines: lines } : null };
   }
 
+  /* ---------------- cash flow statement (indirect), derived from the IFRS balance sheet ----------------
+     Every balance sheet line is classified exactly once, so the net cash flow equals the movement of
+     cash by construction; what is not explained (unclassified accounts, odd journals) shows up as
+     "gap" and as a check. Policies: interest and tax paid in operating activities; additions to
+     right-of-use assets are non-cash; revaluation and other reserves are non-cash (offset in investing).
+     It is an indicative statement for the specialist, never presented as final IFRS. */
+  function cashFlow(res, journals) {
+    var B = {};
+    res.balance.forEach(function (r) { B[r.id] = r; });
+    var o = function (id) { return B[id] ? B[id].ifrs[0] : 0; }, c = function (id) { return B[id] ? B[id].ifrs[1] : 0; };
+    var d = function () { var s = 0; for (var i = 0; i < arguments.length; i++) s += c(arguments[i]) - o(arguments[i]); return s; };
+    var taxRow = res.pnl.filter(function (r) { return r.id === 'tax'; })[0];
+    var taxExp = taxRow ? -taxRow.ifrs : 0;
+    var profit = res.totals.ifrs.profit, pbt = profit + taxExp;
+
+    // Depreciation and amortisation: accumulated depreciation turnover (13x) plus the adjustment journals.
+    var depTB = 0, depAdj = 0, depRou = 0;
+    res.accounts.forEach(function (a) { if (a.code.indexOf('13') === 0) depTB += a.credit - a.debit; });
+    depTB = Math.max(0, depTB);
+    (journals || []).forEach(function (j) {
+      if (j.status === 'void' || j.type !== 'adjust' || j.scope !== 'current') return;
+      (j.lines || []).forEach(function (l) {
+        var memo = l.memo || '';
+        if (!/deprec|amortis|amortiz/i.test(memo)) return;
+        var v = num(l.dr) - num(l.cr);
+        if (/ROU/.test(memo)) depRou += v; else depAdj += v;
+      });
+    });
+    var da = depTB + depAdj + depRou;
+
+    var L = [];
+    var add = function (id, group, en, uk, v) { L.push({ id: id, group: group, en: en, uk: uk, v: round2(v) }); return v; };
+    var sum = function (group) { return L.filter(function (l) { return l.group === group; }).reduce(function (s, l) { return s + l.v; }, 0); };
+
+    add('pbt', 'op', 'Profit before tax', 'Прибуток до оподаткування', pbt);
+    add('da', 'op', 'Depreciation and amortisation', 'Амортизація', da);
+    add('inv', 'op', 'Change in inventories', 'Зміна запасів', -d('inventories'));
+    add('rec', 'op', 'Change in trade and other receivables and contract assets', 'Зміна дебіторської заборгованості та активів за договорами', -d('receivables', 'contract_assets', 'lt_receivables'));
+    add('pay', 'op', 'Change in payables, contract liabilities and deferred income', 'Зміна кредиторської заборгованості, зобов’язань за договорами та доходів майбутніх періодів', d('payables', 'contract_liabilities', 'deferred_income'));
+    add('prov', 'op', 'Change in employee benefits, provisions and other liabilities', 'Зміна забезпечень, виплат працівникам та інших зобов’язань', d('employee_benefits', 'employee_benefits_current', 'provisions', 'provisions_current', 'other_ncl'));
+    var taxPaid = taxExp - (d('deferred_tax_liability') - d('deferred_tax_asset')) - d('current_tax_liabilities') + d('current_tax_assets');
+    add('tax', 'op', 'Taxes paid (income tax expense adjusted for the change in tax balances)', 'Сплачені податки (витрати з податку на прибуток з поправкою на зміну податкових розрахунків)', -taxPaid);
+    var cfo = sum('op');
+
+    add('capex', 'inv', 'Purchase of property, plant, equipment and intangibles (net of disposals)', 'Придбання основних засобів і нематеріальних активів (з урахуванням вибуття)', -(d('ppe', 'intangibles') + depTB + depAdj));
+    add('fin_assets', 'inv', 'Investments and other financial assets', 'Інвестиції та інші фінансові активи', -d('associates', 'fvoci', 'other_financial_assets', 'held_for_sale'));
+    add('reval', 'inv', 'Revaluation and other reserves (non-cash)', 'Переоцінка та інші резерви (негрошові)', d('revaluation', 'other_reserves'));
+    var cfi = sum('inv');
+
+    add('loans', 'fin', 'Net proceeds from (repayment of) borrowings', 'Надходження за позиками за вирахуванням погашень', d('loans', 'loans_current'));
+    add('leases', 'fin', 'Lease payments (principal and interest, net of non-cash additions)', 'Орендні платежі (за вирахуванням негрошових надходжень активів)', d('leases', 'leases_current') - (d('rou') + depRou));
+    add('equity', 'fin', 'Proceeds from share issue and other owner contributions', 'Внески власників і випуск акцій', d('share_capital', 'share_premium', 'treasury'));
+    add('div', 'fin', 'Dividends and other distributions', 'Дивіденди та інші розподіли', d('retained_earnings') - profit);
+    var cff = sum('fin');
+
+    var net = cfo + cfi + cff, cashOpen = o('cash'), cashClose = c('cash');
+    return { lines: L, cfo: round2(cfo), cfi: round2(cfi), cff: round2(cff), net: round2(net), cashOpen: round2(cashOpen), cashClose: round2(cashClose),
+      gap: round2(cashClose - cashOpen - net), depTB: round2(depTB), depAdj: round2(depAdj + depRou) };
+  }
+
+  /* ---------------- more calculators ---------------- */
+
+  function clampN(v, lo, hi) { return Math.max(lo, Math.min(hi, v)); }
+
+  /* IAS 38 development costs. p: {costBefore, costPeriod, readyDate, lifeMonths, periodStart, periodEnd,
+     criteriaMet, expenseCategory}. costBefore: expensed in the TB before the period; costPeriod: in the period.
+     Capitalised only when all six IAS 38.57 criteria are met; amortised straight line from the month of readiness. */
+  function intangibleCalc(p) {
+    var ps = parseDate(p.periodStart), pe = parseDate(p.periodEnd), ready = parseDate(p.readyDate);
+    var n = Math.round(num(p.lifeMonths)), cb = Math.max(0, num(p.costBefore)), cp = Math.max(0, num(p.costPeriod));
+    if (!ps || !pe || pe < ps || n <= 0 || cb + cp <= 0) return { error: 'inputs' };
+    if (!p.criteriaMet) return { error: 'criteria' };
+    var total = cb + cp;
+    var mBefore = ready ? clampN(monthsBetween(ready, ps), 0, n) : 0;
+    var mClose = ready && ready <= pe ? clampN(monthsBetween(ready, pe) + 1, 0, n) : 0;
+    var amBefore = ready ? cb * mBefore / n : 0, amClose = total * mClose / n;
+    var amPeriod = Math.max(0, amClose - amBefore);
+    var exp = p.expenseCategory || 'Administrative expenses';
+    var L = function (category, dr, cr, memo) { return { category: category, dr: round2(dr), cr: round2(cr), memo: memo || '' }; };
+    var opening = cb > 0 ? { scope: 'opening', type: 'adjust', standard: 'IAS 38', lines: [
+      L('Intangible assets', cb - amBefore, 0, 'development costs capitalised in earlier periods, net'),
+      L('Retained earnings', 0, cb - amBefore, 'cumulative effect')
+    ].filter(function (l) { return l.dr || l.cr; }) } : null;
+    var lines = [
+      L('Intangible assets', cp, 0, 'development costs capitalised'),
+      L(exp, 0, cp, 'reversal of costs expensed in the TB'),
+      L('Depreciation and amortisation expense', amPeriod, 0, 'amortisation of capitalised development costs'),
+      L('Intangible assets', 0, amPeriod, 'net book value movement')
+    ].filter(function (l) { return l.dr || l.cr; });
+    return { total: total, amortBefore: amBefore, amortPeriod: amPeriod, nbvClose: total - amClose,
+      opening: opening, current: lines.length ? { scope: 'current', type: 'adjust', standard: 'IAS 38', lines: lines } : null };
+  }
+
+  /* IFRS 15 over-time revenue billed up front (subscription, SaaS, maintenance) and recognised in full in the TB at
+     invoicing. p: {amount (net of VAT), invoiceDate, serviceStart, serviceMonths, periodStart, periodEnd}.
+     The part of the service not yet delivered is a contract liability. */
+  function revenueCalc(p) {
+    var ps = parseDate(p.periodStart), pe = parseDate(p.periodEnd), inv = parseDate(p.invoiceDate), ss = parseDate(p.serviceStart);
+    var n = Math.round(num(p.serviceMonths)), amt = num(p.amount);
+    if (!ps || !pe || !inv || !ss || pe < ps || n <= 0 || amt <= 0) return { error: 'inputs' };
+    if (inv > pe) return { error: 'notInvoiced' };
+    var mOpen = clampN(monthsBetween(ss, ps), 0, n), mClose = clampN(monthsBetween(ss, pe) + 1, 0, n);
+    if (ss > pe) mClose = 0;
+    var priorPeriod = inv < ps;
+    var defOpen = priorPeriod ? amt * (1 - mOpen / n) : 0, defClose = amt * (1 - mClose / n);
+    var L = function (category, dr, cr, memo) { return { category: category, dr: round2(dr), cr: round2(cr), memo: memo || '' }; };
+    var opening = priorPeriod && defOpen > 0 ? { scope: 'opening', type: 'adjust', standard: 'IFRS 15', lines: [
+      L('Retained earnings', defOpen, 0, 'revenue billed earlier, service not yet delivered'),
+      L('Contract liabilities', 0, defOpen, 'deferred revenue')
+    ] } : null;
+    var lines = priorPeriod
+      ? [L('Contract liabilities', defOpen - defClose, 0, 'service delivered in the period'), L('Revenue', 0, defOpen - defClose, 'revenue released')]
+      : [L('Revenue', defClose, 0, 'revenue deferred to later periods'), L('Contract liabilities', 0, defClose, 'deferred revenue')];
+    lines = lines.filter(function (l) { return l.dr || l.cr; });
+    return { deferredOpen: defOpen, deferredClose: defClose, recognisedPeriod: priorPeriod ? defOpen - defClose : amt - defClose,
+      opening: opening, current: lines.length ? { scope: 'current', type: 'adjust', standard: 'IFRS 15', lines: lines } : null };
+  }
+
+  /* IAS 12 current tax from the tax computation (not from IFRS profit): the adjustments to IFRS do not change the tax
+     return, so the base is the LOCAL profit before tax plus permanent differences, less tax losses brought forward.
+     p: {pbt (local), permanent (+ non-deductible, − exempt), lossBF, ratePct, booked (income tax already in the TB)} */
+  function incomeTaxCalc(p) {
+    var rate = num(p.ratePct) / 100, taxable = num(p.pbt) + num(p.permanent);
+    var lossUsed = Math.min(Math.max(0, num(p.lossBF)), Math.max(0, taxable));
+    var base = Math.max(0, taxable - lossUsed), current = round2(base * rate);
+    var delta = round2(current - Math.max(0, num(p.booked)));
+    var lossCarry = round2(Math.max(0, num(p.lossBF)) - lossUsed + Math.max(0, -taxable));
+    var lines = delta > 0
+      ? [{ category: 'Income tax expense', dr: delta, cr: 0, memo: 'current income tax' }, { category: 'Current tax liabilities', dr: 0, cr: delta, memo: 'income tax payable' }]
+      : [{ category: 'Current tax liabilities', dr: -delta, cr: 0, memo: 'income tax payable' }, { category: 'Income tax expense', dr: 0, cr: -delta, memo: 'current income tax reversed' }];
+    return { taxable: taxable, lossUsed: lossUsed, base: base, current: current, delta: delta, lossCarry: lossCarry,
+      journal: z(delta) ? null : { scope: 'current', type: 'adjust', standard: 'IAS 12', lines: lines } };
+  }
+
   /* ---------------- release snapshot ---------------- */
 
   /* What a client receives: statement figures (IFRS column, plus local/adjustment split if
@@ -554,6 +695,7 @@
       mapping: ['Account mapping', function (p) { return p.n + ' accounts with amounts, all classified.'; }, function (p) { return p.u + ' of ' + p.n + ' accounts need an IFRS category.'; }],
       sofp: ['Assets = equity + liabilities', function () { return 'Difference 0.00 at the beginning and at the end of the period.'; }, function (p) { return 'Difference ' + f(p.d0) + ' / ' + f(p.d1) + (p.codes.length ? '. Not classified: ' + p.codes.join(', ') : '') + '.'; }],
       unplacedPl: ['Income and expenses not classified', null, function (p) { return f(p.v) + ' in accounts ' + p.codes.join(', ') + ': shown on a separate line.'; }],
+      cashflow: ['Cash flow ↔ balance sheet', function (p) { return 'Opening cash ' + f(p.open) + ' + net cash flow ' + f(p.net) + ' = closing cash ' + f(p.close) + '.'; }, function (p) { return 'The cash flow leaves ' + f(p.gap) + ' unexplained: the movement of cash is not fully derived from the other balance sheet lines (unclassified accounts or non-cash items).'; }],
       yearClosed: ['Year-end closing', function (p) { return p.closed ? 'Income and expenses were closed through account 79: the result is already in retained earnings.' : 'The year is not closed in the books: the result (' + f(p.added[1]) + ') is added to retained earnings.'; }],
       recon: ['P&L ↔ retained earnings', function (p) { return 'Profit from turnovers ' + f(p.profit) + ' = movement of account 44 (' + f(p.reMovement) + ').'; }, function (p) { return 'The TB is closed through 79, so the P&L is rebuilt from turnovers: profit ' + f(p.profit) + ' vs movement of account 44 ' + f(p.reMovement) + ' (gap ' + f(p.gap) + '). Usual causes: VAT debited to 70, reversals, dividends, prior-year corrections.'; }],
       signs: ['Balances on the unusual side', null, function (p) { return p.items.map(function (i) { return i.code + ' ' + f(i.v); }).join(', ') + '.'; }],
@@ -566,6 +708,7 @@
       mapping: ['Мапінг рахунків', function (p) { return p.n + ' рахунків із сумами, усі класифіковано.'; }, function (p) { return p.u + ' з ' + p.n + ' рахунків потребують категорії МСФЗ.'; }],
       sofp: ['Активи = капітал + зобов’язання', function () { return 'Різниця 0,00 на початок і на кінець періоду.'; }, function (p) { return 'Різниця ' + f(p.d0) + ' / ' + f(p.d1) + (p.codes.length ? '. Не класифіковано: ' + p.codes.join(', ') : '') + '.'; }],
       unplacedPl: ['Некласифіковані доходи й витрати', null, function (p) { return f(p.v) + ' на рахунках ' + p.codes.join(', ') + ': показано окремим рядком.'; }],
+      cashflow: ['Рух грошових коштів ↔ баланс', function (p) { return 'Гроші на початок ' + f(p.open) + ' + чистий рух ' + f(p.net) + ' = гроші на кінець ' + f(p.close) + '.'; }, function (p) { return 'У русі коштів не пояснено ' + f(p.gap) + ': зміна грошей не виводиться повністю зі змін інших статей балансу (некласифіковані рахунки або негрошові операції).'; }],
       yearClosed: ['Закриття року', function (p) { return p.closed ? 'Доходи й витрати закрито через рахунок 79: результат уже в нерозподіленому прибутку.' : 'Рік не закрито в обліку: результат (' + f(p.added[1]) + ') додано до нерозподіленого прибутку.'; }],
       recon: ['Звіт про прибутки ↔ нерозподілений прибуток', function (p) { return 'Прибуток за оборотами ' + f(p.profit) + ' = рух рахунку 44 (' + f(p.reMovement) + ').'; }, function (p) { return 'ОСВ закрито через 79, тому звіт складено за оборотами: прибуток ' + f(p.profit) + ' проти руху рахунку 44 ' + f(p.reMovement) + ' (різниця ' + f(p.gap) + '). Типові причини: ПДВ у дебеті 70, сторно, дивіденди, виправлення минулих років.'; }],
       signs: ['Нетипове сальдо', null, function (p) { return p.items.map(function (i) { return i.code + ' ' + f(i.v); }).join(', ') + '.'; }],
@@ -599,6 +742,7 @@
       loans: ['Loans and related parties', 'Loans at off-market rates (often from owners or group companies) are measured at fair value; related-party disclosures under IAS 24.'],
       group: ['Group and consolidation', 'Controlled entities (e.g. a foreign parent or sister companies) may require consolidated statements.'],
       deferredTax: ['Deferred tax', 'Every IFRS adjustment creates a temporary difference: deferred tax at 18% (Ukraine) on each of them.'],
+      incomeTax: ['No income tax expense', 'Profit before tax is {pbt} but no income tax expense is recorded (account 98). The preliminary profit is shown before tax; at 18% on accounting profit the charge would be about {est}, to be replaced by the tax computation.'],
       inventoryCost: ['Cost of production', 'Production overheads (91, 23) must be allocated to work in progress and cost of sales.'],
       cashEquivalents: ['Cash equivalents', 'Current investments {v} are cash equivalents only if they mature within 3 months and carry insignificant risk.'],
       grants: ['Grants and donated assets', 'Targeted financing or donated assets {v}: government grant (IAS 20, deferred income) or owner contribution (equity).']
@@ -615,6 +759,7 @@
       loans: ['Позики та пов’язані сторони', 'Позики за нерино­вими ставками (часто від власників чи компаній групи) оцінюються за справедливою вартістю; розкриття за МСБО 24.'],
       group: ['Група та консолідація', 'Контрольовані компанії (наприклад, іноземна материнська) можуть вимагати консолідованої звітності.'],
       deferredTax: ['Відстрочений податок', 'Кожне коригування МСФЗ створює тимчасову різницю: відстрочений податок за ставкою 18%.'],
+      incomeTax: ['Немає витрат з податку на прибуток', 'Прибуток до оподаткування {pbt}, але витрат з податку на прибуток (рахунок 98) немає. Попередній прибуток показано до податку; за ставкою 18% від бухгалтерського прибутку витрати становили б близько {est}, їх замінить розрахунок податку.'],
       inventoryCost: ['Собівартість виробництва', 'Загальновиробничі витрати (91, 23) розподіляються на незавершене виробництво й собівартість.'],
       cashEquivalents: ['Еквіваленти грошей', 'Поточні інвестиції {v} — еквіваленти грошей лише зі строком до 3 місяців і незначним ризиком.'],
       grants: ['Гранти та безоплатні активи', 'Цільове фінансування чи безоплатні активи {v}: державний грант (МСБО 20) або внесок власника (капітал).']
@@ -641,6 +786,7 @@
     normCode: normCode, num: num, isAccount: isAccount, parseSheet: parseSheet, sniff: sniff, readWorkbook: readWorkbook,
     mappedCategory: mappedCategory, compute: compute, journalBalance: journalBalance,
     diagnose: diagnose, checkText: checkText, indicatorText: indicatorText,
+    cashFlow: cashFlow, intangibleCalc: intangibleCalc, revenueCalc: revenueCalc, incomeTaxCalc: incomeTaxCalc,
     leaseCalc: leaseCalc, eclCalc: eclCalc, fxCalc: fxCalc, deferredTaxCalc: deferredTaxCalc,
     snapshot: snapshot, round2: round2, uid: uid
   };

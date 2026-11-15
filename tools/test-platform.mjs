@@ -44,6 +44,11 @@ const r2 = C.compute(M, IT, {});
 ok(r2.balanced && r2.unknownCount === 0, 'sample IT: balances, all classified');
 ok(r2.natural && r2.recon && near(r2.recon.gap, 200000), 'sample IT: closed through 79, P&L vs retained earnings gap = VAT 200 000');
 ok(near(r2.equity[1] - r2.equity[0], 1869600), 'sample IT: equity movement = true profit 1 869 600');
+{
+  const it1 = C.diagnose(r1, {}).find((i) => i.id === 'incomeTax');
+  ok(it1 && it1.level === 'high' && near(it1.params.pbt, 250000) && near(it1.params.est, 45000), 'readiness: profit without income tax (98) flagged, estimate 18% = 45 000');
+  ok(it1 && !/[{}]/.test(C.indicatorText(it1, 'uk').text) && !/[{}]/.test(C.indicatorText(it1, 'en').text), 'readiness: income tax texts (UA/EN) fully filled');
+}
 
 const adj = [{ id: 'a', no: 1, type: 'adjust', scope: 'current', standard: 'IFRS 9', status: 'approved', lines: [{ category: 'Impairment loss', dr: 50000, cr: 0 }, { category: 'Trade receivables', dr: 0, cr: 50000 }] }];
 const r3 = C.compute(M, IT, { journals: adj });
@@ -73,6 +78,34 @@ const fx = C.fxCalc({ category: 'Trade receivables', fcAmount: 10000, rate: 42, 
 ok(near(fx.diff, 10000) && fx.journal.lines[1].category === 'FX gain/loss' && fx.journal.lines[1].cr === 10000, 'IAS 21: 10 000 FX gain');
 const dt = C.deferredTaxCalc(M, adj.concat(open), 18);
 ok(near(dt.taxPl, 9000) && near(dt.taxOpen, 5400) && near(C.journalBalance(dt.journal), 0), 'IAS 12: deferred tax 18% on 50 000 (P&L) and 30 000 (opening)');
+
+// Cash flow (indirect): reconciled to the balance sheet by construction, on both samples and with journals.
+ok(near(r1.cashflow.gap, 0) && near(r1.cashflow.cashClose - r1.cashflow.cashOpen, r1.cashflow.net), 'cash flow: sample Добро reconciles to the movement of cash');
+ok(near(r2.cashflow.gap, 0) && near(r2.cashflow.cfi, -500000) && near(r2.cashflow.cff, -200000), 'cash flow: sample IT reconciles (investing -500 000, dividends -200 000)');
+ok(r1.checks.some((c) => c.id === 'cashflow' && c.level === 'ok'), 'cash flow: check reported');
+// IAS 38: criteria gate, opening/current split, amortisation from the month of readiness
+const ia = C.intangibleCalc({ costBefore: 600000, costPeriod: 300000, readyDate: '2025-03-01', lifeMonths: 60, periodStart: '2025-01-01', periodEnd: '2025-12-31', criteriaMet: true });
+ok(!ia.error && near(ia.amortPeriod, 150000) && near(ia.nbvClose, 750000) && near(C.journalBalance(ia.opening), 0) && near(C.journalBalance(ia.current), 0), 'IAS 38: 900 000 capitalised, 10 months amortised = 150 000, journals balance');
+ok(C.intangibleCalc({ costBefore: 1, costPeriod: 1, readyDate: '2025-03-01', lifeMonths: 60, periodStart: '2025-01-01', periodEnd: '2025-12-31', criteriaMet: false }).error === 'criteria', 'IAS 38: nothing capitalised unless all six criteria are met');
+const iaNotReady = C.intangibleCalc({ costBefore: 0, costPeriod: 300000, readyDate: '', lifeMonths: 60, periodStart: '2025-01-01', periodEnd: '2025-12-31', criteriaMet: true });
+ok(near(iaNotReady.amortPeriod, 0) && near(iaNotReady.nbvClose, 300000), 'IAS 38: asset not yet ready for use is not amortised');
+// IFRS 15
+const rv1 = C.revenueCalc({ amount: 120000, invoiceDate: '2025-10-01', serviceStart: '2025-10-01', serviceMonths: 12, periodStart: '2025-01-01', periodEnd: '2025-12-31' });
+ok(!rv1.opening && near(rv1.deferredClose, 90000) && near(C.journalBalance(rv1.current), 0), 'IFRS 15: invoiced in the period, 9 of 12 months deferred = 90 000');
+const rv2 = C.revenueCalc({ amount: 240000, invoiceDate: '2024-07-01', serviceStart: '2024-07-01', serviceMonths: 24, periodStart: '2025-01-01', periodEnd: '2025-12-31' });
+ok(near(rv2.deferredOpen, 180000) && near(rv2.deferredClose, 60000) && near(rv2.recognisedPeriod, 120000) && near(C.journalBalance(rv2.opening), 0) && near(C.journalBalance(rv2.current), 0), 'IFRS 15: invoiced earlier, 180 000 deferred at opening, 120 000 released');
+ok(C.revenueCalc({ amount: 1, invoiceDate: '2026-02-01', serviceStart: '2026-02-01', serviceMonths: 12, periodStart: '2025-01-01', periodEnd: '2025-12-31' }).error === 'notInvoiced', 'IFRS 15: invoice after period end refused');
+// IAS 12 current tax from the tax computation
+const tx = C.incomeTaxCalc({ pbt: 1000000, permanent: 100000, lossBF: 200000, ratePct: 18, booked: 50000 });
+ok(near(tx.base, 900000) && near(tx.current, 162000) && near(tx.delta, 112000) && near(C.journalBalance(tx.journal), 0) && tx.journal.standard === 'IAS 12', 'IAS 12: tax on local profit + permanent differences - losses = 162 000, 112 000 to book');
+ok(near(C.incomeTaxCalc({ pbt: -50000, permanent: 0, lossBF: 0, ratePct: 18, booked: 0 }).lossCarry, 50000), 'IAS 12: a loss is carried forward, no tax');
+{
+  const J = (j, no) => Object.assign({ id: 'x' + no, no, status: 'approved' }, j);
+  const all = [J(lease.opening, 1), J(lease.current, 2), J(ia.opening, 3), J(ia.current, 4), J(rv2.opening, 5), J(rv2.current, 6), J(tx.journal, 7)];
+  const rj = C.compute(M, IT, { journals: all });
+  ok(rj.balanced && !rj.journalIssues.length && near(rj.cashflow.gap, 0), 'all calculators together: journals balance, balance sheet balanced, cash flow still reconciles');
+  ok(rj.cashflow.depAdj > 0 && near(rj.cashflow.cfo + rj.cashflow.cfi + rj.cashflow.cff, rj.cashflow.cashClose - rj.cashflow.cashOpen), 'cash flow: adjustment depreciation added back, net = movement of cash');
+}
 
 const grid = [['ТОВ «Тест»'], ['Оборотно-сальдова відомість за 2025 р.'], [], ['Рахунок', 'Назва', 'Дебет', 'Кредит', 'Дебет', 'Кредит', 'Дебет', 'Кредит'],
   ['311', 'Банк', '1 000,00', '', '500,50', '200', '1 300,50', ''], ['40', 'Капітал', '', '1000', '', '', '', '1000'], ['70', 'Дохід', '', '', '', '500,50', '', '500,50'],
@@ -266,6 +299,25 @@ let releasePath = null, passphrase = null, wsProfit = null, workPath = null;
   // statements: IFRS profit = local - lease effect
   await page.click('#fthwNav button:nth-child(6)');
   ok(await page.$eval('.fthw-main .ifrs-check', (e) => e.classList.contains('is-ok')), 'workspace: statements balanced with adjustments');
+  // cash flow view reconciles to cash; new calculators present and working
+  await page.click('.fthp-chips button:nth-child(4)');
+  const cfText = await page.textContent('.fthw-main .ifrs-card');
+  ok(/Net change in cash/.test(cfText) && /Unexplained difference/.test(cfText) && /Not a final IFRS statement/.test(cfText), 'workspace: cash flow statement shown with reconciliation and caveat');
+  ok(await page.$$eval('.fthw-main .ifrs-card tr', (rows) => { const g = rows.find((r) => /Unexplained difference/.test(r.textContent)); return !!g && /^\D*0[.,]00\D*$/.test(g.querySelector('td').textContent.replace(/\s/g, '').replace(/ /g, '')); }), 'workspace: cash flow has no unexplained difference');
+  await page.click('.fthp-chips button:nth-child(2)');
+  await page.click('#fthwNav button:nth-child(5)');
+  const taxCard = page.locator('.fthw-card', { has: page.locator('h3', { hasText: 'IAS 12 — current' }) });
+  await taxCard.locator('input[type=number]').nth(1).fill('100000');
+  await taxCard.getByRole('button').first().click();
+  await taxCard.locator('.fthw-res').waitFor();
+  ok(/Current tax/.test(await taxCard.textContent()) && (await taxCard.locator('.btn-green').count()) === 1, 'workspace: current income tax calculator gives a journal');
+  const iaCard = page.locator('.fthw-card', { has: page.locator('h3', { hasText: 'IAS 38' }) });
+  await iaCard.locator('input[type=number]').nth(1).fill('100000');
+  await iaCard.getByRole('button').first().click();
+  ok(await iaCard.locator('.is-error').count() === 1, 'workspace: IAS 38 refuses to capitalise without the six criteria');
+  const rvCard = page.locator('.fthw-card', { has: page.locator('h3', { hasText: 'IFRS 15' }) });
+  ok((await rvCard.locator('input').count()) === 4, 'workspace: IFRS 15 calculator present');
+  await page.click('#fthwNav button:nth-child(6)');
   // review: note, status, release
   await page.click('#fthwNav button:nth-child(7)');
   ok(await page.$eval('#fthwRelease', (e) => e.disabled), 'workspace: release blocked before review');

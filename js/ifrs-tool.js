@@ -26,7 +26,7 @@
     st: { exact: 'мапінг FTH', via: 'за групою ', fixed: 'мапінг FTH 2.0', manual: 'змінено вами', unknown: 'потрібна категорія', unplaced: 'категорія без статті' },
     closingAcc: 'рахунок закриття, не входить до звітів', none: '— оберіть категорію —', noLine: ' (без статті)',
     reading: 'Читання файлу на вашому комп’ютері…', read: function (n, s) { return 'Прочитано ' + n + ' рахунків з аркуша «' + s + '». Нічого не надіслано.'; },
-    demo1: 'Приклад «Добро», 2015: проста ОСВ, рік не закрито.', demo2: 'Приклад «Північ Софт», 2025: IT-компанія, рік закрито через 79.',
+    demo1: 'Приклад «Добро»: проста ОСВ, рік не закрито.', demo2: 'Приклад «Північ Софт», 2025: IT-компанія, рік закрито через 79.',
     err: { tooLarge: 'Файл більший за 15 МБ. Вивантажте ОСВ без аналітики.', badType: 'Це не файл Excel (.xls або .xlsx). Перевірте формат вивантаження.', unreadable: 'Не вдалося прочитати файл. ', noRows: 'У файлі не знайдено рахунків. Потрібна ОСВ: рахунок у колонці A, далі сальдо на початок, обороти й сальдо на кінець (дебет / кредит).' },
     tiles: ['Рахунків', 'Класифіковано', 'Перевірок пройдено', 'Баланс'], balancedYes: 'сходиться', balancedNo: 'не сходиться',
     shown: function (n, t) { return 'Показано ' + n + ' з ' + t; },
@@ -50,7 +50,7 @@
     st: { exact: 'FTH mapping', via: 'via group ', fixed: 'FTH mapping 2.0', manual: 'changed by you', unknown: 'needs a category', unplaced: 'category with no line' },
     closingAcc: 'closing account, not in the statements', none: '— choose a category —', noLine: ' (no line)',
     reading: 'Reading the file on your computer…', read: function (n, s) { return n + ' accounts read from sheet “' + s + '”. Nothing was sent.'; },
-    demo1: 'Sample “Добро”, 2015: a simple TB, year not closed.', demo2: 'Sample “Північ Софт”, 2025: an IT company, year closed through 79.',
+    demo1: 'Sample “Добро”: a simple TB, year not closed.', demo2: 'Sample “Північ Софт”, 2025: an IT company, year closed through 79.',
     err: { tooLarge: 'The file is over 15 MB. Export the trial balance without analytics.', badType: 'This is not an Excel file (.xls or .xlsx). Check the export format.', unreadable: 'The file could not be read. ', noRows: 'No accounts found. Expected a Ukrainian trial balance (ОСВ): account in column A, then opening balance, turnovers and closing balance (debit / credit).' },
     tiles: ['Accounts', 'Classified', 'Checks passed', 'Balance sheet'], balancedYes: 'balances', balancedNo: 'does not balance',
     shown: function (n, t) { return n + ' of ' + t + ' shown'; },
@@ -324,6 +324,18 @@
   document.querySelectorAll('.fthp-q input[type=radio]').forEach(function (inp) {
     inp.addEventListener('change', function () { state.answers[inp.name.replace('q_', '')] = inp.value; if (state.res) renderReadiness(); });
   });
+  // Answers handed over by the survey on the home page: /ifrs-tool?a=group (yes) and ?n=group (no). Only the listed questions are set.
+  (function () {
+    var set = function (name, v) {
+      var m = new RegExp('[?&]' + name + '=([^&]*)').exec(location.search);
+      if (!m) return;
+      decodeURIComponent(m[1]).split(',').forEach(function (k) {
+        var r = document.querySelector('.fthp-q input[name="q_' + k + '"][value="' + v + '"]');
+        if (r) { r.checked = true; state.answers[k] = v; }
+      });
+    };
+    set('a', 'yes'); set('n', 'no');
+  })();
 
   /* ---------- exports ---------- */
   $('fthpXlsx').addEventListener('click', function () {

@@ -49,9 +49,26 @@
       compute: 'Розрахувати', toJournal: 'Створити журнал', nothing: 'Коригування не потрібне.', inputs: 'Перевірте вхідні дані.', notStarted: 'Оренда починається після кінця періоду.',
       pv: 'Приведена вартість (зобов’язання на дату початку)', rouClose: 'Актив з права користування на кінець', liabClose: 'Зобов’язання на кінець', current: 'з них поточна частина', dep: 'Амортизація за період', interest: 'Відсотки за період', paid: 'Платежі за період (сторно витрат оренди)',
       required: 'Необхідний резерв', delta: 'Коригування резерву', diff: 'Курсова різниця', plImpact: 'Вплив коригувань на P&L', openImpact: 'Вплив на вступний капітал', taxPl: 'Відстрочений податок у P&L', taxOpen: 'Відстрочений податок у капіталі',
-      dtNote: 'Спрощено: усі різниці вважаються тимчасовими, одна ставка. Перевірте постійні різниці й визнання ВПА (МСБО 12.24).'
+      dtNote: 'Спрощено: усі різниці вважаються тимчасовими, одна ставка. Перевірте постійні різниці й визнання ВПА (МСБО 12.24).',
+      ias38: 'МСБО 38 — витрати на розробку', ifrs15: 'МСФЗ 15 — виручка, виставлена наперед', tax: 'МСБО 12 — поточний податок на прибуток',
+      costBefore: 'Витрати минулих періодів, списані в ОСВ на витрати, грн', costPeriod: 'Витрати періоду, списані в ОСВ на витрати, грн', ready: 'Дата готовності до використання (порожньо — ще не готовий)', life: 'Строк корисного використання, місяців',
+      criteria: 'Усі шість критеріїв МСБО 38.57 виконано (технічна здійсненність, намір завершити, здатність використовувати чи продати, майбутні вигоди, ресурси, надійна оцінка витрат)',
+      noCriteria: 'Критерії не виконано: капіталізація неможлива, витрати залишаються у витратах.', nbv: 'Балансова вартість на кінець', amortPeriod: 'Амортизація за період', amortBefore: 'Накопичена амортизація на початок',
+      ia38Note: 'Амортизація починається з місяця готовності й не нараховується, поки актив не готовий. Відстрочений податок на цю різницю рахує калькулятор МСБО 12 (один раз, не тут).',
+      invAmount: 'Сума договору без ПДВ, грн', invDate: 'Дата рахунку', svcStart: 'Початок надання послуги', svcMonths: 'Строк послуги, місяців', defOpen: 'Відстрочено на початок', defClose: 'Відстрочено на кінець (зобов’язання за договором)', recognised: 'Виручка, що належить періоду',
+      notInvoiced: 'Рахунок виставлено після кінця періоду: у цьому періоді коригування немає.',
+      ifrs15Note: 'Припущення: сума відображена у виручці в ОСВ у момент виставлення рахунку, послуга надається рівномірно. Складні договори (кілька зобов’язань, змінна винагорода) розраховуйте окремо.',
+      pbtLocal: 'Прибуток до оподаткування за П(С)БО', permanent: 'Постійні різниці (+ неоподатковувані витрати, − звільнені доходи)', lossBF: 'Податковий збиток минулих періодів', booked: 'Уже відображено у витратах з податку в ОСВ',
+      taxable: 'Об’єкт оподаткування', taxBase: 'База після збитків', taxCurrent: 'Поточний податок', taxToBook: 'До відображення', lossCarry: 'Збиток до перенесення далі',
+      taxNote: 'Поточний податок рахується з податкової бази (прибуток за П(С)БО + постійні різниці), а не з прибутку за МСФЗ: коригування МСФЗ не змінюють декларацію. Правила перенесення збитків перевірте за чинним законодавством.'
     },
-    view: { worksheet: 'Робоча таблиця', ifrs: 'Звітність МСФЗ', soce: 'Зміни в капіталі' },
+    cf: {
+      title: 'Рух грошових коштів (непрямий метод)',
+      note: 'Орієнтовний звіт, виведений зі змін статей балансу МСФЗ; кожна стаття балансу віднесена до однієї діяльності, тому підсумок збігається зі зміною грошей, а невраховане показано окремим рядком. Відсотки й податки віднесено до операційної діяльності, надходження активів з права користування — негрошові. Не є остаточною звітністю за МСФЗ: потрібні розкриття й перевірка спеціаліста.',
+      op: 'Операційна діяльність', inv: 'Інвестиційна діяльність', fin: 'Фінансова діяльність', cfo: 'Чисті гроші від операційної діяльності', cfi: 'Чисті гроші від інвестиційної діяльності', cff: 'Чисті гроші від фінансової діяльності',
+      net: 'Чистий рух грошових коштів', open: 'Гроші на початок', close: 'Гроші на кінець (баланс)', gap: 'Непояснена різниця'
+    },
+    view: { worksheet: 'Робоча таблиця', ifrs: 'Звітність МСФЗ', soce: 'Зміни в капіталі', cf: 'Рух коштів' },
     reclass: 'Перекласиф.', adjust: 'Коригування', ifrsCol: 'МСФЗ', ifrsOpen: 'МСФЗ на початок', line: 'Стаття',
     nca: 'Необоротні активи', ca: 'Оборотні активи', eq: 'Власний капітал', ncl: 'Довгострокові зобов’язання', cl: 'Поточні зобов’язання',
     totalAssets: 'Усього активів', totalEquity: 'Усього капіталу', totalLiab: 'Усього зобов’язань', totalEqLiab: 'Усього капіталу та зобов’язань',
@@ -102,9 +119,26 @@
       compute: 'Calculate', toJournal: 'Create the journal', nothing: 'No adjustment needed.', inputs: 'Check the inputs.', notStarted: 'The lease starts after the period end.',
       pv: 'Present value (liability at commencement)', rouClose: 'Right-of-use asset, closing', liabClose: 'Lease liability, closing', current: 'of which current', dep: 'Depreciation for the period', interest: 'Interest for the period', paid: 'Payments in the period (rent reversed)',
       required: 'Required allowance', delta: 'Change in allowance', diff: 'Exchange difference', plImpact: 'P&L impact of the adjustments', openImpact: 'Opening equity impact', taxPl: 'Deferred tax in P&L', taxOpen: 'Deferred tax in equity',
-      dtNote: 'Simplified: every difference treated as temporary, one rate. Check permanent differences and DTA recognition (IAS 12.24).'
+      dtNote: 'Simplified: every difference treated as temporary, one rate. Check permanent differences and DTA recognition (IAS 12.24).',
+      ias38: 'IAS 38 — development costs', ifrs15: 'IFRS 15 — revenue billed in advance', tax: 'IAS 12 — current income tax',
+      costBefore: 'Costs of earlier periods expensed in the TB, UAH', costPeriod: 'Costs of the period expensed in the TB, UAH', ready: 'Date ready for use (empty — not ready yet)', life: 'Useful life, months',
+      criteria: 'All six IAS 38.57 criteria are met (technical feasibility, intention to complete, ability to use or sell, future benefits, resources, reliable cost measurement)',
+      noCriteria: 'Criteria not met: nothing can be capitalised, the costs stay expensed.', nbv: 'Carrying amount, closing', amortPeriod: 'Amortisation for the period', amortBefore: 'Accumulated amortisation, opening',
+      ia38Note: 'Amortisation starts in the month the asset is ready and is zero until then. Deferred tax on this difference is computed by the IAS 12 calculator (once, not here).',
+      invAmount: 'Contract amount excluding VAT, UAH', invDate: 'Invoice date', svcStart: 'Service start', svcMonths: 'Service period, months', defOpen: 'Deferred, opening', defClose: 'Deferred, closing (contract liability)', recognised: 'Revenue belonging to the period',
+      notInvoiced: 'The invoice is dated after the period end: no adjustment in this period.',
+      ifrs15Note: 'Assumptions: the amount was booked to revenue in the TB when invoiced, the service is delivered evenly. Complex contracts (several obligations, variable consideration) need a separate analysis.',
+      pbtLocal: 'Profit before tax under local GAAP', permanent: 'Permanent differences (+ non-deductible expenses, − exempt income)', lossBF: 'Tax losses brought forward', booked: 'Income tax already expensed in the TB',
+      taxable: 'Taxable amount', taxBase: 'Base after losses', taxCurrent: 'Current tax', taxToBook: 'To book', lossCarry: 'Loss carried forward',
+      taxNote: 'Current tax is computed from the tax base (local profit + permanent differences), not from IFRS profit: IFRS adjustments do not change the tax return. Check the loss carry-forward rules against current law.'
     },
-    view: { worksheet: 'Worksheet', ifrs: 'IFRS statements', soce: 'Changes in equity' },
+    cf: {
+      title: 'Statement of cash flows (indirect method)',
+      note: 'Indicative statement derived from the movements of the IFRS balance sheet; every balance sheet line is classified once, so the total equals the movement of cash and anything unexplained shows on its own line. Interest and taxes are in operating activities; additions to right-of-use assets are non-cash. Not a final IFRS statement: disclosures and specialist review are required.',
+      op: 'Operating activities', inv: 'Investing activities', fin: 'Financing activities', cfo: 'Net cash from operating activities', cfi: 'Net cash from investing activities', cff: 'Net cash from financing activities',
+      net: 'Net change in cash', open: 'Cash at the beginning', close: 'Cash at the end (balance sheet)', gap: 'Unexplained difference'
+    },
+    view: { worksheet: 'Worksheet', ifrs: 'IFRS statements', soce: 'Changes in equity', cf: 'Cash flows' },
     reclass: 'Reclass', adjust: 'Adjustments', ifrsCol: 'IFRS', ifrsOpen: 'IFRS opening', line: 'Line item',
     nca: 'Non-current assets', ca: 'Current assets', eq: 'Equity', ncl: 'Non-current liabilities', cl: 'Current liabilities',
     totalAssets: 'Total assets', totalEquity: 'Total equity', totalLiab: 'Total liabilities', totalEqLiab: 'Total equity and liabilities',
@@ -571,18 +605,63 @@
         dto.textContent = ''; dto.appendChild(rows([[L.plImpact, r.plImpact], [L.openImpact, r.openImpact], [L.taxPl, r.taxPl], [L.taxOpen, r.taxOpen]]));
         dto.appendChild(r.journal ? h('div.fthp-actions', toJ(r.journal, 'IAS 12 deferred tax on IFRS adjustments')) : h('p', L.nothing));
       } }, L.compute)), dto));
+
+    var openBtn = function (j, desc) { return h('button.btn.btn-outline', { type: 'button', onclick: function () { j.description = desc; openEditor(j); } }, L.toJournal + ' (' + (UK ? 'вхідні залишки' : 'opening balances') + ')'); };
+    var pl = function (id) { return (S.local.pnl.filter(function (x) { return x.id === id; })[0] || { local: 0 }).local; };
+
+    // IAS 38
+    var ia = { before: inp('number', '0', { min: '0', step: '0.01' }), per: inp('number', '0', { min: '0', step: '0.01' }), ready: inp('date', ''), life: inp('number', '60', { min: '1' }), crit: h('input', { type: 'checkbox', id: 'fthwIaCrit' }) }, io = out();
+    m.appendChild(h('section.fthw-card', h('h3', L.ias38), h('p.ifrs-hint', L.ia38Note),
+      h('div.fthp-form.fthw-form4', field(L.costBefore, ia.before), field(L.costPeriod, ia.per), field(L.ready, ia.ready), field(L.life, ia.life), h('label.fthp-wide', ia.crit, ' ' + L.criteria)),
+      h('div.fthp-actions', h('button.btn.btn-outline', { type: 'button', onclick: function () {
+        var r = C.intangibleCalc({ costBefore: ia.before.value, costPeriod: ia.per.value, readyDate: ia.ready.value, lifeMonths: ia.life.value, periodStart: e.settings.periodStart, periodEnd: e.settings.periodEnd, criteriaMet: ia.crit.checked });
+        io.textContent = '';
+        if (r.error) { io.appendChild(h('p.fthp-status.is-error', r.error === 'criteria' ? L.noCriteria : L.inputs)); return; }
+        io.appendChild(rows([[L.amortBefore, r.amortBefore], [L.amortPeriod, r.amortPeriod], [L.nbv, r.nbvClose]]));
+        var acts = h('div.fthp-actions');
+        if (r.opening) acts.appendChild(openBtn(r.opening, 'IAS 38 development costs — opening balances'));
+        if (r.current) acts.appendChild(toJ(r.current, 'IAS 38 development costs — ' + (UK ? 'поточний період' : 'current period')));
+        io.appendChild(acts);
+      } }, L.compute)), io));
+
+    // IFRS 15
+    var rv = { amount: inp('number', '', { min: '0', step: '0.01' }), inv: inp('date', ''), start: inp('date', ''), months: inp('number', '12', { min: '1' }) }, ro = out();
+    m.appendChild(h('section.fthw-card', h('h3', L.ifrs15), h('p.ifrs-hint', L.ifrs15Note),
+      h('div.fthp-form.fthw-form4', field(L.invAmount, rv.amount), field(L.invDate, rv.inv), field(L.svcStart, rv.start), field(L.svcMonths, rv.months)),
+      h('div.fthp-actions', h('button.btn.btn-outline', { type: 'button', onclick: function () {
+        var r = C.revenueCalc({ amount: rv.amount.value, invoiceDate: rv.inv.value, serviceStart: rv.start.value, serviceMonths: rv.months.value, periodStart: e.settings.periodStart, periodEnd: e.settings.periodEnd });
+        ro.textContent = '';
+        if (r.error) { ro.appendChild(h('p.fthp-status.is-error', r.error === 'notInvoiced' ? L.notInvoiced : L.inputs)); return; }
+        ro.appendChild(rows([[L.defOpen, r.deferredOpen], [L.recognised, r.recognisedPeriod], [L.defClose, r.deferredClose]]));
+        var acts = h('div.fthp-actions');
+        if (r.opening) acts.appendChild(openBtn(r.opening, 'IFRS 15 deferred revenue — opening balances'));
+        if (r.current) acts.appendChild(toJ(r.current, 'IFRS 15 deferred revenue — ' + (UK ? 'поточний період' : 'current period')));
+        else ro.appendChild(h('p', L.nothing));
+        ro.appendChild(acts);
+      } }, L.compute)), ro));
+
+    // IAS 12 current tax
+    var tx = { pbt: inp('number', String(C.round2(S.local.totals.local.pbt)), { step: '0.01' }), perm: inp('number', '0', { step: '0.01' }), loss: inp('number', '0', { min: '0', step: '0.01' }), rate: inp('number', String(e.settings.taxRate || 18), { step: '0.1' }), booked: inp('number', String(C.round2(Math.max(0, -pl('tax')))), { min: '0', step: '0.01' }) }, xo = out();
+    m.appendChild(h('section.fthw-card', h('h3', L.tax), h('p.ifrs-hint', L.taxNote),
+      h('div.fthp-form.fthw-form4', field(L.pbtLocal, tx.pbt), field(L.permanent, tx.perm), field(L.lossBF, tx.loss), field(T.taxRate, tx.rate), field(L.booked, tx.booked)),
+      h('div.fthp-actions', h('button.btn.btn-outline', { type: 'button', onclick: function () {
+        var r = C.incomeTaxCalc({ pbt: tx.pbt.value, permanent: tx.perm.value, lossBF: tx.loss.value, ratePct: tx.rate.value, booked: tx.booked.value });
+        xo.textContent = ''; xo.appendChild(rows([[L.taxable, r.taxable], [L.taxBase, r.base], [L.taxCurrent, r.current], [L.taxToBook, r.delta], [L.lossCarry, r.lossCarry]]));
+        xo.appendChild(r.journal ? h('div.fthp-actions', toJ(r.journal, 'IAS 12 current income tax')) : h('p', L.nothing));
+      } }, L.compute)), xo));
   }
 
   /* ---------- statements ---------- */
   var SEC = function () { return { nca: T.nca, ca: T.ca, eq: T.eq, ncl: T.ncl, cl: T.cl }; };
   function vStatements(m) {
     var r = S.res;
-    m.appendChild(h('div.fthp-chips.fthw-top', { role: 'group' }, ['worksheet', 'ifrs', 'soce'].map(function (v) {
+    m.appendChild(h('div.fthp-chips.fthw-top', { role: 'group' }, ['worksheet', 'ifrs', 'soce', 'cf'].map(function (v) {
       return h('button', { type: 'button', 'aria-pressed': String(S.stView === v), onclick: function () { S.stView = v; render(); } }, T.view[v]);
     }), h('button.btn.btn-outline.fthw-xlsx', { type: 'button', onclick: exportXlsx }, T.xlsx)));
     var sofp = r.checks.filter(function (c) { return c.id === 'sofp'; })[0], x = C.checkText(sofp, LANG);
     m.appendChild(h('p.ifrs-check.' + (r.balanced ? 'is-ok' : 'is-ko'), x.title + ': ' + x.text));
     if (S.stView === 'soce') { m.appendChild(soce(r)); return; }
+    if (S.stView === 'cf') { m.appendChild(cashflowCard(r)); return; }
     var ws = S.stView === 'worksheet';
     // balance sheet
     var body = h('tbody'), sec = SEC();
@@ -615,6 +694,19 @@
       h('div.ifrs-card', h('h3', (UK ? 'Звіт про фінансовий стан' : 'Statement of financial position'), h('span', UK ? 'грн' : 'UAH')), h('div.ifrs-scroll', h('table.ifrs-table', thead(bsHead), body))),
       h('div.ifrs-card', h('h3', (UK ? 'Прибутки та збитки' : 'Profit or loss'), h('span', UK ? 'грн' : 'UAH')), h('div.ifrs-scroll', h('table.ifrs-table', thead(ws ? [T.line, T.kLocal, T.reclass, T.adjust, T.ifrsCol] : [T.line, T.period]), pb)))));
   }
+  function cashflowCard(r) {
+    var cf = r.cashflow, K = T.cf, body = h('tbody'), un = UK ? 'uk' : 'en';
+    [['op', 'cfo'], ['inv', 'cfi'], ['fin', 'cff']].forEach(function (g) {
+      body.appendChild(h('tr.ifrs-sub', h('th', { scope: 'colgroup', colspan: '2' }, K[g[0]])));
+      cf.lines.filter(function (l) { return l.group === g[0] && Math.abs(l.v) > C.EPS; }).forEach(function (l) { body.appendChild(h('tr', rth(l[un]), num(l.v))); });
+      body.appendChild(h('tr.ifrs-total', rth(K[g[1]]), num(cf[g[1]])));
+    });
+    body.appendChild(h('tr.ifrs-total.ifrs-grand', rth(K.net), num(cf.net)));
+    body.appendChild(h('tr', rth(K.open), num(cf.cashOpen)));
+    body.appendChild(h('tr.ifrs-total', rth(K.close), num(cf.cashClose)));
+    body.appendChild(h('tr' + (Math.abs(cf.gap) < 1 ? '' : '.ifrs-total'), rth(K.gap), num(cf.gap)));
+    return h('div.ifrs-card', h('h3', K.title, h('span', UK ? 'грн' : 'UAH')), h('p.ifrs-hint', K.note), h('div.ifrs-scroll', h('table.ifrs-table', thead([T.line, T.closing]), body)));
+  }
   function soce(r) {
     var body = h('tbody'), profit = r.totals.ifrs.profit, tot = [0, 0, 0, 0];
     r.balance.filter(function (l) { return l.section === 'eq' && (Math.abs(l.ifrs[0]) > C.EPS || Math.abs(l.ifrs[1]) > C.EPS); }).forEach(function (l) {
@@ -639,6 +731,7 @@
     add('Journals', jl);
     add('Worksheet SoFP', [[T.line, T.kLocal + ' ' + T.closing, T.reclass, T.adjust, T.ifrsCol + ' ' + T.closing, T.ifrsOpen]].concat(r.balance.map(function (l) { return [C.lineLabel(bsLine[l.id], LANG), C.round2(l.local[1]), C.round2(l.reclass[1]), C.round2(l.adjust[1]), C.round2(l.ifrs[1]), C.round2(l.ifrs[0])]; })));
     add('Worksheet P&L', [[T.line, T.kLocal, T.reclass, T.adjust, T.ifrsCol]].concat(r.pnl.map(function (l) { return [C.lineLabel(plLine[l.id], LANG), C.round2(l.local), C.round2(l.reclass), C.round2(l.adjust), C.round2(l.ifrs)]; })).concat([[T.profitL, C.round2(r.totals.local.profit), '', '', C.round2(r.totals.ifrs.profit)]]));
+    add('Cash flow', [[T.line, T.closing]].concat(r.cashflow.lines.map(function (l) { return [l[UK ? 'uk' : 'en'], l.v]; })).concat([[T.cf.cfo, r.cashflow.cfo], [T.cf.cfi, r.cashflow.cfi], [T.cf.cff, r.cashflow.cff], [T.cf.net, r.cashflow.net], [T.cf.open, r.cashflow.cashOpen], [T.cf.close, r.cashflow.cashClose], [T.cf.gap, r.cashflow.gap], [], [T.cf.note]]));
     add('Review notes', [['#', 'Ref', 'Note', 'Author', 'Date', 'Resolved']].concat(e.review.notes.map(function (n, i) { return [i + 1, n.ref, n.text, n.author, n.at, n.resolved ? n.resolvedBy + ' ' + n.resolvedAt : '']; })));
     add('Audit trail', [T.auditCols].concat(e.audit.map(function (a) { return [a.at, a.user, T.act[a.action] || a.action, a.detail]; })));
     var out = X.write(wb, { bookType: 'xlsx', type: 'array' });

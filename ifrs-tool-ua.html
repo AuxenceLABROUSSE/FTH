@@ -28,7 +28,7 @@
   <link rel="icon" type="image/png" sizes="16x16" href="/img/favicon-16x16.png">
   <link rel="apple-touch-icon" sizes="180x180" href="/img/apple-touch-icon.png">
   <link rel="manifest" href="/site.webmanifest">
-  <link rel="stylesheet" href="/css/advisory.css?v=29">
+  <link rel="stylesheet" href="/css/advisory.css?v=33">
   <link rel="preload" as="font" type="font/woff2" crossorigin href="/fonts/playfair-display-cyrillic-wght-normal.woff2">
 </head>
 <body class="advisory-home advisory-secondary">
@@ -40,6 +40,7 @@
   <div class="container">
     <a href="/" class="nav-logo"><img src="/img/logo-fth-glyph-200.webp" srcset="/img/logo-fth-glyph-100.webp 100w, /img/logo-fth-glyph-200.webp 200w, /img/logo-fth-glyph-300.webp 300w" sizes="74px" alt="FTH" class="nav-logo-img" width="200" height="130"></a>
     <ul class="nav-menu" id="navMenu">
+      <li class="nav-tool"><a href="/ifrs-tool-ua" aria-current="page">Інструмент МСФЗ</a></li>
       <li><a href="/#services">Послуги</a></li>
       <li><a href="/#system">Підхід</a></li>
       <li><a href="/#deliverables">Результат</a></li>
@@ -102,7 +103,7 @@
         </label>
         <div class="fthp-samples">
           <p>Немає файлу під рукою? Спробуйте приклад:</p>
-          <button type="button" class="btn btn-green" id="fthpDemo1">&laquo;Добро&raquo;, 2015 (простий)</button>
+          <button type="button" class="btn btn-green" id="fthpDemo1">&laquo;Добро&raquo; (простий)</button>
           <button type="button" class="btn btn-outline" id="fthpDemo2">IT-компанія, 2025 (реалістичний)</button>
         </div>
       </div>
@@ -296,8 +297,9 @@
 <script src="/data/ifrs-model.js?v=1"></script>
 <script src="/data/ifrs-demo-it.js?v=1"></script>
 <script src="/data/fth-keys.js?v=1"></script>
-<script src="/js/fth/core.js?v=1"></script>
+<script src="/js/fth/fileui.js?v=1"></script>
+<script src="/js/fth/core.js?v=3"></script>
 <script src="/js/fth/vault.js?v=1"></script>
-<script src="/js/ifrs-tool.js?v=2"></script>
+<script src="/js/ifrs-tool.js?v=5"></script>
 </body>
 </html>
