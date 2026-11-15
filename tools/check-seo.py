@@ -45,13 +45,15 @@ for f in sorted(glob.glob('*.html') + glob.glob('blog/*.html')):
     if want == 'uk' and re.search(r"(?<![\w'’ʼ])(даного|даної|даний|являється|являються)(?!\w)", re.sub(r'<[^>]+>', ' ', s), re.I):
         errs.append(f'{f}: calque du russe (даний / являється)')
     if f.startswith('blog/'):  # dates : JSON-LD = balises og = date affichée, modif >= publication
-        pub, mod = g(r'"datePublished": "([^"]+)"'), g(r'"dateModified": "([^"]+)"')
+        pub, mod = g(r'"datePublished":\s*"([^"]+)"'), g(r'"dateModified":\s*"([^"]+)"')
         p['pub'] = pub
+        if not pub: errs.append(f'{f}: pas de datePublished'); continue
         if g(r'article:published_time" content="([^"]+)"') != pub: errs.append(f'{f}: article:published_time != datePublished')
         if g(r'article:modified_time" content="([^"]+)"') != mod: errs.append(f'{f}: article:modified_time != dateModified')
         if not mod or mod < pub: errs.append(f'{f}: dateModified avant datePublished')
         shown = g(r'blog-card-date">([^<]+)<')
-        if shown and visible_date(shown) != pub: errs.append(f'{f}: date affichée {shown} != {pub}')
+        if not shown: errs.append(f'{f}: pas de date affichée')
+        elif visible_date(shown) != pub: errs.append(f'{f}: date affichée {shown} != {pub}')
 
 bycan = {p['can']: f for f, p in pages.items()}
 for f, p in pages.items():
@@ -72,6 +74,8 @@ for f in pages:  # cartes d'articles (listes du blog, « articles liés ») : da
 sm = set(re.findall(r'<loc>([^<]+)</loc>', open('sitemap.xml').read()))
 for f, p in pages.items():
     if p['can'] not in sm: errs.append(f'{f}: absent du sitemap')
+for u in sm - {p['can'] for p in pages.values()}:  # sitemap -> page publique (ni noindex ni absente)
+    errs.append(f'sitemap : {u} ne correspond à aucune page publique')
 
 print('\n'.join(errs) or f'OK : {len(pages)} pages publiques')
 sys.exit(1 if errs else 0)
