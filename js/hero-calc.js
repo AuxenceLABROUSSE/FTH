@@ -12,11 +12,10 @@
   var TOOL = root.getAttribute('data-tool') || (uk ? '/ifrs-tool-ua' : '/ifrs-tool');
 
   var L = uk ? {
-    lead: 'Шість коротких запитань, приблизно хвилина. Дізнайтеся, наскільки ваша звітність готова до інвестора, і що зробити далі.',
     step: function (i, n) { return 'Крок ' + i + ' з ' + n; }, back: 'Назад', again: 'Пройти ще раз',
     score: 'Готовність', of: 'зі 100', next: 'Наступні кроки',
     levels: ['Початковий рівень', 'Базовий рівень', 'Добрий рівень', 'Високий рівень'],
-    for: { investor: 'інвестора', lender: 'банку або кредитора', group: 'міжнародної групи', other: 'ваших цілей' },
+    for: { investor: 'залучення інвестицій', lender: 'банку або кредитора', group: 'звітування перед материнською компанією', other: 'Ваших цілей' },
     head: function (f, lvl) { return 'Готовність звітності для ' + f + ': ' + lvl.toLowerCase(); },
     sum: [
       'Звітності, придатної для інвестора, поки що немає: потрібна системна підготовка. Це нормально на старті, і починати варто з даних.',
@@ -26,14 +25,13 @@
     ],
     ctaTool: 'Перевірити ОСВ в інструменті МСФЗ', ctaTalk: 'Обговорити проєкт',
     privacy: 'Відповіді не надсилаються нікуди й не зберігаються. Це орієнтовна оцінка, а не висновок про відповідність МСФЗ.',
-    ready: 'Критичних прогалин за вашими відповідями не видно. Для впевненості перевірте облікову політику й розкриття.',
+    ready: 'Критичних прогалин за Вашими відповідями не видно. Для впевненості перевірте облікову політику й розкриття.',
     msg: function (s, ans) { return 'Оцінка готовності звітності: ' + s.score + ' зі 100 (' + s.level.toLowerCase() + ').\n' + ans.join('\n') + '\n\nХочу обговорити проєкт.'; }
   } : {
-    lead: 'Six short questions, about a minute. See how ready your reporting is for an investor, and what to do next.',
     step: function (i, n) { return 'Step ' + i + ' of ' + n; }, back: 'Back', again: 'Start again',
     score: 'Readiness', of: 'out of 100', next: 'Next steps',
     levels: ['Early stage', 'Basic level', 'Good level', 'High level'],
-    for: { investor: 'an investor', lender: 'a bank or lender', group: 'an international group', other: 'your purpose' },
+    for: { investor: 'raising investment', lender: 'a bank or lender', group: 'reporting to a parent company', other: 'your purpose' },
     head: function (f, lvl) { return 'Reporting readiness for ' + f + ': ' + lvl.toLowerCase(); },
     sum: [
       'There is no investor-grade reporting yet: it needs structured preparation. That is normal at the start, and the data is the place to begin.',
@@ -49,35 +47,37 @@
 
   /* [value, label, points]; the first question is not scored, it tailors the wording. Points add up to 100. */
   var Q = uk ? [
-    { id: 'purpose', q: 'Для чого вам потрібна фінансова звітність?', o: [['investor', 'Для інвестора', 0], ['lender', 'Для банку або кредитора', 0], ['group', 'Для міжнародної групи', 0], ['other', 'Інша мета', 0]] },
-    { id: 'std', q: 'За якими стандартами компанія звітує зараз?', o: [['ifrs', 'МСФЗ', 25], ['both', 'П(С)БО та МСФЗ', 22], ['ua', 'П(С)БО', 8]] },
+    { id: 'purpose', q: 'З якою метою Вам потрібна фінансова звітність?', o: [['investor', 'Для залучення інвестицій', 0], ['lender', 'Для банку або кредитора', 0], ['group', 'Для звітування перед материнською компанією', 0], ['other', 'Інша мета', 0]] },
+    { id: 'std', q: 'За якими стандартами компанія звітує зараз?', o: [['ifrs', 'МСФЗ', 25], ['both', 'П(С)БО та МСФЗ', 22], ['ua', 'П(С)БО', 8], ['unsure', 'Потрібно уточнити', 4]] },
     { id: 'sub', q: 'Чи є у компанії дочірні підприємства?', o: [['no', 'Ні', 15], ['yes', 'Так', 6], ['unsure', 'Потрібно уточнити', 4]] },
-    { id: 'hist', q: 'Чи є у вас фінансова звітність за попередні роки?', o: [['years', 'Так, за кілька років', 25], ['one', 'Лише за останній рік', 13], ['none', 'Ще потрібно підготувати', 3]] },
-    { id: 'audit', q: 'Чи перевіряв вашу звітність незалежний аудитор?', o: [['yes', 'Так, є аудиторський висновок', 20], ['no', 'Ні, аудиту не було', 8], ['unsure', 'Не впевнений(а)', 4]] },
-    { id: 'tb', q: 'Чи можете ви сформувати оборотно-сальдову відомість (ОСВ) за рік?', o: [['yes', 'Так, одразу з облікової системи', 15], ['work', 'Так, але потрібне доопрацювання', 9], ['no', 'Ні, облік не налаштований', 3]] }
+    { id: 'hist', q: 'Чи є у Вас фінансова звітність за попередні роки?', o: [['years', 'Так, за кілька років', 25], ['one', 'Лише за останній рік', 13], ['none', 'Потрібно уточнити', 3]] },
+    { id: 'audit', q: 'Чи перевіряв Вашу звітність незалежний аудитор?', o: [['yes', 'Так, є аудиторський висновок', 20], ['no', 'Ні, аудиту не було', 8], ['unsure', 'Потрібно уточнити', 4]] },
+    { id: 'tb', q: 'Чи можете Ви сформувати оборотно-сальдову відомість (ОСВ) за рік?', o: [['yes', 'Так, одразу з облікової системи', 15], ['work', 'Так, але потрібне доопрацювання', 9], ['no', 'Ні, облік не налаштований', 3]] }
   ] : [
-    { id: 'purpose', q: 'What do you need financial statements for?', o: [['investor', 'For an investor', 0], ['lender', 'For a bank or lender', 0], ['group', 'For an international group', 0], ['other', 'Another purpose', 0]] },
-    { id: 'std', q: 'Which standards does the company report under today?', o: [['ifrs', 'IFRS', 25], ['both', 'Ukrainian GAAP and IFRS', 22], ['ua', 'Ukrainian GAAP', 8]] },
+    { id: 'purpose', q: 'What do you need financial statements for?', o: [['investor', 'To raise investment', 0], ['lender', 'For a bank or lender', 0], ['group', 'For reporting to a parent company', 0], ['other', 'Another purpose', 0]] },
+    { id: 'std', q: 'Which standards does the company report under today?', o: [['ifrs', 'IFRS', 25], ['both', 'Ukrainian GAAP and IFRS', 22], ['ua', 'Ukrainian GAAP', 8], ['unsure', 'Need to check', 4]] },
     { id: 'sub', q: 'Does the company have subsidiaries?', o: [['no', 'No', 15], ['yes', 'Yes', 6], ['unsure', 'Need to check', 4]] },
-    { id: 'hist', q: 'Do you have financial statements for previous years?', o: [['years', 'Yes, for several years', 25], ['one', 'Only for the last year', 13], ['none', 'Still to be prepared', 3]] },
-    { id: 'audit', q: 'Has an independent auditor reviewed your statements?', o: [['yes', 'Yes, there is an audit opinion', 20], ['no', 'No, never audited', 8], ['unsure', 'Not sure', 4]] },
-    { id: 'tb', q: 'Can you produce a trial balance (ОСВ) for the year?', o: [['yes', 'Yes, straight from the accounting system', 15], ['work', 'Yes, but it needs rework', 9], ['no', 'No, the books are not set up', 3]] }
+    { id: 'hist', q: 'Do you have financial statements for previous years?', o: [['years', 'Yes, for several years', 25], ['one', 'Only for the last year', 13], ['none', 'Need to check', 3]] },
+    { id: 'audit', q: 'Has an independent auditor reviewed your statements?', o: [['yes', 'Yes, there is an audit opinion', 20], ['no', 'No, never audited', 8], ['unsure', 'Need to check', 4]] },
+    { id: 'tb', q: 'Can you produce a trial balance (TB) for the year?', o: [['yes', 'Yes, straight from the accounting system', 15], ['work', 'Yes, but it needs rework', 9], ['no', 'No, the books are not set up', 3]] }
   ];
 
   /* One tip per weak answer, in order of importance. */
   var TIPS = uk ? {
-    std_ua: 'Звітність за П(С)БО треба трансформувати до МСФЗ: міжнародні інвестори та кредитори зазвичай очікують саме її. Це ядро проєкту трансформації.',
-    std_both: 'Ви вже звітуєте і за П(С)БО, і за МСФЗ: перевірте, що обидва набори узгоджені між собою та мають зрозумілі звірки.',
-    sub_yes: 'Є дочірні підприємства: потрібна консолідована звітність (МСФЗ 10). Заздалегідь уніфікуйте облікову політику та звіряйте внутрішньогрупові розрахунки.',
-    sub_unsure: 'З’ясуйте, чи контролює компанія інші підприємства: від цього залежить, чи потрібна консолідація (МСФЗ 10).',
-    hist_one: 'Інвестори зазвичай хочуть порівняльні дані. Підготуйте щонайменше ще один попередній рік; перший перехід на МСФЗ регулює МСФЗ 1.',
-    hist_none: 'Звітності за попередні роки немає. Почніть із відновлення даних і порівняльного року: без цього інвестору складно оцінити динаміку.',
-    audit_no: 'Незалежний аудит підвищує довіру інвестора. Звітність краще одразу готувати з розрахунком на аудит.',
-    audit_unsure: 'Уточніть, чи був аудит і за якими стандартами: це визначає, що саме треба переглянути.',
-    tb_work: 'ОСВ потребує доопрацювання. Почніть із перевірки даних: баланс, обороти та залишки мають збігатися.',
-    tb_no: 'Без ОСВ неможлива трансформація. Спершу налаштуйте облік так, щоб формувати відомість за рік.'
+    std_ua: 'Звітність за П(С)БО варто трансформувати до МСФЗ: міжнародні інвестори та кредитори зазвичай очікують саме її. Це ядро проєкту трансформації.',
+    std_unsure: 'Варто з’ясувати, за якими стандартами компанія звітує зараз: від цього залежить обсяг трансформації до МСФЗ.',
+    std_both: 'Ви вже звітуєте і за П(С)БО, і за МСФЗ: варто перевірити, що обидва набори узгоджені між собою та мають зрозумілі звірки.',
+    sub_yes: 'Є дочірні підприємства: потрібна консолідована звітність (МСФЗ 10). Варто заздалегідь уніфікувати облікову політику та звіряти внутрішньогрупові розрахунки.',
+    sub_unsure: 'Варто з’ясувати, чи контролює компанія інші підприємства: від цього залежить, чи потрібна консолідація (МСФЗ 10).',
+    hist_one: 'Інвестори зазвичай хочуть порівняльні дані. Варто підготувати щонайменше ще один попередній рік; перший перехід на МСФЗ регулює МСФЗ 1.',
+    hist_none: 'Варто уточнити, чи є звітність за попередні роки. Якщо її немає, варто почати з відновлення даних і порівняльного року: без цього інвестору складно оцінити динаміку.',
+    audit_no: 'Незалежний аудит підвищує довіру інвестора. Звітність варто одразу готувати з розрахунком на аудит.',
+    audit_unsure: 'Варто уточнити, чи був аудит і за якими стандартами: це визначає, що саме потрібно переглянути.',
+    tb_work: 'ОСВ потребує доопрацювання. Варто почати з перевірки даних: баланс, обороти та залишки мають збігатися.',
+    tb_no: 'Без ОСВ неможлива трансформація. Спершу варто налаштувати облік так, щоб формувати відомість за рік.'
   } : {
     std_ua: 'Ukrainian GAAP statements need to be transformed to IFRS: international investors and lenders usually expect IFRS. This is the core of a transformation project.',
+    std_unsure: 'Find out which standards the company reports under today: it sets the scope of the transformation to IFRS.',
     std_both: 'You already report under both Ukrainian GAAP and IFRS: check that the two sets agree and come with clear reconciliations.',
     sub_yes: 'You have subsidiaries: consolidated statements are needed (IFRS 10). Align accounting policies early and reconcile intragroup balances.',
     sub_unsure: 'Find out whether the company controls other entities: it decides whether consolidation (IFRS 10) is needed.',
@@ -88,7 +88,7 @@
     tb_work: 'The trial balance needs rework. Start with data checks: balances, turnovers and closing balances must agree.',
     tb_no: 'A transformation is impossible without a trial balance. First set up the books so that a year’s trial balance can be produced.'
   };
-  var ORDER = ['std_ua', 'hist_none', 'tb_no', 'sub_yes', 'audit_no', 'hist_one', 'tb_work', 'sub_unsure', 'audit_unsure', 'std_both'];
+  var ORDER = ['std_ua', 'hist_none', 'tb_no', 'sub_yes', 'audit_no', 'hist_one', 'tb_work', 'sub_unsure', 'audit_unsure', 'std_unsure', 'std_both'];
 
   var state = { i: 0, a: {} };
 
@@ -161,8 +161,7 @@
   }
 
   body.textContent = '';
-  body.appendChild(el('h2', 'hc-intro', uk ? 'Чи готова ваша звітність до розмови з інвестором?' : 'Is your reporting ready for a conversation with an investor?'));
-  body.appendChild(el('p', 'hc-lead', L.lead));
+  body.appendChild(el('h2', 'hc-intro', uk ? 'Перевірте готовність Вашої фінансової звітності' : 'Check how ready your financial reporting is'));
   var facts = el('ul', 'hc-facts');
   (uk ? ['6 запитань', 'без реєстрації', 'результат одразу'] : ['6 questions', 'no sign-up', 'instant result']).forEach(function (t) { facts.appendChild(el('li', '', t)); });
   body.appendChild(facts);

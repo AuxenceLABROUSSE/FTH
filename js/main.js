@@ -56,7 +56,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const btn = form.querySelector('button[type="submit"]');
     const originalHTML = btn.innerHTML;
     const t = document.documentElement.lang === 'uk'
-      ? { sending: 'Надсилаємо...', title: 'Запит прийнято!', text: 'Ми вже обробляємо ваш запит і зв\'яжемося з вами найближчим часом.', again: 'Надіслати ще один запит', error: 'Не вдалося надіслати запит. Спробуйте ще раз або напишіть нам: ' }
+      ? { sending: 'Надсилаємо...', title: 'Запит прийнято!', text: 'Ми вже обробляємо Ваш запит і зв\'яжемося з Вами найближчим часом.', again: 'Надіслати ще один запит', error: 'Не вдалося надіслати запит. Спробуйте ще раз або напишіть нам: ' }
       : { sending: 'Sending...', title: 'Request submitted!', text: 'We are reviewing your request and will get back to you shortly.', again: 'Submit another request', error: 'Your request could not be sent. Please try again or email us: ' };
     const done = document.createElement('div');
     done.className = 'form-done';

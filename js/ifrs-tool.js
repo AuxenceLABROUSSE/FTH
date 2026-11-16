@@ -23,9 +23,9 @@
     opening: 'На початок', closing: 'На кінець', item: 'Стаття', period: 'За період', unplacedBs: 'Не класифіковано (рахунки 1–6)',
     gross: 'Валовий прибуток', operating: 'Операційний прибуток', pbt: 'Прибуток до оподаткування', unplacedPl: 'Не класифіковано (рахунки 7–9)', profit: 'Прибуток (збиток) за період',
     account: 'Рахунок', category: 'Категорія МСФЗ', movement: 'Обороти (нетто)',
-    st: { exact: 'мапінг FTH', via: 'за групою ', fixed: 'мапінг FTH 2.0', manual: 'змінено вами', unknown: 'потрібна категорія', unplaced: 'категорія без статті' },
+    st: { exact: '', via: 'за групою ', fixed: '', manual: 'змінено Вами', unknown: 'потрібна категорія', unplaced: 'категорія без статті' },
     closingAcc: 'рахунок закриття, не входить до звітів', none: '— оберіть категорію —', noLine: ' (без статті)',
-    reading: 'Читання файлу на вашому комп’ютері…', read: function (n, s) { return 'Прочитано ' + n + ' рахунків з аркуша «' + s + '». Нічого не надіслано.'; },
+    reading: 'Читання файлу на Вашому комп’ютері…', read: function (n, s) { return 'Прочитано ' + n + ' рахунків з аркуша «' + s + '». Нічого не надіслано.'; },
     demo1: 'Приклад «Добро»: проста ОСВ, рік не закрито.', demo2: 'Приклад «Північ Софт», 2025: IT-компанія, рік закрито через 79.',
     err: { tooLarge: 'Файл більший за 15 МБ. Вивантажте ОСВ без аналітики.', badType: 'Це не файл Excel (.xls або .xlsx). Перевірте формат вивантаження.', unreadable: 'Не вдалося прочитати файл. ', noRows: 'У файлі не знайдено рахунків. Потрібна ОСВ: рахунок у колонці A, далі сальдо на початок, обороти й сальдо на кінець (дебет / кредит).' },
     tiles: ['Рахунків', 'Класифіковано', 'Перевірок пройдено', 'Баланс'], balancedYes: 'сходиться', balancedNo: 'не сходиться',
@@ -33,7 +33,7 @@
     kpi: ['Дохід', 'Прибуток за період', 'Усього активів', 'Власний капітал'],
     levels: { high: 'Ймовірно суттєво', medium: 'Перевірити', info: 'До уваги' },
     readinessSummary: function (h, m) { return h + ' ймовірно суттєвих і ' + m + ' до перевірки напрямів коригувань МСФЗ.'; },
-    sent: function (id) { return 'Пакет зашифровано ключем FTH ' + id + '. Надішліть файл на contact@fthadvisory.com або через ваш захищений канал: відкрити його може лише FTH.'; },
+    sent: function (id) { return 'Пакет зашифровано ключем FTH ' + id + '. Надішліть файл на contact@fthadvisory.com або через Ваш захищений канал: відкрити його може лише FTH.'; },
     needConsent: 'Підтвердьте, що маєте право передати ці дані FTH.', needName: 'Вкажіть назву компанії та контактну особу.', noKeys: 'Ключ FTH недоступний: оновіть сторінку.',
     sealing: 'Шифрування…', resOpening: 'Перевірка підпису й розшифрування…', resBad: 'Неправильна фраза-пароль або пошкоджений файл.', resNot: 'Це не файл результатів FTH (.fthres).',
     resVerified: 'Підпис FTH перевірено: результати не змінювалися після випуску.', resUnverified: 'Підпис не відповідає ключу FTH цього сайту: не довіряйте цьому файлу.',
@@ -47,7 +47,7 @@
     opening: 'Opening', closing: 'Closing', item: 'Line item', period: 'Period', unplacedBs: 'Not classified (accounts 1–6)',
     gross: 'Gross profit', operating: 'Operating profit', pbt: 'Profit before tax', unplacedPl: 'Not classified (accounts 7–9)', profit: 'Profit (loss) for the period',
     account: 'Account', category: 'IFRS category', movement: 'Net movement',
-    st: { exact: 'FTH mapping', via: 'via group ', fixed: 'FTH mapping 2.0', manual: 'changed by you', unknown: 'needs a category', unplaced: 'category with no line' },
+    st: { exact: '', via: 'via group ', fixed: '', manual: 'changed by you', unknown: 'needs a category', unplaced: 'category with no line' },
     closingAcc: 'closing account, not in the statements', none: '— choose a category —', noLine: ' (no line)',
     reading: 'Reading the file on your computer…', read: function (n, s) { return n + ' accounts read from sheet “' + s + '”. Nothing was sent.'; },
     demo1: 'Sample “Добро”: a simple TB, year not closed.', demo2: 'Sample “Північ Софт”, 2025: an IT company, year closed through 79.',
@@ -225,7 +225,8 @@
           $('fthpLive').textContent = T.totalAssets + ' ' + money(res.assets[1]) + '. ' + (res.balanced ? T.balancedYes : T.balancedNo) + '.';
         });
         catCell.appendChild(sel);
-        catCell.appendChild(el('span', 'ifrs-status' + (flagged ? ' is-flagged' : ''), a.status === 'via' ? T.st.via + a.via : T.st[a.status]));
+        var stTxt = a.status === 'via' ? T.st.via + a.via : T.st[a.status];
+        if (stTxt) catCell.appendChild(el('span', 'ifrs-status' + (flagged ? ' is-flagged' : ''), stTxt));
       }
       body.appendChild(tr([codeCell, numCell('td', a.opening), numCell('td', a.movement), numCell('td', a.closing), catCell], flagged ? 'is-flagged' : ''));
     });
