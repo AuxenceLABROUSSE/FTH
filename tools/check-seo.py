@@ -31,6 +31,7 @@ for f in sorted(glob.glob('*.html') + glob.glob('blog/*.html')):
         nxd=len(re.findall(r'<link [^>]*hreflang="x-default"', s)),
         h1=len(re.findall(r'<h1[\s>]', s)))
     for j in re.findall(r'<script type="application/ld\+json">(.*?)</script>', s, re.S):
+        if re.search(r'&(#\d+|#x[0-9a-f]+|amp|quot|apos);', j, re.I): errs.append(f'{f}: entité HTML dans le JSON-LD (non décodée par Google)')
         try: json.loads(j)
         except ValueError: errs.append(f'{f}: JSON-LD illisible')
     if not p['title'] or not 20 <= len(p['title']) <= 65: errs.append(f'{f}: titre {len(p["title"] or "")} car.')
