@@ -9,13 +9,23 @@
   <copyright>© 2026 Financial Transformation Hub</copyright>
   <managingEditor>contact@fthadvisory.com (Financial Transformation Hub)</managingEditor>
   <webMaster>contact@fthadvisory.com (Financial Transformation Hub)</webMaster>
-  <lastBuildDate>Wed, 23 Sep 2026 02:00:00 +0000</lastBuildDate>
+  <lastBuildDate>Mon, 16 Nov 2026 09:00:00 +0000</lastBuildDate>
   <generator>Financial Transformation Hub</generator>
   <image>
     <url>https://www.fthadvisory.com/img/logo-transparent.png</url>
     <title>FTH Blog</title>
     <link>https://www.fthadvisory.com/blog</link>
   </image>
+
+  <item>
+    <title>How to start an IFRS financial reporting transformation: the first stage</title>
+    <link>https://www.fthadvisory.com/blog/ifrs-transformation-first-stage</link>
+    <guid isPermaLink="true">https://www.fthadvisory.com/blog/ifrs-transformation-first-stage</guid>
+    <pubDate>Mon, 02 Nov 2026 09:00:00 +0000</pubDate>
+    <category>Transformation</category>
+    <dc:creator>Financial Transformation Hub</dc:creator>
+    <description>The first stage of an IFRS reporting transformation: the business goal, company diagnostics, the diagnostic report and transition dates under IFRS 1.</description>
+  </item>
 
   <item>
     <title>IFRS 18: New Financial Statement Presentation Requirements from 2027</title>
