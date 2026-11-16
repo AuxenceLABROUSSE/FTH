@@ -120,4 +120,4 @@ Current year is 2026. All copyright notices must say 2026.
 - Phone: not displayed (removed by the client on 12/04)
 - Certifications shown: ACCA, DipIFR, CPA (CPA pending client confirmation)
 - Founder: Vadym Sliusar (ACCA DipIFR); IFRS expert: Svitlana Zubilevych
-- LinkedIn: https://www.linkedin.com/company/financial-transformation-hub
+- LinkedIn: https://www.linkedin.com/company/fth-advisory
