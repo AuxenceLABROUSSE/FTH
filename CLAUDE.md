@@ -64,7 +64,7 @@ Editorial consulting-firm look: paper background, forest green, serif headings, 
 ### Cache busting
 - CSS/JS are cached 1 year (`immutable`): every page references them with `?v=N`.
 - After ANY change to `advisory.css` or `main.js`, bump the version in ALL HTML files (47 on 15/11/2026: `*.html blog/*.html`) (e.g. `sed -i 's/advisory\.css?v=18/advisory.css?v=19/'` on `*.html blog/*.html`).
-- Current: `style.min.css?v=2`, `advisory.css?v=33`, `main.js?v=18`; platform scripts `js/fth/core.js?v=3`, `js/fth/vault.js?v=1`, `js/ifrs-tool.js?v=5`, `js/workspace.js?v=2`, `data/*.js?v=1` (only the tool/workspace pages load them).
+- Current: `style.min.css?v=2`, `advisory.css?v=39`, `main.js?v=18`; platform scripts `js/fth/core.js?v=3`, `js/fth/vault.js?v=1`, `js/ifrs-tool.js?v=5`, `js/workspace.js?v=2`, `data/*.js?v=1` (only the tool/workspace pages load them).
 - No scroll-reveal classes any more (`reveal*`, `stagger-children`): content is visible at once. If a page uses a new class of the legacy layer, check it is still in `style.min.css` (it was purged against the pages of 23/09).
 - Images/fonts are cached 30 days and not versioned: give a new file name when replacing one.
 
