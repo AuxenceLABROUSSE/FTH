@@ -777,7 +777,7 @@ html { scroll-padding-top: 6.5rem; }
 .advisory-home .faq-item { border-bottom: 1px solid #dce0d5; }
 .advisory-home .faq-item summary { cursor: pointer; list-style: none; display: flex; justify-content: space-between; gap: 1rem; padding: 1.1rem 0; min-height: 44px; font-family: var(--font-serif); font-size: 1.2rem; line-height: 1.35; color: var(--g900); }
 .advisory-home .faq-item summary::-webkit-details-marker { display: none; }
-.advisory-home .faq-item summary::after { content: "+"; flex: none; color: var(--green); font-size: 1.4rem; line-height: 1; }
-.advisory-home .faq-item[open] summary::after { content: "−"; }
-.advisory-home .faq-item summary:focus-visible { outline: 3px solid #487941; outline-offset: 4px; }
+.advisory-home .faq-item summary::after { content: "+" / ""; flex: none; color: var(--green); font-size: 1.4rem; line-height: 1; }
+.advisory-home .faq-item[open] summary::after { content: "\2212" / ""; }
+.advisory-home .faq-item summary:focus-visible { outline: 3px solid #487941; outline-offset: 2px; }
 .advisory-home .faq-item p { margin: 0 0 1.25rem; max-width: 46rem; color: #52634f; line-height: 1.65; }

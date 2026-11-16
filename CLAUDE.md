@@ -16,7 +16,7 @@ Static website for FTH Advisory: transformation of financial reporting from Ukra
   blog.html, blog-ua.html, blog/*.html   # blog index + 32 articles (16 EN/UA pairs, UA slug ends in -ua)
                       # tags = 5 themes, same label on cards, article badge and RSS <category>: Standards/Стандарти, Transformation/Трансформація, Insights/Аналітика, Audit/Аудит, Case Study/Кейс
   privacy(-ua).html, terms(-ua).html, 404.html
-  ifrs-kyiv(-ua).html # Kyiv page (local SEO, in-person meetings in Kyiv confirmed 15/11/2026), linked from the homepage contact block; facts copied from the homepages only
+  ifrs-kyiv(-ua).html # Kyiv page (local SEO, remote work across Ukraine + in-person meetings in Kyiv by prior arrangement, client wording 16/11/2026), linked from the homepage contact block; facts copied from the homepages only
   css/style.min.css   # legacy base layer (= css/style.css minified), purged on 23/09 of every rule no page could match - do not edit for visual changes; merging it into advisory.css was measured on 23/09 (interleaved Lighthouse A/B) with no FCP/LCP gain: not worth a build step
   css/advisory.css    # the visible design: EDIT HERE (loaded last on every page)
   js/main.js          # navbar state, mobile menu (focus kept inside), Formspree form (#formStatus live region, inline field errors in the page language), blog topic filter (chips written in blog(-ua).html, one per theme; JS recomputes counts and announces the result), scrollspy (.is-current + aria-current="location"), progress bar
@@ -64,7 +64,7 @@ Editorial consulting-firm look: paper background, forest green, serif headings, 
 ### Cache busting
 - CSS/JS are cached 1 year (`immutable`): every page references them with `?v=N`.
 - After ANY change to `advisory.css` or `main.js`, bump the version in ALL HTML files (47 on 15/11/2026: `*.html blog/*.html`) (e.g. `sed -i 's/advisory\.css?v=18/advisory.css?v=19/'` on `*.html blog/*.html`).
-- Current: `style.min.css?v=2`, `advisory.css?v=39`, `main.js?v=18`; platform scripts `js/fth/core.js?v=3`, `js/fth/vault.js?v=1`, `js/ifrs-tool.js?v=5`, `js/workspace.js?v=2`, `data/*.js?v=1` (only the tool/workspace pages load them).
+- Current: `style.min.css?v=2`, `advisory.css?v=39`, `main.js?v=19`, `hero-calc.js?v=7`; platform scripts `js/fth/core.js?v=3`, `js/fth/vault.js?v=1`, `js/ifrs-tool.js?v=8`, `js/workspace.js?v=2`, `data/*.js?v=1` (only the tool/workspace pages load them).
 - No scroll-reveal classes any more (`reveal*`, `stagger-children`): content is visible at once. If a page uses a new class of the legacy layer, check it is still in `style.min.css` (it was purged against the pages of 23/09).
 - Images/fonts are cached 30 days and not versioned: give a new file name when replacing one.
 

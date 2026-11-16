@@ -73,8 +73,8 @@ for f in pages:  # cartes d'articles (listes du blog, « articles liés ») : da
         if visible_date(m.group(1)) != pubs.get(m.group(3)): errs.append(f'{f}: carte {m.group(3)} datée {m.group(1)} != {pubs.get(m.group(3))}')
 if re.search(r"el\('h[3-6]'", open('js/hero-calc.js', encoding='utf-8').read()):  # le questionnaire suit le h1 : ses titres sont des h2
     errs.append('js/hero-calc.js: titre h3+ dans le questionnaire (saut de niveau après le h1)')
-vers = Counter(v for h in glob.glob('*.html') + glob.glob('blog/*.html') for v in re.findall(r'advisory\.css\?v=(\d+)', open(h, encoding='utf-8').read()))
-if len(vers) > 1: errs.append(f'advisory.css chargé en plusieurs versions {dict(vers)} : le cache d un an masque les changements')
+vers = Counter(v for h in glob.glob('*.html') + glob.glob('blog/*.html') for v in re.findall(r'advisory\.css(?:\?v=(\d+))?"', open(h, encoding='utf-8').read()))
+if len(vers) > 1 or '' in vers: errs.append(f'advisory.css chargé en plusieurs versions {dict(vers)} : le cache d un an masque les changements')
 sm = set(re.findall(r'<loc>([^<]+)</loc>', open('sitemap.xml').read()))
 for f, p in pages.items():
     if p['can'] not in sm: errs.append(f'{f}: absent du sitemap')

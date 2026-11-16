@@ -1,6 +1,6 @@
 # FTH — Financial Transformation Hub
 
-> IFRS reporting transformation services for Ukrainian IT companies. We help SaaS, fintech, and software companies prepare audit-ready IFRS financial statements for investors, auditors, and international partners.
+> IFRS reporting transformation services for companies across Ukraine and international companies that need expertise in Ukrainian accounting. We help SaaS, fintech, and software companies prepare audit-ready IFRS financial statements for investors, auditors, and international partners.
 
 ## What we do
 
@@ -41,7 +41,7 @@
 - /en              English homepage
 - /blog-ua         Ukrainian blog index
 - /blog            English blog index
-- /ifrs-kyiv-ua    Kyiv page (UA): in-person meetings in Kyiv, services, process
+- /ifrs-kyiv-ua    Kyiv page (UA): remote services across Ukraine, in-person meetings in Kyiv by prior arrangement, services, process
 - /ifrs-kyiv       Kyiv page (EN)
 - /ifrs-tool-ua    IFRS tool (UA): trial balance checks and preliminary IFRS mapping in the browser
 - /ifrs-tool       IFRS tool (EN)
