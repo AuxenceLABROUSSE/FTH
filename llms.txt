@@ -49,7 +49,7 @@
 
 ## Blog topics covered
 
-- How to start an IFRS reporting transformation: the first stage (goal, diagnostics, diagnostic report, IFRS 1 transition dates)
+- Series "IFRS transformation", stages 1-5: first stage (goal, diagnostics, transition dates), legal structure, financial statements, chart of accounts, contracts / assets / liabilities
 - IFRS 18: new financial statement presentation requirements from 2027
 - IFRS 15: revenue analysis and typical transformation adjustments
 - How AI is changing the value of the accountant
