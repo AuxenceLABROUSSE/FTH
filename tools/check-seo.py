@@ -43,8 +43,8 @@ for f in sorted(glob.glob('*.html') + glob.glob('blog/*.html')):
     if p['hl'] and p['hl'].get(p['lang']) != p['can']: errs.append(f'{f}: hreflang {p["lang"]} != canonical')
     if p['hl'] and (p['nxd'] != 1 or p['hl'].get('x-default') != p['hl'].get('uk')):
         errs.append(f'{f}: x-default absent, doublé ou différent de la page uk')
-    if want == 'uk' and re.search(r"(?<![\w'’ʼ])(даного|даної|даний|являється|являються)(?!\w)", re.sub(r'<[^>]+>', ' ', s), re.I):
-        errs.append(f'{f}: calque du russe (даний / являється)')
+    if want == 'uk' and re.search(r"(?<![\w'’ʼ])(даного|даної|даний|являється|являються|мсфо)(?!\w)", re.sub(r'<[^>]+>', ' ', s), re.I):
+        errs.append(f'{f}: terme russe ou calque (даний, являється, МСФО)')
     if f.startswith('blog/'):  # dates : JSON-LD = balises og = date affichée, modif >= publication
         pub, mod = g(r'"datePublished":\s*"([^"]+)"'), g(r'"dateModified":\s*"([^"]+)"')
         p['pub'] = pub
