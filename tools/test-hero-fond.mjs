@@ -62,6 +62,29 @@ for (const page of ['index.html', 'en.html']) {
     if (h1 !== h0) fail(`${page}: hauteur de page ${h0} puis ${h1} après redimensionnement`);
     await pg.close();
   }
+  // 3b. téléphone : la carte est sous le texte, la vidéo attend d'être à l'écran pour se jouer
+  {
+    const pg = await b.newPage({ viewport: { width: 390, height: 660 }, isMobile: true, hasTouch: true });
+    await pg.goto(`${BASE}/${page}`, { waitUntil: 'load' }); await pg.waitForTimeout(3000);
+    const avant = await pg.evaluate(() => document.querySelector('.hero-fond video').currentTime);
+    if (avant > 0) fail(`${page}: téléphone, la vidéo s'est jouée hors de l'écran (${avant} s)`);
+    await pg.evaluate(() => { const v = document.querySelector('.hero-fond'); scrollTo(0, v.getBoundingClientRect().top + scrollY - 80); });
+    await pg.waitForTimeout(7000);
+    const apres = await pg.evaluate(() => { const v = document.querySelector('.hero-fond video'); return { t: v.currentTime, ended: v.ended }; });
+    if (!apres.ended) fail(`${page}: téléphone, la vidéo ne s'est pas jouée une fois visible ${JSON.stringify(apres)}`);
+    await pg.close();
+  }
+  // 3c. lecture refusée (économie d'énergie) : image finale de la carte et trait posé, jamais la première image presque vide
+  {
+    const pg = await b.newPage({ viewport: { width: 1440, height: 900 } });
+    await pg.addInitScript(() => { HTMLMediaElement.prototype.play = function () { return Promise.reject(new DOMException('refus', 'NotAllowedError')); }; });
+    await pg.goto(`${BASE}/${page}`, { waitUntil: 'load' }); await pg.waitForTimeout(2500);
+    const v = await pg.evaluate(() => document.querySelector('.hero-fond video').poster);
+    const t = await trait(pg);
+    if (!/fth-fond-v1\.jpg$/.test(v)) fail(`${page}: lecture refusée, affiche ${v}`);
+    if (!(t.dessine > 0)) fail(`${page}: lecture refusée, pas de trait ${JSON.stringify(t)}`);
+    await pg.close();
+  }
   // 4. mouvement réduit : image finale, pas de lecture ni de téléchargement, trait posé
   {
     const ctx = await b.newContext({ viewport: { width: 1440, height: 900 }, reducedMotion: 'reduce' });

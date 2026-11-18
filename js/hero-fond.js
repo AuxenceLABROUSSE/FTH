@@ -111,18 +111,31 @@
     video.poster = video.getAttribute('data-poster-fin') || video.poster;
     demarrer();
   } else {                 // lecture lancée ici (pas d'autoplay dans le HTML, sinon le navigateur télécharge même en mouvement réduit)
-    video.preload = 'auto';
-    var lecture = video.play();
-    if (lecture && lecture.catch) lecture.catch(demarrer);   // lecture refusée : le trait part quand même
-    var secours = null;
+    video.preload = 'auto'; video.muted = true;
+    var lance = false, secours = null;
     var armer = function (ms) { clearTimeout(secours); secours = setTimeout(demarrer, ms); };
+    var refusee = function () {                             // lecture bloquée (économie d'énergie...) : carte finale, puis le trait
+      video.poster = video.getAttribute('data-poster-fin') || video.poster; demarrer();
+    };
+    var lancer = function () {                              // une seule fois, quand la carte est à l'écran
+      if (lance) return; lance = true;
+      var lecture = video.play();
+      if (lecture && lecture.catch) lecture.catch(refusee);
+      armer(15000);                                         // filet si la lecture ne démarre jamais ; réarmé tant que la vidéo charge
+    };
     video.addEventListener('ended', demarrer);
     video.addEventListener('playing', function () { armer((video.duration || 5) * 1000 + 1500); });   // compte depuis la lecture réelle
-    var sources = video.querySelectorAll('source');           // vidéo illisible (toutes les sources) : le trait part quand même
-    if (sources.length) sources[sources.length - 1].addEventListener('error', demarrer); else video.addEventListener('error', demarrer);
-    armer(15000);                                           // filet si la lecture ne démarre jamais ; réarmé tant que la vidéo charge
-    video.addEventListener('waiting', function () { if (!pret) armer(15000); });
-    video.addEventListener('loadstart', function () { if (!pret) armer(15000); });
+    var sources = video.querySelectorAll('source');           // vidéo illisible (toutes les sources) : carte finale, le trait part quand même
+    if (sources.length) sources[sources.length - 1].addEventListener('error', refusee); else video.addEventListener('error', refusee);
+    video.addEventListener('waiting', function () { if (lance && !pret) armer(15000); });
+    video.addEventListener('loadstart', function () { if (lance && !pret) armer(15000); });
+    // sur téléphone la carte est sous le texte : la vidéo attend d'être vue au lieu de se jouer hors de l'écran
+    if ('IntersectionObserver' in window) {
+      var vue = new IntersectionObserver(function (e) {
+        if (e[0].isIntersecting) { vue.disconnect(); lancer(); }
+      }, { threshold: 0.4 });
+      vue.observe(video);
+    } else lancer();
   }
   window.addEventListener('scroll', auDefilement, { passive: true });
   window.addEventListener('resize', auRedimensionnement);
