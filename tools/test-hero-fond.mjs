@@ -74,6 +74,54 @@ for (const page of ['index.html', 'en.html']) {
     if (!apres.ended) fail(`${page}: téléphone, la vidéo ne s'est pas jouée une fois visible ${JSON.stringify(apres)}`);
     await pg.close();
   }
+  // 3b bis. téléphone en paysage : la carte est plus haute que l'écran, la vidéo doit quand même se jouer
+  {
+    const pg = await b.newPage({ viewport: { width: 880, height: 340 }, isMobile: true, hasTouch: true });
+    await pg.goto(`${BASE}/${page}`, { waitUntil: 'load' }); await pg.waitForTimeout(1500);
+    await pg.evaluate(() => { const v = document.querySelector('.hero-fond'); scrollTo(0, v.getBoundingClientRect().top + scrollY); });
+    await pg.waitForTimeout(7000);
+    const apres = await pg.evaluate(() => { const v = document.querySelector('.hero-fond video'); return { t: v.currentTime, ended: v.ended }; });
+    if (!apres.ended) fail(`${page}: téléphone en paysage, la vidéo ne s'est pas jouée ${JSON.stringify(apres)}`);
+    await pg.close();
+  }
+  // 3b ter. arrivée déjà sous la carte (lien /#section, rechargement plus bas) : pas de lecture hors champ, carte finale, trait posé
+  for (const [nom, vp, aller] of [
+    ['ancre telephone', { width: 390, height: 844 }, pg => pg.goto(`${BASE}/${page}#services`, { waitUntil: 'load' })],
+    ['rechargement bureau y=700', { width: 1440, height: 900 }, async pg => { await pg.goto(`${BASE}/${page}`, { waitUntil: 'load' }); await pg.evaluate(() => scrollTo(0, 700)); await pg.reload({ waitUntil: 'load' }); }],
+  ]) {
+    const pg = await b.newPage({ viewport: vp, isMobile: vp.width < 500, hasTouch: vp.width < 500 });
+    await aller(pg); await pg.waitForTimeout(3000);
+    const v = await pg.evaluate(() => { const v = document.querySelector('.hero-fond video'); return { t: v.currentTime, paused: v.paused, poster: v.poster, y: scrollY }; });
+    const t = await trait(pg);
+    if (v.y < 300) fail(`${page} ${nom}: la page n'est pas arrivée plus bas (y=${v.y})`);
+    if (v.t > 0 || !v.paused) fail(`${page} ${nom}: vidéo jouée hors champ ${JSON.stringify(v)}`);
+    if (!/fth-fond-v1\.jpg$/.test(v.poster)) fail(`${page} ${nom}: affiche ${v.poster}`);
+    if (!(t.total > 0)) fail(`${page} ${nom}: pas de trait ${JSON.stringify(t)}`);
+    await pg.close();
+  }
+  // 3b quater. le visiteur descend sous la carte pendant la lecture : la vidéo s'arrête, le trait est là
+  {
+    const pg = await b.newPage({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true });
+    await pg.goto(`${BASE}/${page}`, { waitUntil: 'load' }); await pg.waitForTimeout(1500);
+    await pg.evaluate(() => scrollTo(0, document.querySelector('.questionnaire-sous-fond').getBoundingClientRect().top + scrollY));
+    await pg.waitForTimeout(1500);
+    const v = await pg.evaluate(() => { const v = document.querySelector('.hero-fond video'); return { paused: v.paused, top: Math.round(v.getBoundingClientRect().top) }; });
+    const t = await trait(pg);
+    if (v.top < 0 && !v.paused) fail(`${page}: vidéo qui continue hors champ ${JSON.stringify(v)}`);
+    if (!(t.dessine > 0)) fail(`${page}: pas de trait après être passé sous la carte ${JSON.stringify(t)}`);
+    await pg.close();
+  }
+  // 3b quinquies. vidéo qui ne se charge jamais : au bout du filet, carte finale et trait, jamais la première image
+  {
+    const pg = await b.newPage({ viewport: { width: 1440, height: 900 } });
+    await pg.route(/\.(mp4|webm)$/, () => {});               // la requête ne répond jamais
+    await pg.goto(`${BASE}/${page}`, { waitUntil: 'load' }); await pg.waitForTimeout(16500);
+    const poster = await pg.evaluate(() => document.querySelector('.hero-fond video').poster);
+    const t = await trait(pg);
+    if (!/fth-fond-v1\.jpg$/.test(poster)) fail(`${page}: chargement bloqué, affiche ${poster}`);
+    if (!(t.dessine > 0)) fail(`${page}: chargement bloqué, pas de trait ${JSON.stringify(t)}`);
+    await pg.close();
+  }
   // 3c. lecture refusée (économie d'énergie) : image finale de la carte et trait posé, jamais la première image presque vide
   {
     const pg = await b.newPage({ viewport: { width: 1440, height: 900 } });

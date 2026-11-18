@@ -111,16 +111,21 @@
     video.poster = video.getAttribute('data-poster-fin') || video.poster;
     demarrer();
   } else {                 // lecture lancée ici (pas d'autoplay dans le HTML, sinon le navigateur télécharge même en mouvement réduit)
-    video.preload = 'auto'; video.muted = true;
+    video.muted = true;
     var lance = false, secours = null;
-    var armer = function (ms) { clearTimeout(secours); secours = setTimeout(demarrer, ms); };
-    var refusee = function () {                             // lecture bloquée (économie d'énergie...) : carte finale, puis le trait
+    var refusee = function () {                             // lecture impossible, bloquée ou jamais vue : carte finale, puis le trait
+      clearTimeout(secours);
       video.poster = video.getAttribute('data-poster-fin') || video.poster; demarrer();
+    };
+    var armer = function (ms) { clearTimeout(secours); secours = setTimeout(refusee, ms); };
+    var jouer = function () {
+      var lecture = video.play();
+      if (lecture && lecture.catch) lecture.catch(function (err) { if (!err || err.name !== 'AbortError') refusee(); });   // AbortError = notre propre pause
     };
     var lancer = function () {                              // une seule fois, quand la carte est à l'écran
       if (lance) return; lance = true;
-      var lecture = video.play();
-      if (lecture && lecture.catch) lecture.catch(refusee);
+      video.preload = 'auto';                               // rien n'est téléchargé tant que la carte n'est pas vue
+      jouer();
       armer(15000);                                         // filet si la lecture ne démarre jamais ; réarmé tant que la vidéo charge
     };
     video.addEventListener('ended', demarrer);
@@ -129,11 +134,25 @@
     if (sources.length) sources[sources.length - 1].addEventListener('error', refusee); else video.addEventListener('error', refusee);
     video.addEventListener('waiting', function () { if (lance && !pret) armer(15000); });
     video.addEventListener('loadstart', function () { if (lance && !pret) armer(15000); });
-    // sur téléphone la carte est sous le texte : la vidéo attend d'être vue au lieu de se jouer hors de l'écran
+    // sur téléphone la carte est sous le texte : la vidéo attend d'être vue au lieu de se jouer hors de l'écran,
+    // se met en pause si la carte sort de l'écran, et n'est jamais jouée si le visiteur arrive déjà plus bas (rechargement, lien /#section)
     if ('IntersectionObserver' in window) {
       var vue = new IntersectionObserver(function (e) {
-        if (e[0].isIntersecting) { vue.disconnect(); lancer(); }
-      }, { threshold: 0.4 });
+        var r = e[e.length - 1];
+        if (pret) { vue.disconnect(); return; }
+        // 40 % de la carte, ou 40 % de l'écran occupé (téléphone en paysage : la carte est plus haute que l'écran, 40 % d'elle n'y tient jamais)
+        var vu = r.intersectionRatio >= 0.4 || r.intersectionRect.height >= 0.4 * window.innerHeight;
+        if (!lance) {
+          if (vu) lancer();
+          else if (r.boundingClientRect.top < 0) { vue.disconnect(); refusee(); }   // déjà passé sous la carte
+        } else if (!r.isIntersecting) {
+          clearTimeout(secours); video.pause();
+          if (r.boundingClientRect.top < 0) {                // sortie par le haut (le visiteur descend) : carte finale et trait jusqu'au bouton
+            vue.disconnect(); if (video.duration) video.currentTime = video.duration; refusee();
+          }                                                  // sortie par le bas (il remonte vers le texte) : simple pause
+        }
+        else if (video.paused && !video.ended) jouer();                            // retour à l'écran : reprise
+      }, { threshold: [0, 0.1, 0.2, 0.3, 0.4] });
       vue.observe(video);
     } else lancer();
   }
