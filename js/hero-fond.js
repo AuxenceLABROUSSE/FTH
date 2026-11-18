@@ -148,12 +148,14 @@
         } else if (!r.isIntersecting) {
           clearTimeout(secours); video.pause();
           if (r.boundingClientRect.top < 0) {                // sortie par le haut (le visiteur descend) : carte finale et trait jusqu'au bouton
-            vue.disconnect(); if (video.duration) video.currentTime = video.duration; refusee();
+            vue.disconnect(); if (video.duration) video.currentTime = Math.max(0, video.duration - 0.05); refusee();   // pile sur la fin, Chromium revient à 0
           }                                                  // sortie par le bas (il remonte vers le texte) : simple pause
         }
         else if (video.paused && !video.ended) jouer();                            // retour à l'écran : reprise
       }, { threshold: [0, 0.1, 0.2, 0.3, 0.4] });
       vue.observe(video);
+      // saut d'un coup par-dessus la carte (aucun seuil franchi, l'observateur se tait) : carte finale et trait quand même
+      window.addEventListener('scroll', function () { if (!lance && !pret && video.getBoundingClientRect().bottom < 0) { vue.disconnect(); refusee(); } }, { passive: true });
     } else lancer();
   }
   window.addEventListener('scroll', auDefilement, { passive: true });

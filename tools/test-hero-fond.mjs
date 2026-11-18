@@ -1,5 +1,6 @@
 // Tests du haut de page à vidéo de fond (js/hero-fond.js), sur les deux accueils.
-// Lancer : python3 -m http.server 8769 --bind 127.0.0.1 (depuis la racine du site) puis
+// Lancer : un serveur qui gère les requêtes partielles (Range, comme nginx ; python3 -m http.server ne le fait pas et une vidéo n'y est pas positionnable),
+//          python3 tools/serveur-range.py 8769 . (depuis la racine du site), puis
 //          PLAYWRIGHT_CORE=/home/auxence/dev/wt-fth-video/node_modules/playwright-core node tools/test-hero-fond.mjs
 // Doit afficher « all passed ».
 const { chromium } = await import(process.env.PLAYWRIGHT_CORE ? process.env.PLAYWRIGHT_CORE + '/index.mjs' : 'playwright-core');
@@ -94,7 +95,7 @@ for (const page of ['index.html', 'en.html']) {
     const v = await pg.evaluate(() => { const v = document.querySelector('.hero-fond video'); return { t: v.currentTime, paused: v.paused, poster: v.poster, y: scrollY }; });
     const t = await trait(pg);
     if (v.y < 300) fail(`${page} ${nom}: la page n'est pas arrivée plus bas (y=${v.y})`);
-    if (v.t > 0 || !v.paused) fail(`${page} ${nom}: vidéo jouée hors champ ${JSON.stringify(v)}`);
+    if (!v.paused || (v.t > 0 && v.t < 4.8)) fail(`${page} ${nom}: vidéo jouée hors champ ou arrêtée en cours de route ${JSON.stringify(v)}`);   // à l'arrêt, jamais lue ou sur sa dernière image
     if (!/fth-fond-v1\.jpg$/.test(v.poster)) fail(`${page} ${nom}: affiche ${v.poster}`);
     if (!(t.total > 0)) fail(`${page} ${nom}: pas de trait ${JSON.stringify(t)}`);
     await pg.close();
@@ -103,12 +104,25 @@ for (const page of ['index.html', 'en.html']) {
   {
     const pg = await b.newPage({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true });
     await pg.goto(`${BASE}/${page}`, { waitUntil: 'load' }); await pg.waitForTimeout(1500);
+    const avant = await pg.evaluate(() => { const v = document.querySelector('.hero-fond video'); return { paused: v.paused, t: v.currentTime }; });
+    if (avant.paused || !(avant.t > 0)) fail(`${page}: la vidéo ne jouait pas avant de descendre ${JSON.stringify(avant)}`);
     await pg.evaluate(() => scrollTo(0, document.querySelector('.questionnaire-sous-fond').getBoundingClientRect().top + scrollY));
     await pg.waitForTimeout(1500);
-    const v = await pg.evaluate(() => { const v = document.querySelector('.hero-fond video'); return { paused: v.paused, top: Math.round(v.getBoundingClientRect().top) }; });
+    const v = await pg.evaluate(() => { const v = document.querySelector('.hero-fond video'); return { paused: v.paused, t: v.currentTime, d: v.duration, top: Math.round(v.getBoundingClientRect().top) }; });
     const t = await trait(pg);
-    if (v.top < 0 && !v.paused) fail(`${page}: vidéo qui continue hors champ ${JSON.stringify(v)}`);
+    if (!(v.top < 0) || !v.paused) fail(`${page}: vidéo qui continue hors champ ${JSON.stringify(v)}`);
+    if (!(v.t >= v.d - 0.2)) fail(`${page}: après être passé sous la carte, la vidéo n'est pas sur sa dernière image ${JSON.stringify(v)}`);
     if (!(t.dessine > 0)) fail(`${page}: pas de trait après être passé sous la carte ${JSON.stringify(t)}`);
+  }
+  // 3b sexies. saut d'un coup par-dessus la carte, depuis un écran où elle n'est pas encore visible : carte finale et trait
+  {
+    const pg = await b.newPage({ viewport: { width: 390, height: 560 }, isMobile: true, hasTouch: true });
+    await pg.goto(`${BASE}/${page}`, { waitUntil: 'load' }); await pg.waitForTimeout(1500);
+    await pg.evaluate(() => scrollTo({ top: 2500, behavior: 'instant' })); await pg.waitForTimeout(2000);
+    const v = await pg.evaluate(() => { const v = document.querySelector('.hero-fond video'); return { t: v.currentTime, poster: v.poster }; });
+    const t = await trait(pg);
+    if (v.t > 0 || !/fth-fond-v1\.jpg$/.test(v.poster)) fail(`${page}: saut par-dessus la carte ${JSON.stringify(v)}`);
+    if (!(t.total > 0)) fail(`${page}: saut par-dessus la carte, pas de trait ${JSON.stringify(t)}`);
     await pg.close();
   }
   // 3b quinquies. vidéo qui ne se charge jamais : au bout du filet, carte finale et trait, jamais la première image
