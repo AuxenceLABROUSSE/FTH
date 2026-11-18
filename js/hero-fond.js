@@ -118,8 +118,11 @@
     var armer = function (ms) { clearTimeout(secours); secours = setTimeout(demarrer, ms); };
     video.addEventListener('ended', demarrer);
     video.addEventListener('playing', function () { armer((video.duration || 5) * 1000 + 1500); });   // compte depuis la lecture réelle
-    video.addEventListener('error', demarrer, true);         // vidéo illisible : le trait part quand même
-    armer(12000);                                           // filet de sécurité si la lecture ne démarre jamais
+    var sources = video.querySelectorAll('source');           // vidéo illisible (toutes les sources) : le trait part quand même
+    if (sources.length) sources[sources.length - 1].addEventListener('error', demarrer); else video.addEventListener('error', demarrer);
+    armer(15000);                                           // filet si la lecture ne démarre jamais ; réarmé tant que la vidéo charge
+    video.addEventListener('waiting', function () { if (!pret) armer(15000); });
+    video.addEventListener('loadstart', function () { if (!pret) armer(15000); });
   }
   window.addEventListener('scroll', auDefilement, { passive: true });
   window.addEventListener('resize', auRedimensionnement);
