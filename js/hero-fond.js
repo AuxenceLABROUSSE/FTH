@@ -118,6 +118,14 @@
       video.poster = video.getAttribute('data-poster-fin') || video.poster; demarrer();
     };
     var armer = function (ms) { clearTimeout(secours); secours = setTimeout(refusee, ms); };
+    var passee = function () {                              // le visiteur est passé sous la carte : arrêt sur l'image finale, trait jusqu'au bouton
+      if (pret) return;
+      if (vue) vue.disconnect();
+      clearTimeout(secours); video.pause();
+      if (lance && video.duration) video.currentTime = Math.max(0, video.duration - 0.05);   // dernière image (vise juste avant la fin)
+      refusee();
+    };
+    var vue = null;
     var jouer = function () {
       var lecture = video.play();
       if (lecture && lecture.catch) lecture.catch(function (err) { if (!err || err.name !== 'AbortError') refusee(); });   // AbortError = notre propre pause
@@ -137,25 +145,23 @@
     // sur téléphone la carte est sous le texte : la vidéo attend d'être vue au lieu de se jouer hors de l'écran,
     // se met en pause si la carte sort de l'écran, et n'est jamais jouée si le visiteur arrive déjà plus bas (rechargement, lien /#section)
     if ('IntersectionObserver' in window) {
-      var vue = new IntersectionObserver(function (e) {
+      vue = new IntersectionObserver(function (e) {
         var r = e[e.length - 1];
         if (pret) { vue.disconnect(); return; }
         // 40 % de la carte, ou 40 % de l'écran occupé (téléphone en paysage : la carte est plus haute que l'écran, 40 % d'elle n'y tient jamais)
         var vu = r.intersectionRatio >= 0.4 || r.intersectionRect.height >= 0.4 * window.innerHeight;
         if (!lance) {
           if (vu) lancer();
-          else if (r.boundingClientRect.top < 0) { vue.disconnect(); refusee(); }   // déjà passé sous la carte
+          else if (r.boundingClientRect.top < 0) passee();                         // déjà passé sous la carte
         } else if (!r.isIntersecting) {
-          clearTimeout(secours); video.pause();
-          if (r.boundingClientRect.top < 0) {                // sortie par le haut (le visiteur descend) : carte finale et trait jusqu'au bouton
-            vue.disconnect(); if (video.duration) video.currentTime = Math.max(0, video.duration - 0.05); refusee();   // pile sur la fin, Chromium revient à 0
-          }                                                  // sortie par le bas (il remonte vers le texte) : simple pause
+          if (r.boundingClientRect.top < 0) passee();        // sortie par le haut (le visiteur descend) : carte finale et trait jusqu'au bouton
+          else { clearTimeout(secours); video.pause(); }     // sortie par le bas (il remonte vers le texte) : simple pause
         }
         else if (video.paused && !video.ended) jouer();                            // retour à l'écran : reprise
       }, { threshold: [0, 0.1, 0.2, 0.3, 0.4] });
       vue.observe(video);
       // saut d'un coup par-dessus la carte (aucun seuil franchi, l'observateur se tait) : carte finale et trait quand même
-      window.addEventListener('scroll', function () { if (!lance && !pret && video.getBoundingClientRect().bottom < 0) { vue.disconnect(); refusee(); } }, { passive: true });
+      window.addEventListener('scroll', function () { if (!pret && video.getBoundingClientRect().bottom < 0) passee(); }, { passive: true });
     } else lancer();
   }
   window.addEventListener('scroll', auDefilement, { passive: true });

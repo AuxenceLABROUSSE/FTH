@@ -95,9 +95,9 @@ for (const page of ['index.html', 'en.html']) {
     const v = await pg.evaluate(() => { const v = document.querySelector('.hero-fond video'); return { t: v.currentTime, paused: v.paused, poster: v.poster, y: scrollY }; });
     const t = await trait(pg);
     if (v.y < 300) fail(`${page} ${nom}: la page n'est pas arrivée plus bas (y=${v.y})`);
-    if (!v.paused || (v.t > 0 && v.t < 4.8)) fail(`${page} ${nom}: vidéo jouée hors champ ou arrêtée en cours de route ${JSON.stringify(v)}`);   // à l'arrêt, jamais lue ou sur sa dernière image
+    if (!v.paused || v.ended || (v.t > 0 && v.t < 4.8)) fail(`${page} ${nom}: vidéo jouée hors champ ou arrêtée en cours de route ${JSON.stringify(v)}`);   // à l'arrêt, jamais lue ou sur sa dernière image
     if (!/fth-fond-v1\.jpg$/.test(v.poster)) fail(`${page} ${nom}: affiche ${v.poster}`);
-    if (!(t.total > 0)) fail(`${page} ${nom}: pas de trait ${JSON.stringify(t)}`);
+    if (!(t.dessine > 0)) fail(`${page} ${nom}: pas de trait ${JSON.stringify(t)}`);
     await pg.close();
   }
   // 3b quater. le visiteur descend sous la carte pendant la lecture : la vidéo s'arrête, le trait est là
@@ -108,11 +108,27 @@ for (const page of ['index.html', 'en.html']) {
     if (avant.paused || !(avant.t > 0)) fail(`${page}: la vidéo ne jouait pas avant de descendre ${JSON.stringify(avant)}`);
     await pg.evaluate(() => scrollTo(0, document.querySelector('.questionnaire-sous-fond').getBoundingClientRect().top + scrollY));
     await pg.waitForTimeout(1500);
-    const v = await pg.evaluate(() => { const v = document.querySelector('.hero-fond video'); return { paused: v.paused, t: v.currentTime, d: v.duration, top: Math.round(v.getBoundingClientRect().top) }; });
+    const v = await pg.evaluate(() => { const v = document.querySelector('.hero-fond video'); return { paused: v.paused, ended: v.ended, t: v.currentTime, d: v.duration, top: Math.round(v.getBoundingClientRect().top) }; });
     const t = await trait(pg);
     if (!(v.top < 0) || !v.paused) fail(`${page}: vidéo qui continue hors champ ${JSON.stringify(v)}`);
-    if (!(v.t >= v.d - 0.2)) fail(`${page}: après être passé sous la carte, la vidéo n'est pas sur sa dernière image ${JSON.stringify(v)}`);
+    if (!(v.t >= v.d - 0.2) || v.ended) fail(`${page}: après être passé sous la carte, la vidéo n'est pas sur sa dernière image ${JSON.stringify(v)}`);
     if (!(t.dessine > 0)) fail(`${page}: pas de trait après être passé sous la carte ${JSON.stringify(t)}`);
+    await pg.close();
+  }
+  // 3b septies. carte vue, remontée vers le texte (pause), puis saut d'un coup sous la carte : image finale et trait
+  {
+    const pg = await b.newPage({ viewport: { width: 390, height: 560 }, isMobile: true, hasTouch: true });
+    await pg.goto(`${BASE}/${page}`, { waitUntil: 'load' }); await pg.waitForTimeout(800);
+    await pg.evaluate(() => scrollTo(0, document.querySelector('.hero-fond').getBoundingClientRect().top + scrollY - 40)); await pg.waitForTimeout(1500);
+    await pg.evaluate(() => scrollTo({ top: 0, behavior: 'instant' })); await pg.waitForTimeout(600);
+    const pause = await pg.evaluate(() => { const v = document.querySelector('.hero-fond video'); return { paused: v.paused, t: v.currentTime }; });
+    if (!pause.paused || !(pause.t > 0)) fail(`${page}: remontée vers le texte, pas de pause en cours de lecture ${JSON.stringify(pause)}`);
+    await pg.evaluate(() => scrollTo({ top: 2500, behavior: 'instant' })); await pg.waitForTimeout(1500);
+    const v = await pg.evaluate(() => { const v = document.querySelector('.hero-fond video'); return { t: v.currentTime, d: v.duration, ended: v.ended }; });
+    const t = await trait(pg);
+    if (!(v.t >= v.d - 0.2) || v.ended) fail(`${page}: saut après une pause, pas sur la dernière image ${JSON.stringify(v)}`);
+    if (!(t.dessine > 0)) fail(`${page}: saut après une pause, pas de trait ${JSON.stringify(t)}`);
+    await pg.close();
   }
   // 3b sexies. saut d'un coup par-dessus la carte, depuis un écran où elle n'est pas encore visible : carte finale et trait
   {
@@ -122,7 +138,7 @@ for (const page of ['index.html', 'en.html']) {
     const v = await pg.evaluate(() => { const v = document.querySelector('.hero-fond video'); return { t: v.currentTime, poster: v.poster }; });
     const t = await trait(pg);
     if (v.t > 0 || !/fth-fond-v1\.jpg$/.test(v.poster)) fail(`${page}: saut par-dessus la carte ${JSON.stringify(v)}`);
-    if (!(t.total > 0)) fail(`${page}: saut par-dessus la carte, pas de trait ${JSON.stringify(t)}`);
+    if (!(t.dessine > 0)) fail(`${page}: saut par-dessus la carte, pas de trait ${JSON.stringify(t)}`);
     await pg.close();
   }
   // 3b quinquies. vidéo qui ne se charge jamais : au bout du filet, carte finale et trait, jamais la première image
