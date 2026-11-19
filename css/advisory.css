@@ -801,3 +801,19 @@ html { scroll-padding-top: 6.5rem; }
   .questionnaire-sous-fond { margin-top: 0; }
   .questionnaire-sous-fond .hero-calc { margin: 0 auto; }
 }
+
+/* Audit du 19/11/2026 */
+/* Menu : le logo ne s'écrase plus (il était le seul élément rétractable : 0 px de large à 800 px en ukrainien, 43 px à 1440) */
+.advisory-home .nav-logo { flex-shrink: 0; }
+.advisory-home .nav-menu { gap: clamp(.65rem, .9vw, .8rem); }
+/* ponytail : entre 769 et 1023 px le menu ukrainien ne tient pas en entier ; quatre ancres sortent de la barre (elles restent dans le pied de page).
+   Si le menu grandit encore, étendre le menu replié jusqu'à 1023 px (style.min.css + matchMedia de main.js). */
+@media (min-width: 769px) and (max-width: 1023px) {
+  .advisory-home .nav-menu li:has(> a:is([href$="#system"], [href$="#process"], [href$="#deliverables"], [href$="#why"])) { display: none; }
+}
+/* Outil et espace de travail : champs à 16 px (en dessous, l'iPhone zoome à la saisie), lien reconnaissable sans la couleur, bouton qui passe à la ligne à 320 px */
+.fthp .fthp-form :is(input[type], select, textarea), .fthp .fthp-search input { font-size: 1rem; }
+.fthp .fthp-results-link a { text-decoration: underline; text-underline-offset: 3px; }
+@media (max-width: 400px) { .fthp .btn { white-space: normal; } }
+/* Bloc de fin d'article : le titre est un h2 (plus de saut h1 -> h3), même apparence */
+.article-cta h2 { font-family: var(--font-serif); font-size: 1.3rem; font-weight: 500; color: var(--g900); margin-bottom: .5rem; }

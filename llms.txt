@@ -1,51 +1,40 @@
-# FTH — Financial Transformation Hub
+# FTH: Financial Transformation Hub
 
-> IFRS reporting transformation services for companies across Ukraine and international companies that need expertise in Ukrainian accounting. We help SaaS, fintech, and software companies prepare audit-ready IFRS financial statements for investors, auditors, and international partners.
+> Financial Transformation Hub (FTH) helps transform financial data and prepare IFRS-compliant reporting: financial reporting transformation from Ukrainian accounting standards (UAS, P(S)BO / П(С)БО) to IFRS.
 
-## What we do
+## Services
 
-- Transformation of financial reporting from Ukrainian local GAAP (P(S)BO / П(С)БО) to IFRS
-- Preparation of full IFRS financial statement packages (Statement of Financial Position, P&L and OCI, Cash Flow Statement, Statement of Changes in Equity, Notes)
-- Investor-ready financial structuring for fundraising and M&A
+- Local GAAP to IFRS transformation: full transformation of financial reporting from Ukrainian accounting standards to IFRS. Adjusting entries, reclassifications, explanatory notes.
+- Full IFRS reporting package: preparation of a complete set of financial statements: statement of financial position, statement of profit or loss and OCI, cash flow statement, statement of changes in equity, and notes.
+- Audit and due diligence support: preparation of documentation and working files for audit reviews. Communication with auditors, responding to queries, preparing additional disclosures.
+- Financial reporting for external stakeholders: preparation and structuring of financial information for auditors, banks, investors, shareholders, parent companies, and international partners.
 
 ## Who we serve
 
-- Ukrainian B2B SaaS companies
-- Fintech and product IT companies
-- IT outsourcing and outstaffing companies
-- Subsidiaries of international groups operating in Ukraine
-- Companies preparing for Series A/B/C investment rounds or external audits
+- FTH Advisory provides services to companies from various sectors of the economy.
 
 ## Key facts
 
 - Company: Financial Transformation Hub (FTH)
-- Founded: 2018
 - Location: Kyiv, Ukraine
-- Specialization: IFRS for IT, SaaS, and fintech sectors
 - Languages: Ukrainian, English
 - Email: contact@fthadvisory.com
-- Hours: Mon–Sun, 9:00–18:00 (Europe/Kyiv)
+- Hours: Mon-Sun, 9:00-18:00 (Europe/Kyiv)
 - LinkedIn: https://www.linkedin.com/company/fth-advisory
 - Founder: Vadym Sliusar (ACCA, DipIFR)
+- Timeline: for some projects the estimated timeline may be 2-6 weeks; exact timelines are set after a preliminary assessment
 
-## Methodology
+## Pages
 
-- Full IFRS standard coverage including IFRS 15 (Revenue), IFRS 16 (Leases), IFRS 2 (Share-based Payment), IAS 21 (Foreign Currency), IAS 38 (Intangible Assets), IFRS 9 (Financial Instruments)
-- Structured transformation with documented adjustment logic
-- Working files prepared for audit review
-- Typical project timeline: 2–6 weeks for a full IFRS package, depending on data volume
-
-## Site structure
-
-- /                Ukrainian homepage
-- /en              English homepage
-- /blog-ua         Ukrainian blog index
-- /blog            English blog index
-- /ifrs-kyiv-ua    Kyiv page (UA): remote services across Ukraine, in-person meetings in Kyiv by prior arrangement, services, process
-- /ifrs-kyiv       Kyiv page (EN)
-- /ifrs-tool-ua    IFRS tool (UA): trial balance checks and preliminary IFRS mapping in the browser
-- /ifrs-tool       IFRS tool (EN)
-- /sitemap.xml     Full XML sitemap
+- [Ukrainian homepage](https://www.fthadvisory.com/)
+- [English homepage](https://www.fthadvisory.com/en)
+- [Blog, Ukrainian](https://www.fthadvisory.com/blog-ua)
+- [Blog, English](https://www.fthadvisory.com/blog)
+- [Kyiv page, Ukrainian](https://www.fthadvisory.com/ifrs-kyiv-ua): remote services across Ukraine, in-person meetings in Kyiv by prior arrangement, services, process
+- [Kyiv page, English](https://www.fthadvisory.com/ifrs-kyiv)
+- [IFRS tool, Ukrainian](https://www.fthadvisory.com/ifrs-tool-ua): trial balance checks and preliminary IFRS mapping in the browser
+- [IFRS tool, English](https://www.fthadvisory.com/ifrs-tool)
+- [XML sitemap](https://www.fthadvisory.com/sitemap.xml)
 
 ## Blog topics covered
 
