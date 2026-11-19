@@ -849,7 +849,8 @@ html { scroll-padding-top: 6.5rem; }
 /* en-tête de l'espace de travail sur téléphone : le logo garde sa taille, l'empreinte de la clé tient sur une ligne */
 .fthw-brand { flex-shrink: 0; }
 .fthw-key { white-space: nowrap; }
-@media (max-width: 700px) { .fthw-bar-in { flex-wrap: wrap; row-gap: .4rem; } .fthw-key { order: 5; margin-left: 0; } .fthw-key:not(:empty) + .fthw-lang { margin-left: auto; } }
+/* jusqu'à 700 px, l'empreinte passe toujours sur sa propre ligne, dans les deux langues (un saut de ligne forcé, pas un seuil qui dépendrait de la largeur des mots) */
+@media (max-width: 700px) { .fthw-bar-in { flex-wrap: wrap; row-gap: .4rem; } .fthw-bar-in:has(.fthw-key:not(:empty))::after { content: ""; order: 4; flex-basis: 100%; height: 0; } .fthw-key { order: 5; margin-left: 0; font-size: .8rem; } .fthw-key:not(:empty) + .fthw-lang { margin-left: auto; } }
 .fthw .fthw-eng { font-weight: 400; line-height: 1.6; letter-spacing: inherit; }   /* le nom du dossier est le h1 de l'écran */
 .fthw .fthw-notes li.is-resolved { color: #5f6b5f; }                              /* 4,5:1 sur blanc */
 .fthw .fthw-link.is-danger { min-width: 1.5rem; }
@@ -857,3 +858,9 @@ html { scroll-padding-top: 6.5rem; }
 .fthw .fthw-res { background: #fafaf7; }
 .ifrs-tool .ifrs-params { background: #fafafa; }
 .fthw .fthw-res div, .ifrs-tool .ifrs-params div { outline: 1px solid #e4e4e7; }
+/* petits textes de l'outil : 12 px au moins (en-têtes de tableau au téléphone, pastilles) */
+@media (max-width: 768px) { .ifrs-tool .ifrs-table thead :is(th, td) { font-size: .75rem; } }
+.fthw .fthw-badge { font-size: .75rem; }
+/* calculateurs : la colonne des montants garde la place d'un montant de sept chiffres au téléphone */
+.fthw .fthw-card .fthw-lines td:nth-child(2) input { min-width: 6.75rem; }
+@media (max-width: 768px) { .fthw .fthw-card .fthw-lines thead th { white-space: normal; } }

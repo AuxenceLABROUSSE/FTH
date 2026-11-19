@@ -561,6 +561,8 @@
     var inp = function (type, value, extra) { var a = { type: type, value: value }; Object.keys(extra || {}).forEach(function (k) { a[k] = extra[k]; }); return h('input', a); };
     var out = function () { return h('div.fthw-out', { 'aria-live': 'polite' }); };
     var rows = function (pairs) { return h('dl.fthw-res', pairs.map(function (p) { return h('div', h('dt', p[0]), h('dd', money(p[1]))); })); };
+    // description d'un journal : en ukrainien, le titre du calculateur déjà affiché (aucun terme nouveau) ; les libellés de ligne restent ceux du moteur, qui les lit
+    var jd = function (en, title, part) { return UK ? title + (part ? ', ' + part : '') : en; };
     var toJ = function (j, desc) { return h('button.btn.btn-green', { type: 'button', onclick: function () { j.description = desc; openEditor(j); } }, L.toJournal); };
 
     // IFRS 16
@@ -572,8 +574,8 @@
         lo.textContent = '';
         if (r.error) { lo.appendChild(h('p.fthp-status.is-error', r.error === 'notStarted' ? L.notStarted : L.inputs)); return; }
         lo.appendChild(rows([[L.pv, r.pv], [L.rouClose, r.rouClose], [L.liabClose, r.liabClose], [L.current, r.currentClose], [L.dep, r.depreciation], [L.interest, r.interest], [L.paid, r.payments]]));
-        if (r.opening) lo.appendChild(h('div.fthp-actions', h('button.btn.btn-outline', { type: 'button', onclick: function () { r.opening.description = 'IFRS 16 lease — opening balances'; openEditor(r.opening); } }, L.toJournal + ' (' + T.jscope.opening + ')')));
-        lo.appendChild(h('div.fthp-actions', toJ(r.current, 'IFRS 16 lease — ' + (UK ? 'поточний період' : 'current period'))));
+        if (r.opening) lo.appendChild(h('div.fthp-actions', h('button.btn.btn-outline', { type: 'button', onclick: function () { r.opening.description = jd('IFRS 16 lease — opening balances', L.lease, 'вхідні залишки'); openEditor(r.opening); } }, L.toJournal + ' (' + T.jscope.opening + ')')));
+        lo.appendChild(h('div.fthp-actions', toJ(r.current, jd('IFRS 16 lease — current period', L.lease, 'поточний період'))));
       } }, L.compute)), lo));
 
     // IFRS 9
@@ -588,7 +590,7 @@
       h('div.fthp-actions', h('button.btn.btn-outline', { type: 'button', onclick: function () {
         var r = C.eclCalc({ buckets: bk.map(function (b) { return { amount: b.a.value, rate: b.r.value }; }), existing: ex.value });
         eo.textContent = ''; eo.appendChild(rows([[L.required, r.required], [L.delta, r.delta]]));
-        eo.appendChild(r.journal ? h('div.fthp-actions', toJ(r.journal, 'IFRS 9 expected credit losses (provision matrix)')) : h('p', L.nothing));
+        eo.appendChild(r.journal ? h('div.fthp-actions', toJ(r.journal, jd('IFRS 9 expected credit losses (provision matrix)', L.ecl))) : h('p', L.nothing));
       } }, L.compute)), eo));
 
     // IAS 21
@@ -599,7 +601,7 @@
         var sign = liab ? -1 : 1;
         var r = C.fxCalc({ category: cat, fcAmount: sign * C.num(fx.fc.value), rate: fx.rate.value, carrying: fx.car.value });
         fo.textContent = ''; fo.appendChild(rows([[L.diff, r.diff]]));
-        fo.appendChild(r.journal ? h('div.fthp-actions', toJ(r.journal, 'IAS 21 retranslation at closing rate')) : h('p', L.nothing));
+        fo.appendChild(r.journal ? h('div.fthp-actions', toJ(r.journal, jd('IAS 21 retranslation at closing rate', L.fx))) : h('p', L.nothing));
       } }, L.compute)), fo));
 
     // IAS 12
@@ -608,7 +610,7 @@
       h('div.fthp-actions', h('button.btn.btn-outline', { type: 'button', onclick: function () {
         var r = C.deferredTaxCalc(M, e.journals, dtr.value);
         dto.textContent = ''; dto.appendChild(rows([[L.plImpact, r.plImpact], [L.openImpact, r.openImpact], [L.taxPl, r.taxPl], [L.taxOpen, r.taxOpen]]));
-        dto.appendChild(r.journal ? h('div.fthp-actions', toJ(r.journal, 'IAS 12 deferred tax on IFRS adjustments')) : h('p', L.nothing));
+        dto.appendChild(r.journal ? h('div.fthp-actions', toJ(r.journal, jd('IAS 12 deferred tax on IFRS adjustments', L.dt))) : h('p', L.nothing));
       } }, L.compute)), dto));
 
     var openBtn = function (j, desc) { return h('button.btn.btn-outline', { type: 'button', onclick: function () { j.description = desc; openEditor(j); } }, L.toJournal + ' (' + (UK ? 'вхідні залишки' : 'opening balances') + ')'); };
@@ -624,8 +626,8 @@
         if (r.error) { io.appendChild(h('p.fthp-status.is-error', r.error === 'criteria' ? L.noCriteria : L.inputs)); return; }
         io.appendChild(rows([[L.amortBefore, r.amortBefore], [L.amortPeriod, r.amortPeriod], [L.nbv, r.nbvClose]]));
         var acts = h('div.fthp-actions');
-        if (r.opening) acts.appendChild(openBtn(r.opening, 'IAS 38 development costs — opening balances'));
-        if (r.current) acts.appendChild(toJ(r.current, 'IAS 38 development costs — ' + (UK ? 'поточний період' : 'current period')));
+        if (r.opening) acts.appendChild(openBtn(r.opening, jd('IAS 38 development costs — opening balances', L.ias38, 'вхідні залишки')));
+        if (r.current) acts.appendChild(toJ(r.current, jd('IAS 38 development costs — current period', L.ias38, 'поточний період')));
         io.appendChild(acts);
       } }, L.compute)), io));
 
@@ -639,8 +641,8 @@
         if (r.error) { ro.appendChild(h('p.fthp-status.is-error', r.error === 'notInvoiced' ? L.notInvoiced : L.inputs)); return; }
         ro.appendChild(rows([[L.defOpen, r.deferredOpen], [L.recognised, r.recognisedPeriod], [L.defClose, r.deferredClose]]));
         var acts = h('div.fthp-actions');
-        if (r.opening) acts.appendChild(openBtn(r.opening, 'IFRS 15 deferred revenue — opening balances'));
-        if (r.current) acts.appendChild(toJ(r.current, 'IFRS 15 deferred revenue — ' + (UK ? 'поточний період' : 'current period')));
+        if (r.opening) acts.appendChild(openBtn(r.opening, jd('IFRS 15 deferred revenue — opening balances', L.ifrs15, 'вхідні залишки')));
+        if (r.current) acts.appendChild(toJ(r.current, jd('IFRS 15 deferred revenue — current period', L.ifrs15, 'поточний період')));
         else ro.appendChild(h('p', L.nothing));
         ro.appendChild(acts);
       } }, L.compute)), ro));
@@ -652,7 +654,7 @@
       h('div.fthp-actions', h('button.btn.btn-outline', { type: 'button', onclick: function () {
         var r = C.incomeTaxCalc({ pbt: tx.pbt.value, permanent: tx.perm.value, lossBF: tx.loss.value, ratePct: tx.rate.value, booked: tx.booked.value });
         xo.textContent = ''; xo.appendChild(rows([[L.taxable, r.taxable], [L.taxBase, r.base], [L.taxCurrent, r.current], [L.taxToBook, r.delta], [L.lossCarry, r.lossCarry]]));
-        xo.appendChild(r.journal ? h('div.fthp-actions', toJ(r.journal, 'IAS 12 current income tax')) : h('p', L.nothing));
+        xo.appendChild(r.journal ? h('div.fthp-actions', toJ(r.journal, jd('IAS 12 current income tax', L.tax))) : h('p', L.nothing));
       } }, L.compute)), xo));
   }
 

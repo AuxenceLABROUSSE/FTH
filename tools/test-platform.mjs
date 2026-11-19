@@ -258,12 +258,13 @@ for (const [url, lang] of [['/ifrs-tool', 'en'], ['/ifrs-tool-ua', 'uk']]) {
   await t.page.screenshot({ path: path.join(SHOTS, 'portal-uk-390.png'), fullPage: true });
   await t.ctx.close();
 }
-for (const [url, w] of [['/workspace-ua', 560], ['/workspace', 520], ['/workspace-ua', 700], ['/workspace-ua', 320]]) { // header between phone and tablet: nothing pushed off screen
+for (const [url, w] of [['/workspace-ua', 560], ['/workspace', 520], ['/workspace', 600], ['/workspace', 700], ['/workspace-ua', 700], ['/workspace-ua', 320], ['/workspace', 701]]) { // header between phone and tablet: nothing pushed off screen
   const t = await newPage(url, w);
   await t.page.setInputFiles('#fthwKeyFile', keyPath); await t.page.fill('#fthwPass', 'correct horse battery staple'); await t.page.click('#fthwUnlock');
   await t.page.waitForSelector('#fthwStart:not([hidden])');
-  const m = await t.page.evaluate(() => ({ over: document.documentElement.scrollWidth - window.innerWidth, lock: document.getElementById('fthwLockBtn').getBoundingClientRect().right - window.innerWidth }));
-  ok(m.over <= 0 && m.lock <= 0, `workspace header ${url} ${w} px: no horizontal scroll, Lock button on screen (${m.over}, ${Math.round(m.lock)})`);
+  const m = await t.page.evaluate(() => { const k = document.getElementById('fthwKeyBadge').getBoundingClientRect(), l = document.getElementById('fthwLockBtn').getBoundingClientRect(); return { over: document.documentElement.scrollWidth - window.innerWidth, lock: l.right - window.innerWidth, below: k.top >= l.bottom - 1, right: k.right - window.innerWidth }; });
+  ok(m.over <= 0 && m.lock <= 0 && m.right <= 0, `workspace header ${url} ${w} px: no horizontal scroll, Lock button and key id on screen (${m.over}, ${Math.round(m.lock)})`);
+  ok(m.below === (w <= 700), `workspace header ${url} ${w} px: key id ${w <= 700 ? 'on its own line under the bar' : 'inside the bar'}`);
   await t.ctx.close();
 }
 { // workspace on a phone, Ukrainian page: header, fields, headings, tables
@@ -286,7 +287,24 @@ for (const [url, w] of [['/workspace-ua', 560], ['/workspace', 520], ['/workspac
   ok(emptyTh === 0, `workspace: no empty table header (${emptyTh})`);
   ok(bareScroll === 0, `workspace: every scrolling table can be reached with the keyboard and has a name (${bareScroll})`);
   await page.click('#fthwNav button:nth-child(5)');
-  ok(await page.$eval('.fthw-lines', (tb) => tb.getBoundingClientRect().width <= tb.parentElement.clientWidth + 1), 'workspace 390 px: the credit-loss table fits its card');
+  for (const w of [390, 320]) {
+    await page.setViewportSize({ width: w, height: 800 });
+    // at 320 px three columns cannot hold a seven-digit amount: the table then scrolls inside its card, never the page
+    ok(await page.$eval('.fthw-card .fthw-lines', (tb, w) => w < 375 ? document.documentElement.scrollWidth <= window.innerWidth : tb.getBoundingClientRect().width <= tb.parentElement.clientWidth + 1, w), `workspace ${w} px: the credit-loss table ${w < 375 ? 'never widens the page' : 'fits its card'}`);
+    ok(await page.$eval('.fthw-card .fthw-lines tbody input', (i) => /^\d{7}$/.test(i.value) && i.scrollWidth <= i.clientWidth), `workspace ${w} px: a seven-digit amount is shown whole`);
+    ok(await page.$$eval('#fthwMain thead th, .fthw-badge', (els) => els.every((e) => parseFloat(getComputedStyle(e).fontSize) >= 12)), `workspace ${w} px: table headers and badges at 12 px or more`);
+  }
+  await page.setViewportSize({ width: 390, height: 900 });
+  { // a journal made by a calculator is named in Ukrainian with the calculator's own title; line memos stay the engine's
+    const card = page.locator('.fthw-card').first();
+    await card.locator('input[type=date]').fill('2025-01-01'); await card.locator('input[type=number]').nth(0).fill('36'); await card.locator('input[type=number]').nth(1).fill('40000');
+    await card.getByRole('button').first().click(); await card.locator('.fthw-res').waitFor();
+    await card.locator('.btn-green').click(); await page.waitForSelector('.fthw-editor');
+    const desc = await page.locator('.fthw-editor input[type=text]').first().inputValue();
+    ok(/^МСФЗ 16 — оренда, поточний період$/.test(desc), 'workspace UA: lease journal described in Ukrainian (' + desc + ')');
+    ok(await page.$$eval('.fthw-editor .fthw-lines tbody input[type=text]', (els) => els.some((e) => /depreciation of ROU/.test(e.value))), 'workspace UA: line memos unchanged (the engine reads them)');
+    await page.click('#fthwNav button:nth-child(5)');
+  }
   const over = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
   ok(over <= 0, 'workspace 390 px: no horizontal scroll (' + over + ')');
   ok(!t.errors.length, 'workspace 390 px: no console error ' + t.errors.join(' | '));
