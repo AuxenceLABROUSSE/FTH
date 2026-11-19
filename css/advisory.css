@@ -864,3 +864,5 @@ html { scroll-padding-top: 6.5rem; }
 /* calculateurs : la colonne des montants garde la place d'un montant de sept chiffres au téléphone */
 .fthw .fthw-card .fthw-lines td:nth-child(2) input { min-width: 6.75rem; }
 @media (max-width: 768px) { .fthw .fthw-card .fthw-lines thead th { white-space: normal; } }
+/* WebKit : une liste déroulante aux options longues élargit la carte au-delà de l'écran (44 px à 375 px), même à largeur 100 % ; la carte borne ce débordement sans couper les contours de focus, qui restent dans sa marge intérieure */
+.fthw .fthw-card, .fthw .fthw-editor { overflow-x: clip; }
