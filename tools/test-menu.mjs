@@ -54,6 +54,7 @@ for (const p of PAGES) {
       for (const e of li) { e.scrollIntoView({ block: 'center' }); await new Promise(r => requestAnimationFrame(r)); const r = e.querySelector('a').getBoundingClientRect(), x = document.elementFromPoint(r.left + 5, r.top + r.height / 2); atteints.push(r.top >= 0 && r.bottom <= innerHeight && !!x && e.contains(x)); }
       menu.scrollTop = 0;
       return { ouvert: menu.classList.contains('active') && document.getElementById('mobileToggle').getAttribute('aria-expanded') === 'true', liens: li.length, appel: !!menu.querySelector('.nav-menu-cta a')?.getClientRects().length,
+        haut: Math.round(li[0].getBoundingClientRect().top), bas: Math.round(innerHeight - li[li.length - 1].getBoundingClientRect().bottom), gauche: Math.round(li[1].getBoundingClientRect().left - document.querySelector('.nav-logo-img').getBoundingClientRect().left), graisse: getComputedStyle(menu.querySelector('.nav-tool a')).fontWeight, defile: menu.scrollHeight > menu.clientHeight + 1,
         ecart: li.length > 2 ? Math.round(li[2].getBoundingClientRect().top - li[1].getBoundingClientRect().bottom) : -1, inatteignables: atteints.filter(a => !a).length };
     });
     n++; const ou = `${p} à ${w} x ${h}, menu ouvert`;
@@ -61,6 +62,10 @@ for (const p of PAGES) {
     if (m.liens !== 10 || !m.appel) fail(`${ou}: ${m.liens} entrées (9 liens + le bouton d'appel attendus), bouton d'appel ${m.appel}`);
     if (m.ecart < 16) fail(`${ou}: écart entre les liens de ${m.ecart} px (16 au moins)`);
     if (m.inatteignables) fail(`${ou}: ${m.inatteignables} lien(s) inatteignable(s)`);
+    if (!m.defile && Math.abs(m.haut - m.bas) > 2) fail(`${ou}: menu pas centré dans l'écran (${m.haut} px au-dessus, ${m.bas} px au-dessous)`);
+    if (m.defile && m.haut < 81) fail(`${ou}: au repos, le premier lien est sous la barre (${m.haut} px)`);
+    if (Math.abs(m.gauche) > 1) fail(`${ou}: liens pas alignés sur le logo (${m.gauche} px)`);
+    if (m.graisse !== '700') fail(`${ou}: pastille de l'outil en graisse ${m.graisse} (700 attendu)`);
     await pg.keyboard.press('Escape');
     if (await pg.evaluate(() => document.getElementById('navMenu').classList.contains('active'))) fail(`${ou}: Échap ne referme pas le menu`);
   }

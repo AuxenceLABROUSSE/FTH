@@ -812,11 +812,11 @@ html { scroll-padding-top: 6.5rem; }
 @media (min-width: 769px) and (max-width: 1023px) {
   .mobile-toggle { display: flex; }
   .advisory-home :is(.nav-logo, .nav-right, .mobile-toggle) { position: relative; z-index: 1002; }
-  .advisory-home .nav-menu { display: none; position: fixed; inset: 0; z-index: 1001; flex-direction: column; align-items: flex-start; text-align: left; padding-inline: 2rem; gap: 1.1rem; background: #faf9f5; }
+  .advisory-home .nav-menu { display: none; position: fixed; inset: 0; z-index: 1001; flex-direction: column; align-items: flex-start; text-align: left; gap: 1.1rem; background: #faf9f5; }
   .advisory-home .nav-menu.active { display: flex; }
   .advisory-home .nav-menu a { color: var(--g900) !important; }
   .advisory-home .nav-menu li:not(.nav-menu-cta) a { font-family: var(--font-serif); font-weight: 400; font-size: 1.35rem; letter-spacing: -.005em; }
-  .advisory-home .nav-menu li.nav-tool a { display: inline-block; padding: .5rem 1.2rem; }
+  .advisory-home .nav-menu li.nav-tool a { display: inline-block; padding: .5rem 1.2rem; font-weight: 700; }   /* la pastille reste en gras, comme au téléphone */
   .advisory-home .nav-menu-cta { display: block; margin-top: .6rem; }
   .advisory-home .nav-menu .nav-menu-cta a { color: #fff !important; font-size: 1rem; font-weight: 600; padding: .9rem 1.6rem; }
   .advisory-home .nav-menu .nav-menu-cta a::after { display: none; }
@@ -824,10 +824,14 @@ html { scroll-padding-top: 6.5rem; }
 /* Menu replié ouvert sur un écran bas (téléphone en paysage, fenêtre courte) : centré quand il tient, sinon il défile et chaque lien reste atteignable
    (avec justify-content: center seul, les premiers liens sortaient par le haut sans pouvoir y revenir). */
 @media (max-width: 1023px) {
-  .advisory-home .nav-menu { justify-content: flex-start; overflow-y: auto; padding-block: 5.5rem 1.5rem; }
+  .advisory-home .nav-menu { --marge: 1.25rem; justify-content: flex-start; overflow-y: auto; padding: 0 var(--marge) 5.5rem; }   /* --marge = marge du conteneur : les liens restent sur l'axe du logo */
+  /* bande opaque collée en haut : elle tient la place de la barre (4.4rem + l'écart de 1.1rem = 5.5rem, comme en bas, donc le menu reste centré dans l'écran)
+     et, quand le menu défile, les liens passent dessous au lieu de traverser le logo */
+  .advisory-home .nav-menu::before { content: ""; flex: 0 0 4.4rem; align-self: stretch; margin-inline: calc(-1 * var(--marge)); position: sticky; top: 0; z-index: 1; background: inherit; }
   .advisory-home .nav-menu > li:first-child { margin-top: auto; }
   .advisory-home .nav-menu > li:last-child { margin-bottom: auto; }
 }
+@media (min-width: 481px) and (max-width: 1023px) { .advisory-home .nav-menu { --marge: 2rem; } }
 /* Outil et espace de travail : champs à 16 px (en dessous, l'iPhone zoome à la saisie), lien reconnaissable sans la couleur, bouton qui passe à la ligne à 320 px */
 .fthp .fthp-form :is(input[type], select, textarea), .fthp .fthp-search input { font-size: 1rem; }
 @media (max-width: 768px) { .ifrs-tool .ifrs-cat select, .fthw .fthw-lines :is(input, select), .fthw .fthw-note { font-size: 1rem; } }   /* listes de classement et lignes d'écriture : 16 px sur téléphone seulement, les tableaux gardent leur densité sur ordinateur */
