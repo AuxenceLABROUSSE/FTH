@@ -255,6 +255,10 @@ for (const [url, lang] of [['/ifrs-tool', 'en'], ['/ifrs-tool-ua', 'uk']]) {
   // consent sentence reads as one paragraph: its link starts a line, it is not pushed into a column of its own
   ok(await t.page.$eval('.fthp-consent', (l) => { const a = l.querySelector('a').getBoundingClientRect(), r = l.getBoundingClientRect(); return a.left < r.left + r.width / 2 && getComputedStyle(l.querySelector('a')).textDecorationLine === 'underline'; }), 'portal 390 px: consent link inside the sentence, underlined');
   ok(await t.page.$$eval('.ifrs-scroll', (els) => els.every((e) => e.tabIndex === 0 && e.getAttribute('aria-label'))), 'portal: every scrolling table can be reached with the keyboard and has a name');
+  ok(await t.page.$$eval('#fthpStatements thead th', (els) => els.length > 0 && els.every((e) => parseFloat(getComputedStyle(e).fontSize) >= 12)), 'portal 390 px: table headers at 12 px or more');
+  await t.page.setViewportSize({ width: 718, height: 1000 }); await t.page.emulateMedia({ media: 'print' });   // A4 with 10 mm margins
+  ok(await t.page.$$eval('#fthpStatements thead th', (els) => els.every((e) => Math.abs(parseFloat(getComputedStyle(e).fontSize) - 11.2) < 0.01)), 'portal print (A4): table headers keep their printed size, the screen-only rule does not apply');
+  await t.page.emulateMedia({ media: 'screen' }); await t.page.setViewportSize({ width: 390, height: 900 });
   await t.page.screenshot({ path: path.join(SHOTS, 'portal-uk-390.png'), fullPage: true });
   await t.ctx.close();
 }

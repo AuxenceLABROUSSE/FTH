@@ -859,7 +859,7 @@ html { scroll-padding-top: 6.5rem; }
 .ifrs-tool .ifrs-params { background: #fafafa; }
 .fthw .fthw-res div, .ifrs-tool .ifrs-params div { outline: 1px solid #e4e4e7; }
 /* petits textes de l'outil : 12 px au moins (en-têtes de tableau au téléphone, pastilles) */
-@media (max-width: 768px) { .ifrs-tool .ifrs-table thead :is(th, td) { font-size: .75rem; } }
+@media screen and (max-width: 768px) { .ifrs-tool .ifrs-table thead :is(th, td) { font-size: .75rem; } }   /* écran seulement : une page A4 imprimée fait environ 718 px de large */
 .fthw .fthw-badge { font-size: .75rem; }
 /* calculateurs : la colonne des montants garde la place d'un montant de sept chiffres au téléphone */
 .fthw .fthw-card .fthw-lines td:nth-child(2) input { min-width: 6.75rem; }
