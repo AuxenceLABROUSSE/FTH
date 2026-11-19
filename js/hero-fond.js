@@ -41,7 +41,7 @@
     var cTop = c.top + scrollY - 28;                                                      // au-dessus du questionnaire
     var xOut = Math.min(c.right + scrollX + 16, document.documentElement.clientWidth - 6); // longe son bord droit, dehors
     var xD = Math.max(k[0], xOut), H = xD - k[0];
-    svg.setAttribute('width', docW); svg.setAttribute('height', docH);
+    svg.setAttribute('width', docW); svg.setAttribute('height', Math.ceil(B + 24));   // le trait finit sous le bouton : inutile de couvrir tout le document
     svg.style.display = '';
     path.setAttribute('d', [
       'M', k[0], k[1], 'V', cTop, 'H', xD, 'V', cy, 'H', R,
@@ -107,7 +107,7 @@
     else if (pret && !geo && construire()) peindre();
   }).observe(calc, { childList: true, subtree: true });
 
-  if (reduit) {            // mouvement réduit : image finale, aucune lecture ni téléchargement (preload="none" dans le HTML), trait posé
+  if (reduit) {            // mouvement réduit : image finale, aucune lecture ni téléchargement (les sources n'ont qu'un data-src, jamais posé ici), trait posé
     video.poster = video.getAttribute('data-poster-fin') || video.poster;
     demarrer();
   } else {                 // lecture lancée ici (pas d'autoplay dans le HTML, sinon le navigateur télécharge même en mouvement réduit)
@@ -139,14 +139,18 @@
     };
     var lancer = function () {                              // une seule fois, quand la carte est à l'écran
       if (lance) return; lance = true;
-      video.preload = 'auto';                               // rien n'est téléchargé tant que la carte n'est pas vue
+      var s = video.querySelectorAll('source');             // les sources n'ont qu'un data-src dans le HTML : rien n'est téléchargé tant que la carte n'est pas vue,
+      for (var i = 0; i < s.length; i++) if (!s[i].src && s[i].getAttribute('data-src')) s[i].src = s[i].getAttribute('data-src');   // ni en mouvement réduit (WebKit ignore preload="none")
+      video.preload = 'auto';
+      video.load();                                         // dans cet ordre : sources, load(), puis play() (un load() après play() annulerait la lecture)
       jouer();
       armer(15000);                                         // filet si la lecture ne démarre jamais ; réarmé tant que la vidéo charge
     };
     video.addEventListener('ended', demarrer);
     video.addEventListener('playing', function () { armer((video.duration || 5) * 1000 + 1500); });   // compte depuis la lecture réelle
     var sources = video.querySelectorAll('source');           // vidéo illisible (toutes les sources) : carte finale, le trait part quand même
-    if (sources.length) sources[sources.length - 1].addEventListener('error', refusee); else video.addEventListener('error', refusee);
+    var illisible = function () { if (lance) refusee(); };   // avant le lancement, une source sans src reçoit une erreur dès l'analyse de la page : à ignorer
+    if (sources.length) sources[sources.length - 1].addEventListener('error', illisible); else video.addEventListener('error', illisible);
     video.addEventListener('waiting', function () { if (lance && !pret) armer(15000); });
     video.addEventListener('loadstart', function () { if (lance && !pret) armer(15000); });
     // sur téléphone la carte est sous le texte : la vidéo attend d'être vue au lieu de se jouer hors de l'écran,

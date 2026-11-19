@@ -805,12 +805,28 @@ html { scroll-padding-top: 6.5rem; }
 /* Audit du 19/11/2026 */
 /* Menu : le logo ne s'écrase plus (il était le seul élément rétractable : 0 px de large à 800 px en ukrainien, 43 px à 1440) */
 .advisory-home .nav-logo { flex-shrink: 0; }
-@media (min-width: 769px) { .advisory-home .nav-menu { gap: clamp(.65rem, .9vw, .8rem); } }   /* jamais sous 769 px : le menu replié du téléphone garde ses écarts */
+@media (min-width: 1024px) { .advisory-home .nav-menu { gap: clamp(.65rem, .9vw, .8rem); } }   /* jamais sous 1024 px : le menu replié garde ses écarts */
 @media (min-width: 1151px) and (max-width: 1199px) { .advisory-home .navbar .container { gap: .8rem; } }   /* le bouton d'appel revient à 1151 px : la barre reste dans son cadre */
-/* ponytail : entre 769 et 1023 px le menu ukrainien ne tient pas en entier ; quatre ancres sortent de la barre (elles restent dans le pied de page).
-   Si le menu grandit encore, étendre le menu replié jusqu'à 1023 px (style.min.css + matchMedia de main.js). */
+/* Entre 769 et 1023 px le menu ukrainien ne tient pas dans la barre : menu replié comme sur téléphone (mêmes règles que sous 769 px,
+   recopiées de style.min.css et des blocs « max-width:768px » de ce fichier ; main.js referme le menu à 1024 px). */
 @media (min-width: 769px) and (max-width: 1023px) {
-  .advisory-home .nav-menu li:has(> a:is([href$="#system"], [href$="#process"], [href$="#deliverables"], [href$="#why"])) { display: none; }
+  .mobile-toggle { display: flex; }
+  .advisory-home :is(.nav-logo, .nav-right, .mobile-toggle) { position: relative; z-index: 1002; }
+  .advisory-home .nav-menu { display: none; position: fixed; inset: 0; z-index: 1001; flex-direction: column; align-items: flex-start; text-align: left; padding-inline: 2rem; gap: 1.1rem; background: #faf9f5; }
+  .advisory-home .nav-menu.active { display: flex; }
+  .advisory-home .nav-menu a { color: var(--g900) !important; }
+  .advisory-home .nav-menu li:not(.nav-menu-cta) a { font-family: var(--font-serif); font-weight: 400; font-size: 1.35rem; letter-spacing: -.005em; }
+  .advisory-home .nav-menu li.nav-tool a { display: inline-block; padding: .5rem 1.2rem; }
+  .advisory-home .nav-menu-cta { display: block; margin-top: .6rem; }
+  .advisory-home .nav-menu .nav-menu-cta a { color: #fff !important; font-size: 1rem; font-weight: 600; padding: .9rem 1.6rem; }
+  .advisory-home .nav-menu .nav-menu-cta a::after { display: none; }
+}
+/* Menu replié ouvert sur un écran bas (téléphone en paysage, fenêtre courte) : centré quand il tient, sinon il défile et chaque lien reste atteignable
+   (avec justify-content: center seul, les premiers liens sortaient par le haut sans pouvoir y revenir). */
+@media (max-width: 1023px) {
+  .advisory-home .nav-menu { justify-content: flex-start; overflow-y: auto; padding-block: 5.5rem 1.5rem; }
+  .advisory-home .nav-menu > li:first-child { margin-top: auto; }
+  .advisory-home .nav-menu > li:last-child { margin-bottom: auto; }
 }
 /* Outil et espace de travail : champs à 16 px (en dessous, l'iPhone zoome à la saisie), lien reconnaissable sans la couleur, bouton qui passe à la ligne à 320 px */
 .fthp .fthp-form :is(input[type], select, textarea), .fthp .fthp-search input { font-size: 1rem; }

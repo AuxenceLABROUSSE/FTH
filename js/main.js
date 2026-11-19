@@ -44,7 +44,7 @@ document.addEventListener('DOMContentLoaded', () => {
         (event.shiftKey ? items[items.length - 1] : items[0]).focus();
       }
     });
-    window.matchMedia('(min-width: 769px)').addEventListener('change', (e) => { if (e.matches) setMenu(false); });
+    window.matchMedia('(min-width: 1024px)').addEventListener('change', (e) => { if (e.matches) setMenu(false); });
   }
 
 
