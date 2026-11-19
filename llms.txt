@@ -1,6 +1,6 @@
 # FTH: Financial Transformation Hub
 
-> Financial Transformation Hub (FTH) helps transform financial data and prepare IFRS-compliant reporting: financial reporting transformation from Ukrainian accounting standards (UAS, P(S)BO / П(С)БО) to IFRS.
+> Financial Transformation Hub (FTH) helps transform financial data and prepare IFRS-compliant reporting: financial reporting transformation from Ukrainian accounting standards (UAS) to IFRS.
 
 ## Services
 
@@ -19,7 +19,7 @@
 - Location: Kyiv, Ukraine
 - Languages: Ukrainian, English
 - Email: contact@fthadvisory.com
-- Hours: Mon-Sun, 9:00-18:00 (Europe/Kyiv)
+- Hours: Mon-Sun, 9:00-18:00
 - LinkedIn: https://www.linkedin.com/company/fth-advisory
 - Founder: Vadym Sliusar (ACCA, DipIFR)
 - Timeline: for some projects the estimated timeline may be 2-6 weeks; exact timelines are set after a preliminary assessment

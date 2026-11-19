@@ -805,7 +805,8 @@ html { scroll-padding-top: 6.5rem; }
 /* Audit du 19/11/2026 */
 /* Menu : le logo ne s'écrase plus (il était le seul élément rétractable : 0 px de large à 800 px en ukrainien, 43 px à 1440) */
 .advisory-home .nav-logo { flex-shrink: 0; }
-.advisory-home .nav-menu { gap: clamp(.65rem, .9vw, .8rem); }
+@media (min-width: 769px) { .advisory-home .nav-menu { gap: clamp(.65rem, .9vw, .8rem); } }   /* jamais sous 769 px : le menu replié du téléphone garde ses écarts */
+@media (min-width: 1151px) and (max-width: 1199px) { .advisory-home .navbar .container { gap: .8rem; } }   /* le bouton d'appel revient à 1151 px : la barre reste dans son cadre */
 /* ponytail : entre 769 et 1023 px le menu ukrainien ne tient pas en entier ; quatre ancres sortent de la barre (elles restent dans le pied de page).
    Si le menu grandit encore, étendre le menu replié jusqu'à 1023 px (style.min.css + matchMedia de main.js). */
 @media (min-width: 769px) and (max-width: 1023px) {
@@ -813,6 +814,7 @@ html { scroll-padding-top: 6.5rem; }
 }
 /* Outil et espace de travail : champs à 16 px (en dessous, l'iPhone zoome à la saisie), lien reconnaissable sans la couleur, bouton qui passe à la ligne à 320 px */
 .fthp .fthp-form :is(input[type], select, textarea), .fthp .fthp-search input { font-size: 1rem; }
+@media (max-width: 768px) { .ifrs-tool .ifrs-cat select, .fthw .fthw-lines :is(input, select), .fthw .fthw-note { font-size: 1rem; } }   /* listes de classement et lignes d'écriture : 16 px sur téléphone seulement, les tableaux gardent leur densité sur ordinateur */
 .fthp .fthp-results-link a { text-decoration: underline; text-underline-offset: 3px; }
 @media (max-width: 400px) { .fthp .btn { white-space: normal; } }
 /* Bloc de fin d'article : le titre est un h2 (plus de saut h1 -> h3), même apparence */
