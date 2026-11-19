@@ -115,7 +115,14 @@
     var lance = false, secours = null;
     var refusee = function () {                             // lecture impossible, bloquée ou jamais vue : carte finale, puis le trait
       clearTimeout(secours);
-      video.poster = video.getAttribute('data-poster-fin') || video.poster; demarrer();
+      video.poster = video.getAttribute('data-poster-fin') || video.poster;
+      if (!(video.duration && video.currentTime >= video.duration - 0.2)) {   // pas sur sa dernière image : on vide la vidéo,
+        video.pause();                                      // sinon, arrivée plus tard, elle afficherait sa première image ou repartirait
+        var s = video.querySelectorAll('source');
+        for (var i = 0; i < s.length; i++) s[i].remove();
+        video.removeAttribute('src'); video.load();         // plus aucune source : seule l'affiche finale reste
+      }
+      demarrer();
     };
     var armer = function (ms) { clearTimeout(secours); secours = setTimeout(refusee, ms); };
     var passee = function () {                              // le visiteur est passé sous la carte : arrêt sur l'image finale, trait jusqu'au bouton

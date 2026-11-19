@@ -152,6 +152,22 @@ for (const page of ['index.html', 'en.html']) {
     if (!(t.dessine > 0)) fail(`${page}: chargement bloqué, pas de trait ${JSON.stringify(t)}`);
     await pg.close();
   }
+  // 3b octies. vidéo lente : passage sous la carte pendant le chargement (4 s), puis filet de 15 s avant une arrivée tardive (18 s)
+  //           l'affiche finale reste seule, la vidéo n'affiche jamais sa première image et ne repart jamais
+  for (const [nom, retard, sauter, attente] of [['saut pendant le chargement', 4000, true, 7000], ['arrivée après le filet', 18000, false, 22000]]) {
+    const pg = await b.newPage({ viewport: { width: 390, height: 560 }, isMobile: true, hasTouch: true });
+    await pg.route(/\.(mp4|webm)$/, async r => { await new Promise(f => setTimeout(f, retard)); try { await r.continue(); } catch {} });
+    await pg.goto(`${BASE}/${page}`, { waitUntil: 'load' }); await pg.waitForTimeout(600);
+    await pg.evaluate(() => scrollTo(0, document.querySelector('.hero-fond').getBoundingClientRect().top + scrollY - 40)); await pg.waitForTimeout(600);
+    if (sauter) await pg.evaluate(() => scrollTo({ top: 2500, behavior: 'instant' }));
+    let joue = false;
+    for (let i = 0; i < attente / 500; i++) { await pg.waitForTimeout(500); joue = joue || await pg.evaluate(() => { const v = document.querySelector('.hero-fond video'); return v.poster.endsWith('fth-fond-v1.jpg') && (!v.paused || v.readyState > 0); }); }
+    const v = await pg.evaluate(() => { const v = document.querySelector('.hero-fond video'); return { poster: v.poster, paused: v.paused, readyState: v.readyState }; });
+    const t = await trait(pg);
+    if (!/fth-fond-v1\.jpg$/.test(v.poster) || joue) fail(`${page} ${nom}: la vidéo arrivée en retard passe devant l'affiche finale ${JSON.stringify(v)}`);
+    if (!(t.total > 0)) fail(`${page} ${nom}: pas de trait ${JSON.stringify(t)}`);
+    await pg.close();
+  }
   // 3c. lecture refusée (économie d'énergie) : image finale de la carte et trait posé, jamais la première image presque vide
   {
     const pg = await b.newPage({ viewport: { width: 1440, height: 900 } });
