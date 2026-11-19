@@ -460,7 +460,7 @@ html { scroll-padding-top: 6.5rem; }
   .ifrs-tool .ifrs-table { font-size: .8rem; }
   .ifrs-tool .ifrs-statements .ifrs-table { font-size: .76rem; }
   .ifrs-tool .ifrs-table :is(th, td) { padding: .45rem .25rem; }
-  .ifrs-tool .ifrs-table thead th { white-space: normal; font-size: .7rem; }
+  .ifrs-tool .ifrs-table thead :is(th, td) { white-space: normal; font-size: .7rem; }
   .ifrs-tool .ifrs-statements .ifrs-table th[scope="row"] { hyphens: auto; }
 }
 
