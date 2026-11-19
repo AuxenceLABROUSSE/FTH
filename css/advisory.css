@@ -428,7 +428,7 @@ html { scroll-padding-top: 6.5rem; }
 .ifrs-tool .ifrs-scroll { overflow-x: auto; }
 .ifrs-tool .ifrs-table { width: 100%; border-collapse: collapse; font-size: .92rem; }
 .ifrs-tool .ifrs-table :is(th, td) { padding: .55rem .6rem; border-bottom: 1px solid #f0f0f2; text-align: left; vertical-align: top; font-weight: 400; color: #27302a; }
-.ifrs-tool .ifrs-table thead th { font-size: .78rem; letter-spacing: .04em; text-transform: uppercase; color: #52634f; border-bottom-color: #e4e4e7; white-space: nowrap; }
+.ifrs-tool .ifrs-table thead :is(th, td) { font-size: .78rem; letter-spacing: .04em; text-transform: uppercase; color: #52634f; border-bottom-color: #e4e4e7; white-space: nowrap; }
 .ifrs-tool .ifrs-table .ifrs-num { text-align: right; white-space: nowrap; font-variant-numeric: tabular-nums lining-nums; }
 .ifrs-tool .ifrs-table .is-negative { color: #a32020; }
 .ifrs-tool .ifrs-sub th { padding-top: 1.1rem; font-weight: 600; color: #166534; }
@@ -626,7 +626,7 @@ html { scroll-padding-top: 6.5rem; }
 .fthw .fthw-form4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
 .fthw .fthp-form select, .fthw .fthw-lines :is(input, select), .fthw .fthw-note { font: inherit; font-size: .9rem; font-weight: 400; padding: .45rem .6rem; border: 1px solid #d4d4d8; border-radius: 4px; background: #fff; color: #27302a; width: 100%; min-width: 0; }
 .fthw .fthw-table { max-height: 40rem; overflow: auto; border: 1px solid #f0f0f2; border-radius: 8px; }
-.fthw .fthw-table thead th { position: sticky; top: 0; background: #fff; z-index: 1; }
+.fthw .fthw-table thead :is(th, td) { position: sticky; top: 0; background: #fff; z-index: 1; }
 .fthw .fthw-name { color: #52634f; font-size: .85rem; min-width: 14rem; }
 .fthw .fthw-desc { min-width: 16rem; }
 .fthw .fthw-note { min-width: 10rem; }
@@ -849,8 +849,8 @@ html { scroll-padding-top: 6.5rem; }
 /* en-tête de l'espace de travail sur téléphone : le logo garde sa taille, l'empreinte de la clé tient sur une ligne */
 .fthw-brand { flex-shrink: 0; }
 .fthw-key { white-space: nowrap; }
-@media (max-width: 480px) { .fthw-bar-in { flex-wrap: wrap; row-gap: .4rem; } .fthw-key { order: 5; margin-left: 0; } .fthw-key:not(:empty) + .fthw-lang { margin-left: auto; } }
-.fthw .fthw-eng { font-weight: 400; line-height: inherit; letter-spacing: inherit; }   /* le nom du dossier est le h1 de l'écran */
+@media (max-width: 700px) { .fthw-bar-in { flex-wrap: wrap; row-gap: .4rem; } .fthw-key { order: 5; margin-left: 0; } .fthw-key:not(:empty) + .fthw-lang { margin-left: auto; } }
+.fthw .fthw-eng { font-weight: 400; line-height: 1.6; letter-spacing: inherit; }   /* le nom du dossier est le h1 de l'écran */
 .fthw .fthw-notes li.is-resolved { color: #5f6b5f; }                              /* 4,5:1 sur blanc */
 .fthw .fthw-link.is-danger { min-width: 1.5rem; }
 /* résultats d'un calculateur : une grille incomplète ne laisse plus de case grise */

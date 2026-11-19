@@ -258,6 +258,14 @@ for (const [url, lang] of [['/ifrs-tool', 'en'], ['/ifrs-tool-ua', 'uk']]) {
   await t.page.screenshot({ path: path.join(SHOTS, 'portal-uk-390.png'), fullPage: true });
   await t.ctx.close();
 }
+for (const [url, w] of [['/workspace-ua', 560], ['/workspace', 520], ['/workspace-ua', 700], ['/workspace-ua', 320]]) { // header between phone and tablet: nothing pushed off screen
+  const t = await newPage(url, w);
+  await t.page.setInputFiles('#fthwKeyFile', keyPath); await t.page.fill('#fthwPass', 'correct horse battery staple'); await t.page.click('#fthwUnlock');
+  await t.page.waitForSelector('#fthwStart:not([hidden])');
+  const m = await t.page.evaluate(() => ({ over: document.documentElement.scrollWidth - window.innerWidth, lock: document.getElementById('fthwLockBtn').getBoundingClientRect().right - window.innerWidth }));
+  ok(m.over <= 0 && m.lock <= 0, `workspace header ${url} ${w} px: no horizontal scroll, Lock button on screen (${m.over}, ${Math.round(m.lock)})`);
+  await t.ctx.close();
+}
 { // workspace on a phone, Ukrainian page: header, fields, headings, tables
   const t = await newPage('/workspace-ua', 390);
   const { page } = t;
@@ -326,6 +334,8 @@ let releasePath = null, passphrase = null, wsProfit = null, workPath = null;
   await ed.locator('table button').nth(1).click();
   await ed.locator('.btn-green').click();
   await page.waitForFunction(() => document.querySelectorAll('.fthw-pill.is-approved').length === 2);
+  ok(await page.$$eval('#fthwMain .fthw-table thead tr > *', (cs) => cs.length > 0 && cs.every((c) => getComputedStyle(c).position === 'sticky') && cs.every((c) => c.tagName === 'TD' || c.textContent.trim())), 'workspace: journal list header sticks whole (untitled column included), no empty th');
+  ok(await page.$$eval('#fthwMain .ifrs-scroll', (els) => els.length > 0 && els.every((e) => e.tabIndex === 0 && e.getAttribute('aria-label'))), 'workspace: journal tables reachable with the keyboard and named');
   // statements: IFRS profit = local - lease effect
   await page.click('#fthwNav button:nth-child(6)');
   ok(await page.$eval('.fthw-main .ifrs-check', (e) => e.classList.contains('is-ok')), 'workspace: statements balanced with adjustments');
