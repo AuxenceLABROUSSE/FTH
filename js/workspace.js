@@ -187,7 +187,7 @@
   }
   function num(v, key) { return h('td.ifrs-num' + (v < -C.EPS ? '.is-negative' : ''), key ? { 'data-total': key } : null, money(v)); }
   function rth(t) { return h('th', { scope: 'row' }, t); }
-  function thead(cols) { return h('thead', h('tr', cols.map(function (c, i) { return h('th' + (i ? '.ifrs-num' : ''), { scope: 'col' }, c); }))); }
+  function thead(cols) { return h('thead', h('tr', cols.map(function (c, i) { return c === '' ? h('td') : h('th' + (i ? '.ifrs-num' : ''), { scope: 'col' }, c); }))); }   // colonne sans titre : cellule simple, pas un en-tête vide
   function say(id, msg, kind) { var s = $(id); if (!s) return; s.textContent = msg || ''; s.className = 'fthp-status' + (kind ? ' is-' + kind : ''); }
   function download(name, data, type) {
     var blob = data instanceof Blob ? data : new Blob([data], { type: type || 'application/octet-stream' });
@@ -384,6 +384,11 @@
     var main = $('fthwMain'); main.textContent = '';
     main.appendChild(h('h2.fthw-title', T.tabs[S.tab]));
     ({ overview: vOverview, tb: vTb, mapping: vMapping, journals: vJournals, calc: vCalc, statements: vStatements, review: vReview, audit: vAudit, model: vModel })[S.tab](main);
+    // tableau qui défile : atteignable au clavier, nommé par le titre le plus proche
+    Array.prototype.forEach.call(main.querySelectorAll('.ifrs-scroll:not([tabindex])'), function (sc) {
+      var t = sc.closest('.ifrs-card, .fthw-card'), ti = t && t.querySelector('h3');
+      sc.tabIndex = 0; sc.setAttribute('role', 'group'); sc.setAttribute('aria-label', ti ? ti.firstChild.textContent.trim() : T.tabs[S.tab]);
+    });
   }
   function change() { recompute(); render(); }
 

@@ -252,7 +252,37 @@ for (const [url, lang] of [['/ifrs-tool', 'en'], ['/ifrs-tool-ua', 'uk']]) {
   await t.page.click('#fthpDemo2');
   const over = await t.page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
   ok(over <= 0, 'portal 390 px: no horizontal scroll (' + over + ')');
+  // consent sentence reads as one paragraph: its link starts a line, it is not pushed into a column of its own
+  ok(await t.page.$eval('.fthp-consent', (l) => { const a = l.querySelector('a').getBoundingClientRect(), r = l.getBoundingClientRect(); return a.left < r.left + r.width / 2 && getComputedStyle(l.querySelector('a')).textDecorationLine === 'underline'; }), 'portal 390 px: consent link inside the sentence, underlined');
+  ok(await t.page.$$eval('.ifrs-scroll', (els) => els.every((e) => e.tabIndex === 0 && e.getAttribute('aria-label'))), 'portal: every scrolling table can be reached with the keyboard and has a name');
   await t.page.screenshot({ path: path.join(SHOTS, 'portal-uk-390.png'), fullPage: true });
+  await t.ctx.close();
+}
+{ // workspace on a phone, Ukrainian page: header, fields, headings, tables
+  const t = await newPage('/workspace-ua', 390);
+  const { page } = t;
+  await page.setInputFiles('#fthwKeyFile', keyPath); await page.fill('#fthwPass', 'correct horse battery staple'); await page.click('#fthwUnlock');
+  await page.waitForSelector('#fthwStart:not([hidden])');
+  await page.fill('#fthwUser', 'Reviewer One'); await page.click('#fthwSample');
+  await page.waitForSelector('#fthwApp:not([hidden])');
+  ok(await page.$eval('.fthw-brand img', (i) => i.getBoundingClientRect().width >= 50) && await page.$eval('#fthwKeyBadge', (k) => k.getBoundingClientRect().height < 32 && k.scrollWidth <= k.clientWidth), 'workspace 390 px: logo keeps its size, key id on one line and whole');
+  ok(await page.$$eval('h1', (hs) => hs.filter((h) => h.getBoundingClientRect().height > 0).length) === 1, 'workspace: one visible h1 once an engagement is open');
+  ok(await page.$$eval('#fthwMain .fthp-form input[type=number], #fthwMain .fthp-form input[type=date]', (els) => els.length >= 4 && els.every((e) => getComputedStyle(e).borderRadius === '4px' && e.getBoundingClientRect().height >= 40 && parseFloat(getComputedStyle(e).fontSize) >= 16)), 'workspace: number and date fields drawn like the text fields, 16 px');
+  const tabs = await page.$$eval('#fthwNav button', (b) => b.length);
+  let emptyTh = 0, bareScroll = 0;
+  for (let i = 1; i <= tabs; i++) {
+    await page.click(`#fthwNav button:nth-child(${i})`);
+    emptyTh += await page.$$eval('#fthwMain th', (ths) => ths.filter((x) => !x.textContent.trim()).length);
+    bareScroll += await page.$$eval('#fthwMain .ifrs-scroll', (els) => els.filter((e) => e.tabIndex !== 0 || !e.getAttribute('aria-label')).length);
+  }
+  ok(emptyTh === 0, `workspace: no empty table header (${emptyTh})`);
+  ok(bareScroll === 0, `workspace: every scrolling table can be reached with the keyboard and has a name (${bareScroll})`);
+  await page.click('#fthwNav button:nth-child(5)');
+  ok(await page.$eval('.fthw-lines', (tb) => tb.getBoundingClientRect().width <= tb.parentElement.clientWidth + 1), 'workspace 390 px: the credit-loss table fits its card');
+  const over = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
+  ok(over <= 0, 'workspace 390 px: no horizontal scroll (' + over + ')');
+  ok(!t.errors.length, 'workspace 390 px: no console error ' + t.errors.join(' | '));
+  await page.screenshot({ path: path.join(SHOTS, 'workspace-uk-390.png'), fullPage: true });
   await t.ctx.close();
 }
 

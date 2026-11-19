@@ -638,7 +638,7 @@ html { scroll-padding-top: 6.5rem; }
 .fthw tr.is-void :is(th, td) { color: #a1a1aa; }
 .fthw .fthw-editor { border: 1px solid #bbf7d0; background: #fbfefc; border-radius: 12px; padding: 1.1rem; margin-bottom: 1.25rem; }
 .fthw .fthw-lines td { vertical-align: middle; }
-.fthw .fthw-lines td:first-child { min-width: 18rem; }
+.fthw .fthw-lines tbody td:first-child { min-width: 18rem; }
 .fthw .fthw-amt { text-align: right; min-width: 8rem; }
 .fthw .fthw-bal { margin: 0; font-weight: 600; font-variant-numeric: tabular-nums; }
 .fthw .fthw-bal.is-ok { color: #166534; }
@@ -834,8 +834,26 @@ html { scroll-padding-top: 6.5rem; }
 @media (min-width: 481px) and (max-width: 1023px) { .advisory-home .nav-menu { --marge: 2rem; } }
 /* Outil et espace de travail : champs à 16 px (en dessous, l'iPhone zoome à la saisie), lien reconnaissable sans la couleur, bouton qui passe à la ligne à 320 px */
 .fthp .fthp-form :is(input[type], select, textarea), .fthp .fthp-search input { font-size: 1rem; }
-@media (max-width: 768px) { .ifrs-tool .ifrs-cat select, .fthw .fthw-lines :is(input, select), .fthw .fthw-note { font-size: 1rem; } }   /* listes de classement et lignes d'écriture : 16 px sur téléphone seulement, les tableaux gardent leur densité sur ordinateur */
+@media (max-width: 1023px) { .ifrs-tool .ifrs-cat select, .fthw .fthw-lines :is(input, select), .fthw .fthw-note { font-size: 1rem; } }   /* listes de classement et lignes d'écriture : 16 px sur téléphone seulement, les tableaux gardent leur densité sur ordinateur */
 .fthp .fthp-results-link a { text-decoration: underline; text-underline-offset: 3px; }
 @media (max-width: 400px) { .fthp .btn { white-space: normal; } }
 /* Bloc de fin d'article : le titre est un h2 (plus de saut h1 -> h3), même apparence */
 .article-cta h2 { font-family: var(--font-serif); font-size: 1.3rem; font-weight: 500; color: var(--g900); margin-bottom: .5rem; }
+/* Audit de l'outil et de l'espace de travail, 19/11/2026 (soir) */
+/* champs nombre et date : même dessin que les champs texte (ils restaient au style brut du navigateur) */
+.fthp .fthp-form :is(input[type=number], input[type=date]) { font: inherit; font-size: 1rem; font-weight: 400; padding: .6rem .75rem; border: 1px solid #d4d4d8; border-radius: 4px; background: #fff; color: #27302a; min-width: 0; }
+/* case à cocher suivie d'une phrase avec un lien : en bloc, sinon le lien et le point deviennent des colonnes sur téléphone */
+.fthp .fthp-form .fthp-consent { display: block; position: relative; padding-left: 1.65rem; }
+.fthp .fthp-form .fthp-consent input { position: absolute; left: 0; top: .3rem; margin: 0; }
+.ifrs-tool .ifrs-hint a, .fthp .fthp-consent a { text-decoration: underline; text-underline-offset: 3px; }
+/* en-tête de l'espace de travail sur téléphone : le logo garde sa taille, l'empreinte de la clé tient sur une ligne */
+.fthw-brand { flex-shrink: 0; }
+.fthw-key { white-space: nowrap; }
+@media (max-width: 480px) { .fthw-bar-in { flex-wrap: wrap; row-gap: .4rem; } .fthw-key { order: 5; margin-left: 0; } .fthw-key:not(:empty) + .fthw-lang { margin-left: auto; } }
+.fthw .fthw-eng { font-weight: 400; line-height: inherit; letter-spacing: inherit; }   /* le nom du dossier est le h1 de l'écran */
+.fthw .fthw-notes li.is-resolved { color: #5f6b5f; }                              /* 4,5:1 sur blanc */
+.fthw .fthw-link.is-danger { min-width: 1.5rem; }
+/* résultats d'un calculateur : une grille incomplète ne laisse plus de case grise */
+.fthw .fthw-res { background: #fafaf7; }
+.ifrs-tool .ifrs-params { background: #fafafa; }
+.fthw .fthw-res div, .ifrs-tool .ifrs-params div { outline: 1px solid #e4e4e7; }
